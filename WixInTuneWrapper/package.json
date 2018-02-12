@@ -1,0 +1,22 @@
+{
+  "name": "wixintunewrapper",
+  "version": "1.0.0",
+  "description": "Simple WiX wrapper for MS InTune one MSI.",
+  "main": "index.js",
+  "scripts": {
+    "electron": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rasq/WiXInTuneWrapper.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rasq/WiXInTuneWrapper/issues"
+  },
+  "homepage": "https://github.com/rasq/WiXInTuneWrapper#readme",
+  "dependencies": {
+    "electron": "^1.8.2"
+  }
+}
