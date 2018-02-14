@@ -1,0 +1,35 @@
+{
+  "name": "electron-quick-start",
+  "version": "1.0.0",
+  "description": "A minimal Electron application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/electron/electron-quick-start",
+  "keywords": [
+    "Electron",
+    "quick",
+    "start",
+    "tutorial",
+    "demo"
+  ],
+  "author": "GitHub",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "~1.7.8"
+  },
+  "dependencies": {
+    "coffescript": "0.0.1-security",
+    "dialog": "^0.3.1",
+    "electron-save-file": "^1.0.2",
+    "fs": "0.0.1-security",
+    "fs-extra": "^5.0.0",
+    "guid": "0.0.12",
+    "klaw": "^2.1.1",
+    "klaw-sync": "^3.0.2",
+    "remote": "^0.2.6",
+    "through2": "^2.0.3",
+    "uuid": "^3.2.1"
+  }
+}
