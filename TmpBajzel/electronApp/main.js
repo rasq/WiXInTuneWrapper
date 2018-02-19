@@ -18,6 +18,7 @@ let paths, item, mainWindow, stats, filterFn;
 var pathVar, WSXSection; 
     
 var varDbg = false;
+var tplDir = 'App/TPL/';
 var tmpPath = "", tmpSplittedPath = "", fileCounter = 0, dirCounter = 0, featureCounter = 0, i = 0, featureNumber = 0;
 var VarSchema = 450;
 var VarProductCode = uuidV4();
@@ -55,7 +56,7 @@ var wxsHeaderTemplate = '<?xml version="1.0" encoding="UTF-8"?>' +
 '    \r\n\t<Package Comments="Contact:  Your local administrator" Description="VarSoftwareDesc" InstallerVersion="' + VarSchema + '" Keywords="Installer,MSI,Database" Languages="1033" Manufacturer="VarMSIVendor" Platform="x86" />\r\n' + wxsMainDirectoryOpenTemplate;
 
 var wxsComponentTemplateOpen = '' +
-'\r\n\t\t\t\t<Component Id="VarComponentName" Guid="{VarGUIDString}" KeyPath="yes">';
+'\t\t\t\t<Component Id="VarComponentName" Guid="{VarGUIDString}" KeyPath="yes">';
 
 var wxsComponentTemplateClose = '\r\n\t\t\t\t</Component>\r\n';
 
@@ -79,7 +80,6 @@ var wxsFeatureOpenTemplate = '    \r\n\r\n\t\t\t<Feature Id="VarFeatureID" Confi
 var wxsComponentFeatureTemplate = '    \r\n\t\t\t\t<ComponentRef Id="VarComponentRefID" />';
 
 var wxsFeatureCloseTemplate = '    \r\n\t\t\t</Feature>\r\n';
-
 
 var wxsFooterTemplate = '' + 
 '    \r\n\t</Product>' +
@@ -157,7 +157,21 @@ function saveWSXFile (contentTxt, fileName, dataType){
 }
 //----------------------------------------------------------------------------------------------------------------------
 
+//----------------------------------------------------------------------------------------------------------------------
+function loadXMLTemplateFile (xmlFileToRead){
+    var dataToPass = "";
 
+        fs.readFile(xmlFileToRead, 'utf8', (err, data) => {
+            if (err) {
+                alert("An error ocurred reading the file " + err.message)
+            }   
+            //console.dir('xmlFileToRead =' + xmlFileToRead + ' = ' + data);
+            dataToPass = data;
+        });
+    
+    return dataToPass;
+}
+//----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
 function generateWSXDirectorySection (contentTxt){ 
@@ -267,7 +281,15 @@ function generateWSXFileSection (contentTxt){
 function generateWSXFeatureSection (){ 
     var tmpFeatureSection = "", x = 0, y = 0;
     
-            tmpFeatureSection = tmpFeatureSection + wxsDirectoryCloseTemplate;
+            //tmpFeatureSection = tmpFeatureSection + wxsDirectoryCloseTemplate;
+            //tmpFeatureSection = wxsComponentTemplateClose;
+            if (tmpPath != "") {
+                tmpFeatureSection = wxsDirectoryCloseTemplate;
+                
+                for (x = VarSplittedScriptDir.length + 1; x < tmpSplittedPath.length - 1; x++) {
+                    tmpFeatureSection = tmpFeatureSection + wxsDirectoryCloseTemplate;
+                }
+            } 
     
             for (x = 0; x < VarFilesCounter.length; x++){
                 tmpFeatureSection = tmpFeatureSection + wxsFeatureOpenTemplate.replace('VarFeatureID', "Feature_" + x + 1);
@@ -311,6 +333,13 @@ function normalizeStringName (varStringCName){
 }
 //----------------------------------------------------------------------------------------------------------------------
 
+//----------------------------------------------------------------------------------------------------------------------
+function buildMSI (){ 
+    //candle.exe wrapper.wsx
+    //light.exe wrapper.wixobj
+}
+//----------------------------------------------------------------------------------------------------------------------
+
 
 
 
@@ -338,23 +367,15 @@ function createWindow () {
     
     
             RC = saveWSXFile (wxsHeaderTemplate, 'WORKING/' + 'wrapper' + '.wsx', 'wxsHeader');
-            //RC = saveWSXFile (wxsMainDirectoryOpenTemplate, 'WORKING/' + 'wrapper' + '.wsx', 'wxsHeader');
-    
-    
+            
             harwestDirsFiles('\IN', 'wrapper', 'files');
-            tmpPath = "";
+
             RC = saveWSXFile (wxsComponentTemplateClose, 'WORKING/' + 'wrapper' + '.wsx', 'closeTag');
-    
-    
-            RC = saveWSXFile (wxsDirectoryCloseTemplate, 'WORKING/' + 'wrapper' + '.wsx', 'wxsHeader');
     
             RC = saveWSXFile ("", 'WORKING/' + 'wrapper' + '.wsx', 'features');
    
             RC = saveWSXFile (wxsFooterTemplate, 'WORKING/' + 'wrapper' + '.wsx', 'wxsFooter');
       
-            /*harwestDirsFiles('\IN/Wrapper', 'wrapper', 'dirs');
-    
-            harwestDirsFiles('\IN/Sources', 'wrapper', 'dirs');*/
     
     //mainWindow.webContents.openDevTools()
 
