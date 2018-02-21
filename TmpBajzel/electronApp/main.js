@@ -9,6 +9,7 @@ const url       = require('url')
 const uuidV4    = require('uuid/v4');
 
 const app = electron.app
+const Menu = electron.Menu
 const BrowserWindow = electron.BrowserWindow
 
 //const remote = require('remote'); 
@@ -87,11 +88,6 @@ var wxsFooterTemplate = '' +
 
 
 
-/*<Directory Id="TARGETDIR" Name="SourceDir">
-    <Directory Id="ProgramFilesFolder">
-        <Directory Id="APPLICATIONROOTDIRECTORY" Name="My Application Name"/>
-    </Directory>
-</Directory>*/
 
 
 
@@ -232,7 +228,6 @@ function generateWSXFileSection (contentTxt){
                     }  
                 }
                 
-                
                 if (isSysFolder == false) {
                     tmpString = tmpString + wxsDirectoryOpenTemplate
                     tmpString = tmpString.replace('VarDirectoryName', VarSplittedString[x])
@@ -357,8 +352,9 @@ function buildMSI (){
 function createWindow () {
     var RC;
     
-    mainWindow = new BrowserWindow({width: 800, height: 300})
+    mainWindow = new BrowserWindow({width: 920, height: 680, icon: __dirname+'/App/images/build/icon.png', 'node-integration':true, resizable: false});
 
+    
     mainWindow.loadURL(url.format({
         pathname: path.join(__dirname, 'index.html'),
         protocol: 'file:',
@@ -377,11 +373,60 @@ function createWindow () {
             RC = saveWSXFile (wxsFooterTemplate, 'WORKING/' + 'wrapper' + '.wsx', 'wxsFooter');
       
     
-    //mainWindow.webContents.openDevTools()
-
-    mainWindow.on('closed', function () {
+    if (varDbg) { mainWindow.webContents.openDevTools() }
+    mainWindow.webContents.openDevTools() 
+    
+    mainWindow.on('closed', () => {
         mainWindow = null
     })
+    
+    const template = [
+    {
+        label: 'Edit',
+        submenu: [
+        {role: 'undo'},
+        {role: 'redo'},
+        {type: 'separator'},
+        {role: 'cut'},
+        {role: 'copy'},
+        {role: 'paste'},
+        {role: 'pasteandmatchstyle'},
+        {role: 'delete'},
+        {role: 'selectall'}
+        ]
+    }]
+    
+    if (process.platform === 'darwin') {
+        template.unshift({
+            label: app.getName(),
+            submenu: [
+            {role: 'about'},
+            {type: 'separator'},
+            {role: 'services', submenu: []},
+            {type: 'separator'},
+            {role: 'hide'},
+            {role: 'hideothers'},
+            {role: 'unhide'},
+            {type: 'separator'},
+            {role: 'quit'}
+            ]
+        })
+
+        template[1].submenu.push(
+            {type: 'separator'},
+            {
+                label: 'Speech',
+                submenu: [
+                    {role: 'startspeaking'},
+                    {role: 'stopspeaking'}
+                ]
+            }
+        )
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------  
+Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }
 //----------------------------------------------------------------------------------------------------------------------
 

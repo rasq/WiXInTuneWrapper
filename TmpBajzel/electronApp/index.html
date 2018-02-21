@@ -1,17 +1,158 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Hello World!</title>
-  </head>
-  <body>
-    <h1>Hello World!</h1>
-    We are using Node.js <script>document.write(process.versions.node)</script>,
-    Chromium <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
+<head>
 
-    <script>
-      require('./renderer.js')
-    </script>
-  </body>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>WiX Tools MSI wrapper</title>
+
+    <link rel="stylesheet" href="App/css/semantic.min.css">
+    <link rel="stylesheet" href="App/css/style.css">
+
+</head>
+<body>
+    
+    
+<div class="ui basic update-available modal">
+  <div class="ui icon header">
+    <i class="gift icon"></i>
+    New Update Available
+  </div>
+  <div class="content">
+    <p><center>A new version of WiXWrapper is available. You can download the latest version from github releases page</center></p>
+  </div>
+  <div class="actions" style="text-align: center;">
+    <div class="ui red cancel inverted button">
+      <i class="remove icon"></i>
+      Cancel
+    </div>
+    <div class="ui blue ok inverted download-update button">
+      <i class="checkmark icon"></i>
+      Download
+    </div>
+  </div>
+</div>
+    
+    
+
+
+<script>
+    const $ = jQuery = require('jquery');
+</script>
+<script src="App/js/semantic.min.js"></script>
+
+<script type="text/javascript">
+    const settings = require('electron-settings');
+    const appVersion = require(__dirname+'/package.json').version;
+    
+    function translate(text){
+        if(!settings.get('general.language') || settings.get('general.language')=="English"){
+            return text;
+        } else {
+            try {
+                var meta = require('./locale/meta.json');
+                var locale = require('./locale/'+meta[settings.get('general.language')]);
+                return locale[text] || text;
+            } catch (e) {
+                return text;
+            }
+        }
+    }
+
+    var template = `
+            <div class="ui center aligned loading grid">
+                <div class="ui dimmer">
+                    <div class="ui big text loader">${translate("Loading application")}</div>
+                </div>
+
+                <div class="row">
+                    </br>
+                    </br>
+                    </br>
+                    <div class="ten wide column">
+                        <h2 class="ui center aligned icon grey loading header">
+                            <img src="App/images/msi.png" style="width:50%;height:50%;" alt="Logo"/>
+                            </br>
+                            ${translate("Loading application:")}
+                            </br>
+                            <i>WiX Tools MSI wrapper.</i>
+                        </h2>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="ten wide column">
+                            <div class="content">
+                                <div class="description"><b>Change log:</b></div>
+                                <div class="description">Added: generating wxs file from pointed directory.</div>
+                                </br>
+                                </br>
+                            </div>
+                            <a class="start-button item">
+                                <i class="ui fluid green button">${translate("Start")}</i> 
+                            </a>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <div class="ui dashboard">       
+                <div class="ui Opcja01 dimmer">
+                  <div class="ui big text loader">${translate("Loading Option01")}</div>
+                </div>
+                 <div class="ui Opcja02 dimmer">
+                  <div class="ui big text loader">${translate("Loading Option02")}</div>
+                </div>
+                <div class="ui Opcja03 dimmer">
+                  <div class="ui big text loader">${translate("Loading Option03")}</div>
+                </div> 
+
+                <div class="ui left vertical inverted sidebar labeled icon menu visible">
+                    <a class="Opcja01-sidebar item">
+                      <i class="file video icon"></i>
+                      ${translate("Opcja01")}
+                    </a>
+                    <a class="Opcja02-sidebar item">
+                      <i class="wrench icon"></i>
+                      ${translate("Opcja02")}
+                    </a>
+                    <a class="Opcja03-sidebar item">
+                      <i class="info icon"></i>
+                      ${translate("Opcja03")}
+                    </a>
+                </div>
+                <div class="content">
+                    <div class="ui Opcja01"> 
+                    </div>
+                    <div class="ui Opcja02"> 
+                    </div>
+                    <div class="ui Opcja03"> 
+                    </div>
+                </div>
+            </div>
+    `;
+
+    $('body').prepend(template);
+
+    var $languageDropdown = $('.language.dropdown .menu');
+        $.getJSON('App/locale/meta.json', function(data){
+            $.each( data, function(key) {
+                $languageDropdown.append(`<div class="item" data-value=${key}>${key}</div>`);
+            });
+        });
+</script>
+    
+<script src="App/JS/wrapper.js"></script>
+<script>
+  /*!function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="4.0.0";
+  analytics.load("5ytQPclNP2gLRsHx0wfHs2NYLjqDl9al");
+  analytics.page({
+    appVersion:appVersion
+  });
+  }}();*/
+</script>
+</body>
 </html>
