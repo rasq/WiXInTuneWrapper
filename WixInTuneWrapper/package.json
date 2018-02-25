@@ -1,22 +1,56 @@
 {
-  "name": "wixintunewrapper",
+  "name": "WiX-Tools-MSI-wrapper",
   "version": "1.0.0",
-  "description": "Simple WiX wrapper for MS InTune one MSI.",
-  "main": "index.js",
+  "description": "A minimal Electron application",
+  "main": "main.js",
   "scripts": {
-    "electron": "electron ."
+    "start": "electron .",
+    "postinstall": "electron-builder install-app-deps",
+    "build": "electron-builder -wml",
+    "build-win": "electron-builder -w",
+    "build-mac": "electron-builder -m",
+    "build-linux": "electron-builder -l",
+    "dist": "build"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/rasq/WiXInTuneWrapper.git"
+  "build": {
+    "directories": {
+      "buildResources": "App/images/build"
+    },
+    "linux": {
+      "category": "Utility"
+    }
   },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/rasq/WiXInTuneWrapper/issues"
+  "repository": "https://github.com/electron/electron-quick-start",
+  "keywords": [
+    "Electron",
+    "quick",
+    "start",
+    "tutorial",
+    "demo"
+  ],
+  "author": "GitHub",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "~1.7.8"
   },
-  "homepage": "https://github.com/rasq/WiXInTuneWrapper#readme",
   "dependencies": {
-    "electron": "^1.8.2"
+    "coffescript": "0.0.1-security",
+    "dialog": "^0.3.1",
+    "dialogs": "^1.1.20",
+    "electron-save-file": "^1.0.2",
+    "electron-settings": "^3.1.4",
+    "fs": "0.0.1-security",
+    "fs-extra": "^5.0.0",
+    "guid": "0.0.12",
+    "jquery": "^3.3.1",
+    "klaw": "^2.1.1",
+    "klaw-sync": "^3.0.2",
+    "mkdirp": "^0.5.1",
+    "mt-files-downloader": "git+https://github.com/zeltice/node-mt-files-downloader.git",
+    "needle": "^2.1.2",
+    "remote": "^0.2.6",
+    "sanitize-filename": "^1.6.1",
+    "through2": "^2.0.3",
+    "uuid": "^3.2.1"
   }
 }
