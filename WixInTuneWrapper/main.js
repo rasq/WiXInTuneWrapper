@@ -12,6 +12,48 @@ const app = electron.app
 const Menu = electron.Menu
 const BrowserWindow = electron.BrowserWindow
 
+
+
+const MenuTemplate = [
+  {
+    label: 'File',
+    submenu: [
+      {
+        label: 'Load conf file',
+        click() {}
+      },
+      {
+        label: 'Save conf file',
+        click() {}
+      },
+      {
+        label: 'Quit',
+        accelerator: process.platform == 'darwin' ? 'Command+Q' : 'Ctrl+Q',
+        click() {
+          app.quit();
+        }
+      }
+    ]
+  }
+]
+
+  if (process.platform === 'darwin') {
+    MenuTemplate.unshift({});
+  }
+
+  if (process.env.NODE_ENV !== 'production') {
+    MenuTemplate.push({
+      label: 'View',
+      submenu : [
+        {
+          label: 'Toggle Dev Tools',
+          click(item, focusedWindow){
+            focusedWindow.toggleDevTools();
+          }
+        }
+      ]
+    });
+  }
 //const remote = require('remote');
 //const dialog = remote.require('dialog');
 
@@ -123,7 +165,7 @@ function saveWSXFile (contentTxt, fileName, dataType){
     if (varDbg) {console.dir("function started with fileName = " + fileName + " dataType = " + dataType + " contentTxt = " + contentTxt)};
 
     if (dataType == 'dirs') {
-      
+
     } else if (dataType == 'files') {
         WSXSection = generateWSXFileSection (contentTxt);
     } else if (dataType == 'features') {
@@ -137,14 +179,14 @@ function saveWSXFile (contentTxt, fileName, dataType){
             stats = fs.statSync(fileName);
             fs.appendFile(fileName, WSXSection, (err) => {
                 if(err){
-                    alert("An error ocurred appending the file " + err.message)
+                    alert("An error ocurred appending the file " + err.message);
                 }
             });
         } catch (e) {
             if (varDbg) {console.dir("creating file = " + fileName + " with data: " + WSXSection)};
             fs.writeFile(fileName, WSXSection, (err) => {
                 if(err){
-                    alert("An error ocurred creating the file " + err.message)
+                    alert("An error ocurred creating the file " + err.message);
                 }
             });
         }
@@ -159,9 +201,8 @@ function loadXMLTemplateFile (xmlFileToRead){
 
         fs.readFile(xmlFileToRead, 'utf8', (err, data) => {
             if (err) {
-                alert("An error ocurred reading the file " + err.message)
+                alert("An error ocurred reading the file " + err.message);
             }
-            //console.dir('xmlFileToRead =' + xmlFileToRead + ' = ' + data);
             dataToPass = data;
         });
 
@@ -183,7 +224,6 @@ function generateWSXFileSection (contentTxt){
 
         for (x = 0; x < VarSplittedString.length -1; x++) {
             tmpFnPath = tmpFnPath + VarSplittedString[x];
-            //console.dir("tmpFnPath = " + tmpFnPath);
         }
 
         if (varDbg) {
@@ -199,7 +239,7 @@ function generateWSXFileSection (contentTxt){
                 tmpString = wxsComponentTemplateClose;
 
                 for (x = VarSplittedScriptDir.length + 1; x < tmpSplittedPath.length - 1; x++) {
-                    tmpString = tmpString + wxsDirectoryCloseTemplate
+                    tmpString = tmpString + wxsDirectoryCloseTemplate;
                 }
             }
 
@@ -211,12 +251,12 @@ function generateWSXFileSection (contentTxt){
                 }
 
                 if (isSysFolder == false) {
-                    tmpString = tmpString + wxsDirectoryOpenTemplate
-                    tmpString = tmpString.replace('VarDirectoryName', VarSplittedString[x])
+                    tmpString = tmpString + wxsDirectoryOpenTemplate;
+                    tmpString = tmpString.replace('VarDirectoryName', VarSplittedString[x]);
                     tmpString = tmpString.replace("TARGETDIR", normalizeStringName (VarSplittedString[x]));
                 } else {
-                    tmpString = tmpString + wxsSysDirectoryOpenTemplate
-                    tmpString = tmpString.replace('VarSystemFolderName', VarSplittedString[x])
+                    tmpString = tmpString + wxsSysDirectoryOpenTemplate;
+                    tmpString = tmpString.replace('VarSystemFolderName', VarSplittedString[x]);
                 }
 
                 isSysFolder = false;
@@ -258,11 +298,8 @@ function generateWSXFileSection (contentTxt){
 function generateWSXFeatureSection (){
     var tmpFeatureSection = "", x = 0, y = 0;
 
-            //tmpFeatureSection = tmpFeatureSection + wxsDirectoryCloseTemplate;
-            //tmpFeatureSection = wxsComponentTemplateClose;
             if (tmpPath != "") {
                 tmpFeatureSection = wxsDirectoryCloseTemplate;
-
                 for (x = VarSplittedScriptDir.length + 1; x < tmpSplittedPath.length - 1; x++) {
                     tmpFeatureSection = tmpFeatureSection + wxsDirectoryCloseTemplate;
                 }
@@ -271,11 +308,9 @@ function generateWSXFeatureSection (){
             for (x = 0; x < VarFilesCounter.length; x++){
                 tmpFeatureSection = tmpFeatureSection + wxsFeatureOpenTemplate.replace('VarFeatureID', "Feature_" + x + 1);
                 tmpFeatureSection = tmpFeatureSection.replace('VarFeatureTitle', 'Complete_' + x+1);
-
                     for (y = 0; y < VarFilesCounter[x].length; y++) {
                         tmpFeatureSection = tmpFeatureSection + wxsComponentFeatureTemplate.replace('VarComponentRefID', VarFilesCounter[x][y] + '_' + x + '_' + y);
                     }
-
                 tmpFeatureSection = tmpFeatureSection + wxsFeatureCloseTemplate;
             }
 
@@ -334,82 +369,35 @@ function buildMSI (){
 function createWindow () {
     var RC;
 
-    mainWindow = new BrowserWindow({width: 920, height: 680, icon: __dirname+'/App/images/build/icon.png', 'node-integration':true, resizable: false});
+      mainWindow = new BrowserWindow({width: 920, height: 680, icon: __dirname+'/App/images/build/icon.png', 'node-integration':true, resizable: false});
 
-
-    mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname, 'index.html'),
-        protocol: 'file:',
-        slashes: true
-    }))
-
+      mainWindow.loadURL(url.format({
+          pathname: path.join(__dirname, 'index.html'),
+          protocol: 'file:',
+          slashes: true
+      }))
 
             RC = saveWSXFile (wxsHeaderTemplate, 'WORKING/' + 'wrapper' + '.wsx', 'wxsHeader');
-
-            harwestDirsFiles('\IN', 'wrapper', 'files');
-
+              harwestDirsFiles('\IN', 'wrapper', 'files');
             RC = saveWSXFile (wxsComponentTemplateClose, 'WORKING/' + 'wrapper' + '.wsx', 'closeTag');
-
             RC = saveWSXFile ("", 'WORKING/' + 'wrapper' + '.wsx', 'features');
-
             RC = saveWSXFile (wxsFooterTemplate, 'WORKING/' + 'wrapper' + '.wsx', 'wxsFooter');
 
 
-    if (varDbg) { mainWindow.webContents.openDevTools() }
-    mainWindow.webContents.openDevTools()
+      //if (varDbg) { mainWindow.webContents.openDevTools() }
+      //mainWindow.webContents.openDevTools()
 
-    mainWindow.on('closed', () => {
-        mainWindow = null
-    })
-
-    const template = [
-    {
-        label: 'Edit',
-        submenu: [
-        {role: 'undo'},
-        {role: 'redo'},
-        {type: 'separator'},
-        {role: 'cut'},
-        {role: 'copy'},
-        {role: 'paste'},
-        {role: 'pasteandmatchstyle'},
-        {role: 'delete'},
-        {role: 'selectall'}
-        ]
-    }]
-
-    if (process.platform === 'darwin') {
-        template.unshift({
-            label: app.getName(),
-            submenu: [
-            {role: 'about'},
-            {type: 'separator'},
-            {role: 'services', submenu: []},
-            {type: 'separator'},
-            {role: 'hide'},
-            {role: 'hideothers'},
-            {role: 'unhide'},
-            {type: 'separator'},
-            {role: 'quit'}
-            ]
-        })
-
-        template[1].submenu.push(
-            {type: 'separator'},
-            {
-                label: 'Speech',
-                submenu: [
-                    {role: 'startspeaking'},
-                    {role: 'stopspeaking'}
-                ]
-            }
-        )
+      mainWindow.on('closed', () => {
+          mainWindow = null;
+      })
 }
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
-Menu.setApplicationMenu(Menu.buildFromTemplate(template));
-}
+//Menu.setApplicationMenu(Menu.buildFromTemplate(MenuTemplate));
+const menu = Menu.buildFromTemplate(MenuTemplate);
+      Menu.setApplicationMenu(menu);
+//}
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -419,7 +407,7 @@ app.on('ready', createWindow)
 //----------------------------------------------------------------------------------------------------------------------
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') {
-    app.quit()
+    app.quit();
   }
 })
 //----------------------------------------------------------------------------------------------------------------------
@@ -427,7 +415,7 @@ app.on('window-all-closed', function () {
 //----------------------------------------------------------------------------------------------------------------------
 app.on('activate', function () {
   if (mainWindow === null) {
-    createWindow()
+    createWindow();
   }
 })
 //----------------------------------------------------------------------------------------------------------------------
