@@ -1,14 +1,14 @@
-const remote = require('electron').remote;
-const dialog = remote.dialog;
-const fs = require('fs');
-const session = remote.session;
-const needle = require('needle');
-const prompt = require('dialogs')(opts={});
-const mkdirp = require('mkdirp');
-const homedir  = require('os').homedir();
-const sanitize = require("sanitize-filename");
-var Downloader = require('mt-files-downloader');
-var shell = require('electron').shell;
+const remote      = require('electron').remote;
+const dialog      = remote.dialog;
+const fs          = require('fs');
+const session     = remote.session;
+const needle      = require('needle');
+const prompt      = require('dialogs')(opts={});
+const mkdirp      = require('mkdirp');
+const homedir     = require('os').homedir();
+const sanitize    = require("sanitize-filename");
+var Downloader    = require('mt-files-downloader');
+var shell         = require('electron').shell;
 
 $('.ui.dropdown').dropdown();
 
@@ -30,5 +30,3 @@ $('.start-button').click(function(){
   //loadSettings();
     console.dir('dadadadadadada');
 });
-
-

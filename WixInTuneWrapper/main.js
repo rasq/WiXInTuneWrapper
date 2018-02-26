@@ -554,16 +554,6 @@ function buildWSX (){
     RC = saveWSXFile (wxsComponentTemplateClose, 'WORKING/' + 'wrapper' + '.wsx', 'closeTag');
     RC = saveWSXFile ("", 'WORKING/' + 'wrapper' + '.wsx', 'features');
     RC = saveWSXFile (wxsFooterTemplate, 'WORKING/' + 'wrapper' + '.wsx', 'wxsFooter');
-
-      //pause(3000);
-
-          /*fsExtra.copy(wsxFile, path.join(wixToolsetPath, 'wrapper.wsx'), function (err) {
-            if (err) {
-              console.error(err);
-            }
-          });*/
-
-      //buildMSI ();
 }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -596,6 +586,7 @@ function createWindow () {
       }))
 
         removeFile (path.join(__dirname,  'WORKING/wrapper.wsx'));
+
         buildWSX ();
 
       mainWindow.on('closed', () => {
