@@ -1,3 +1,6 @@
+
+//const xlTpl = require('random-int');
+
 const electron  = require('electron')
 const fsExtra   = require('fs-extra')
 const klaw      = require('klaw')
@@ -7,12 +10,15 @@ const fs        = require('fs');
 const path      = require('path')
 const url       = require('url')
 const uuidV4    = require('uuid/v4');
+const child     = require('child_process');
+const runExec   = require('async-child-process');
+const randomInt = require('random-int');
 
 const app = electron.app
 const Menu = electron.Menu
 const BrowserWindow = electron.BrowserWindow
 
-
+var splitChar = "\\";
 
 const MenuTemplate = [
   {
@@ -39,6 +45,7 @@ const MenuTemplate = [
 
   if (process.platform === 'darwin') {
     MenuTemplate.unshift({});
+    splitChar = "/";
   }
 
   if (process.env.NODE_ENV !== 'production') {
@@ -60,6 +67,13 @@ const MenuTemplate = [
 let paths, item, mainWindow, stats, filterFn;
 var pathVar, WSXSection;
 
+
+var wixToolsetPath        = path.join(__dirname, 'App/Dependencies/wix311-binaries');
+var wixToolsetCandle      = path.join(wixToolsetPath, 'candle.exe')
+var wixToolsetLight       = path.join(wixToolsetPath, 'light.exe')
+var wsxFile               = '';
+var wixToolsetParameters  = [""];
+
 var varDbg = false;
 var tplDir = 'App/TPL/';
 var tmpPath = "", tmpSplittedPath = "", fileCounter = 0, dirCounter = 0, featureCounter = 0, i = 0, featureNumber = 0;
@@ -69,11 +83,16 @@ var VarUpgradeCode = uuidV4();
 var VarSoftwareVersion = '1.0.0.0';
 var VarCabinetID = "CabinetID"
 
+var VarUsedSysFolders = new Array();
 var VarFilesCounter = new Array();
     VarFilesCounter[featureNumber] = new Array();
 
 var VarScriptDir = process.cwd();
-var VarSplittedScriptDir = VarScriptDir.split("/");
+console.dir(VarScriptDir);
+var VarSplittedScriptDir = VarScriptDir.split(splitChar);
+
+var tabString = '\t';
+var installdirUsed = false;
 
 var VarSystemFolderNameArr = new Array ('AdminToolsFolder', 'AppDataFolder', 'CommonAppDataFolder', 'CommonFiles64Folder',
                               'CommonFilesFolder', 'DesktopFolder', 'FavoritesFolder', 'FontsFolder',
@@ -83,49 +102,49 @@ var VarSystemFolderNameArr = new Array ('AdminToolsFolder', 'AppDataFolder', 'Co
                               'System64Folder', 'SystemFolder', 'TempFolder', 'TemplateFolder', 'WindowsFolder',
                               'WindowsVolume');
 
+var wxsINSTALLDIR = '<Directory Id="INSTALLDIR">\r\n';
 
+var wxsMainDirectoryOpenTemplate = '<Directory Id="TARGETDIR" Name="SourceDir">\r\n';
 
-var wxsMainDirectoryOpenTemplate = '\t<Directory Id="TARGETDIR" Name="SourceDir">\r\n';
+var wxsSysDirectoryOpenTemplate = '<Directory Id="VarSystemFolderName">\r\n';
 
-var wxsSysDirectoryOpenTemplate = '\t<Directory Id="VarSystemFolderName">\r\n';
+var wxsDirectoryOpenTemplate = '<Directory Id="TARGETDIR" Name="VarDirectoryName">\r\n';
 
-var wxsDirectoryOpenTemplate = '\t<Directory Id="TARGETDIR" Name="VarDirectoryName">\r\n';
+var wxsDirectoryCloseTemplate = '</Directory>\r\n';
 
-var wxsDirectoryCloseTemplate = '\t</Directory>\r\n';
+var wxsHeaderTemplate = '<?xml version="1.0" encoding="UTF-8"?>\r\n' +
+tabString + '<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">\r\n' +
+tabString + '<Product Id="{' + VarProductCode + '}" Codepage="1252" Language="1033" Manufacturer="VarManufacturer" Name="VarSoftwareName" UpgradeCode="{' + VarUpgradeCode + '}" Version="' + VarSoftwareVersion + '">\r\n' +
+tabString + '<Package Comments="Contact:  Your local administrator" Description="VarSoftwareDesc" InstallerVersion="' + VarSchema + '" Keywords="Installer,MSI,Database" Languages="1033" Manufacturer="VarMSIVendor" Platform="x86" />\r\n' + wxsMainDirectoryOpenTemplate;
 
-var wxsHeaderTemplate = '<?xml version="1.0" encoding="UTF-8"?>' +
-'\r\n<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">' +
-'    \r\n\t<Product Id="{' + VarProductCode + '}" Codepage="1252" Language="1033" Manufacturer="VarManufacturer" Name="VarSoftwareName" UpgradeCode="{' + VarUpgradeCode + '}" Version="' + VarSoftwareVersion + '">' +
-'    \r\n\t<Package Comments="Contact:  Your local administrator" Description="VarSoftwareDesc" InstallerVersion="' + VarSchema + '" Keywords="Installer,MSI,Database" Languages="1033" Manufacturer="VarMSIVendor" Platform="x86" />\r\n' + wxsMainDirectoryOpenTemplate;
+var wxsComponentTemplateOpen = '<Component Id="VarComponentName" Guid="{VarGUIDString}" KeyPath="yes">\r\n';
 
-var wxsComponentTemplateOpen = '' +
-'\t\t\t\t<Component Id="VarComponentName" Guid="{VarGUIDString}" KeyPath="yes">';
+var wxsComponentTemplateClose = '</Component>\r\n';
 
-var wxsComponentTemplateClose = '\r\n\t\t\t\t</Component>\r\n';
+var wxsFileTemplate = '<File Id="VarFileID" Compressed="yes" DiskId="1" Source="VarFilePathName"/>\r\n';
 
-var wxsFileTemplate = '    \r\n\t\t\t\t\t<File Id="VarFileID" Compressed="yes" DiskId="1" Source="VarFilePathName"/>';
+var wxsFeatureTemplate = '<Feature Id="DefaultFeature" Level="1">\r\n' +
+'<ComponentRef Id="ApplicationFiles"/>\r\n' +
+'</Feature>\r\n';
 
-var wxsFeatureTemplate = '' +
-'\r\n<Feature Id="DefaultFeature" Level="1">' +
-'    \r\n\t<ComponentRef Id="ApplicationFiles"/>' +
-'\r\n</Feature>\r\n';
+var wxsBinaryTemplate = '<Binary Id="VarBinaryID" SourceFile="VarBinaryPath" />\r\n';
 
-var wxsBinaryTemplate = '   \r\n\t<<Binary Id="VarBinaryID" SourceFile="VarBinaryPath" />';
+var wxsLaunchConditionTemplate = '<Condition Message="This package is not intended for server installations.">MsiNTProductType=1</Condition>\r\n';
 
-var wxsLaunchConditionTemplate = '<Condition Message="This package is not intended for server installations.">MsiNTProductType=1</Condition>';
+var wxsMediaTemplate = '<Media Id="' + VarCabinetID + '" Cabinet="CABName.cab" EmbedCab="yes" VolumeLabel="DISK1" />\r\n';
 
-var wxsMediaTemplate = '    \r\n\t<Media Id="' + VarCabinetID + '" Cabinet="CABName.cab" EmbedCab="yes" VolumeLabel="DISK1" />\r\n';
+var wxsIonTemplate = '<Icon Id="VarIcoID" SourceFile="VarIcoPath" />\r\n';
 
-var wxsIonTemplate = '    \r\n\t<Icon Id="VarIcoID" SourceFile="VarIcoPath" />';
+var wxsFeatureOpenTemplate = wxsDirectoryCloseTemplate + '<Feature Id="VarFeatureID" ConfigurableDirectory="INSTALLDIR" Level="1" Title="VarFeatureTitle">\r\n';
 
-var wxsFeatureOpenTemplate = '    \r\n\r\n\t\t\t<Feature Id="VarFeatureID" ConfigurableDirectory="INSTALLDIR" Level="1" Title="VarFeatureTitle">';
+var wxsComponentFeatureTemplate = '<ComponentRef Id="VarComponentRefID" />\r\n';
 
-var wxsComponentFeatureTemplate = '    \r\n\t\t\t\t<ComponentRef Id="VarComponentRefID" />';
+var wxsFeatureCloseTemplate = '</Feature>\r\n';
 
-var wxsFeatureCloseTemplate = '    \r\n\t\t\t</Feature>\r\n';
-
-var wxsFooterTemplate = '' +
-'    \r\n\t</Product>' +
+var wxsFooterTemplate = tabString + '<Media Id="1" Cabinet="Data1.cab" DiskPrompt="1" EmbedCab="yes" VolumeLabel="DISK1" />\r\n' +
+        '<Property Id="DiskPrompt" Value="[1]" />\r\n' +
+        '<Property Id="INSTALLDIR" Secure="yes" />\r\n' +
+'</Product>\r\n' +
 '</Wix>';
 
 
@@ -142,19 +161,21 @@ function harwestDirsFiles(varPathToScan, wxsName, dataType) {
 
         try {
             if (dataType == 'dirs') {
-                paths = klawSync(varPathToScan, {nofile: true})
+                paths = klawSync(varPathToScan, {nofile: true});
+                console.dir('path ' + paths[i].path);
             } else {
                 filterFn = item => item.path.indexOf('.DS_Store') < 0
-                paths = klawSync(varPathToScan, {nodir: true, filter: filterFn})
+                paths = klawSync(varPathToScan, {nodir: true, filter: filterFn});
             }
         } catch (er) {
-            console.error(er)
+            console.error(er);
         }
 
         for (i = 0; i < paths.length; i++) {
-            if (varDbg) {console.dir(paths[i].path)};
             saveWSXFile (paths[i].path, 'WORKING/' + wxsName + '.wsx', dataType);
         }
+
+    return;
 }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -162,14 +183,20 @@ function harwestDirsFiles(varPathToScan, wxsName, dataType) {
 
 //----------------------------------------------------------------------------------------------------------------------
 function saveWSXFile (contentTxt, fileName, dataType){
+    if (wsxFile == '') {
+      wsxFile = path.join(__dirname, fileName);
+    }
+
     if (varDbg) {console.dir("function started with fileName = " + fileName + " dataType = " + dataType + " contentTxt = " + contentTxt)};
 
     if (dataType == 'dirs') {
-
+      WSXSection = generateWSXDirectorySection (contentTxt);
     } else if (dataType == 'files') {
         WSXSection = generateWSXFileSection (contentTxt);
     } else if (dataType == 'features') {
         WSXSection = generateWSXFeatureSection ();
+    } else if (dataType == 'closeTag') {
+        WSXSection = tmpFileTab + tabString + contentTxt;
     } else {
         if (varDbg) {console.dir("function started with fileName = " + fileName + " dataType = " + dataType + " contentTxt = " + contentTxt)};
         WSXSection = contentTxt;
@@ -211,12 +238,33 @@ function loadXMLTemplateFile (xmlFileToRead){
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
+function generateWSXDirectorySection (contentTxt){
+   var VarSplittedString = contentTxt.split(splitChar);
+
+        //console.dir(contentTxt);
+
+    var tmpString = wxsDirectoryOpenTemplate.replace("VarFilePathName", contentTxt);
+        tmpString = tmpString.replace("VarGUIDString", uuidV4());
+        tmpString = tmpString.replace("VarFileID", VarSplittedString[VarSplittedString.length -1].replace(".","") + "_" + dirCounter);
+
+        tmpString = tmpString + wxsDirectoryCloseTemplate;
+
+        dirCounter++;
+
+    return tmpString;
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+var tmpFileTab = "";
+//----------------------------------------------------------------------------------------------------------------------
 function generateWSXFileSection (contentTxt){
-    var VarSplittedString = contentTxt.split("/");
+    var VarSplittedString = contentTxt.split(splitChar);
     var tmpSplittedString = "";
     var isSysFolder = false;
+    var skipDir = false;
     var x = 0;
     var y = 0;
+    var z = 0;
     var tmpCommponentName = ""
     var tmpFnPath = "";
     var tmpString = "";
@@ -236,37 +284,63 @@ function generateWSXFileSection (contentTxt){
 
         if (tmpPath != tmpFnPath) {
             if (tmpPath != "") {
-                tmpString = wxsComponentTemplateClose;
+                tmpString = tmpFileTab + tabString + wxsComponentTemplateClose;
 
-                for (x = VarSplittedScriptDir.length + 1; x < tmpSplittedPath.length - 1; x++) {
-                    tmpString = tmpString + wxsDirectoryCloseTemplate;
+                for (x = VarSplittedScriptDir.length + 2; x < tmpSplittedPath.length - 1; x++) {
+                    tmpTab = tmpTab + tabString;
                 }
+                tmpFileTab = tmpTab;
+
+                for (x = VarSplittedScriptDir.length + 2; x < tmpSplittedPath.length - 1; x++) {
+                    tmpString = tmpString + tmpTab + wxsDirectoryCloseTemplate;
+                    tmpTab = tmpTab.replace(tabString, '');
+                }
+                tmpTab = '';
             }
 
             for (x = VarSplittedScriptDir.length + 1; x < VarSplittedString.length - 1; x++) {
+                tmpTab = tmpTab + tabString;
+
                 for (y = 0; y < VarSystemFolderNameArr.length; y++){
                     if (VarSystemFolderNameArr[y] == VarSplittedString[x]) {
                         isSysFolder = true;
+                        VarUsedSysFolders.push(VarSplittedString[x]);
                     }
                 }
 
                 if (isSysFolder == false) {
-                    tmpString = tmpString + wxsDirectoryOpenTemplate;
+                    tmpString = tmpString + tmpTab + wxsDirectoryOpenTemplate;
                     tmpString = tmpString.replace('VarDirectoryName', VarSplittedString[x]);
-                    tmpString = tmpString.replace("TARGETDIR", normalizeStringName (VarSplittedString[x]));
+                    tmpString = tmpString.replace("TARGETDIR", normalizeStringName (VarSplittedString[x]) + '_' + randomInt(999));
                 } else {
-                    tmpString = tmpString + wxsSysDirectoryOpenTemplate;
-                    tmpString = tmpString.replace('VarSystemFolderName', VarSplittedString[x]);
+                    for (z = 0; z < VarUsedSysFolders.length - 1; z++) {
+                      if (VarUsedSysFolders[z] == VarSplittedString[x]) {
+                        skipDir = true;
+                      }
+                    }
+
+                    if (skipDir == false) {
+                      tmpString = tmpString + tmpTab + wxsSysDirectoryOpenTemplate;
+                      tmpString = tmpString.replace('VarSystemFolderName', VarSplittedString[x]);
+                      if (installdirUsed == false){
+                        tmpString = tmpString + wxsINSTALLDIR;
+                        installdirUsed = true;
+                      }
+                    } else {
+                      console.dir("Skipping dir, used before " + VarSplittedString[x]);
+                    }
                 }
 
                 isSysFolder = false;
                 y = 0;
             }
 
-                tmpString = tmpString + wxsComponentTemplateOpen;
+                tmpString = tmpString + tmpTab + tabString + wxsComponentTemplateOpen;
                 tmpString = tmpString.replace("VarGUIDString", uuidV4());
 
                 tmpCommponentName = normalizeStringName (VarSplittedString[VarSplittedString.length -1].replace(/-/g,"_"));
+                tmpCommponentName = tmpCommponentName + '_' + featureNumber + '_' + VarFilesCounter[featureNumber].length;
+
 
                 tmpString = tmpString.replace("VarComponentName", tmpCommponentName);
 
@@ -280,7 +354,7 @@ function generateWSXFileSection (contentTxt){
             }
         }
 
-        tmpString = tmpString + wxsFileTemplate;
+        tmpString = tmpString + tmpFileTab + tabString + tabString + wxsFileTemplate;
         tmpString = tmpString.replace("VarFilePathName", contentTxt);
         tmpString = tmpString.replace("VarGUIDString", uuidV4());
         tmpString = tmpString.replace("VarFileID", normalizeStringName (VarSplittedString[VarSplittedString.length -1]) + "_" + fileCounter);
@@ -309,7 +383,7 @@ function generateWSXFeatureSection (){
                 tmpFeatureSection = tmpFeatureSection + wxsFeatureOpenTemplate.replace('VarFeatureID', "Feature_" + x + 1);
                 tmpFeatureSection = tmpFeatureSection.replace('VarFeatureTitle', 'Complete_' + x+1);
                     for (y = 0; y < VarFilesCounter[x].length; y++) {
-                        tmpFeatureSection = tmpFeatureSection + wxsComponentFeatureTemplate.replace('VarComponentRefID', VarFilesCounter[x][y] + '_' + x + '_' + y);
+                        tmpFeatureSection = tmpFeatureSection + wxsComponentFeatureTemplate.replace('VarComponentRefID', VarFilesCounter[x][y] /*+ '_' + x + '_' + y*/);
                     }
                 tmpFeatureSection = tmpFeatureSection + wxsFeatureCloseTemplate;
             }
@@ -346,9 +420,157 @@ function normalizeStringName (varStringCName){
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
+function removeFile (filePath){
+    if (fs.existsSync(filePath)) {
+        fs.unlink(filePath, (err) => {
+            if (err) {
+                console.log("An error ocurred updating the file" + err.message);
+                console.log(err);
+                return;
+            }
+            console.log("File succesfully deleted");
+        });
+    } else {
+        console.log("This file doesn't exist, cannot delete");
+    }
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
 function buildMSI (){
-    //candle.exe wrapper.wsx
-    //light.exe wrapper.wixobj
+  var originalWixobj = path.join(__dirname, 'wrapper.wixobj');
+  var newWixobj = path.join(__dirname, 'WORKING/wrapper.wixobj');
+  var resolve = '';
+    wixToolsetParameters = [wsxFile];
+
+    resolve = wixToolsetCandle + ' ' + '"' + wsxFile + '"';
+    /*var wixToolsetPath        = path.join(__dirname, 'App/Dependencies/wix311-binaries');
+    var wixToolsetCandle      = path.join(wixToolsetPath, 'candle.exe')
+    var wixToolsetLight       = path.join(wixToolsetPath, 'light.exe')*/
+
+
+    const cmd = wixToolsetCandle;
+
+    var result = child.spawnSync(cmd,
+                       [path.join(wixToolsetPath, 'wrapper.wsx')]);
+
+    if (result.status !== 0) {
+      process.stderr.write(result.stderr);
+      process.exit(result.status);
+    } else {
+      process.stdout.write(result.stdout);
+      process.stderr.write(result.stderr);
+
+        fsExtra.move(originalWixobj, newWixobj, { overwrite: true }, err => {
+          if (err) {
+            console.error(err);
+          } else {
+            var resultB = child.spawnSync(wixToolsetLight,
+                               [newWixobj]);
+                               if (result.status !== 0) {
+                                 process.stderr.write(result.stderr);
+                                 process.exit(result.status);
+                               } else {
+                                 process.stdout.write(result.stdout);
+                                 process.stderr.write(result.stderr);
+                               }
+          }
+        });
+    }
+
+
+
+
+
+
+    //var result = child.execSync('candle.exe', wixToolsetPath).toString();
+      //console.log(result);
+
+    //
+
+    //var testCode = child.spawnSync(cmd, ['-?']);
+
+
+    /*var testCode = child.execSync(cmd,
+      {
+        cwd: __dirname,
+        input: wsxFile
+      }
+    );*/
+
+    //console.log(testCode.toString());
+
+
+              /*fsExtra.move(originalWixobj, newWixobj, { overwrite: true }, err => {
+                if (err) {
+                  console.error(err);
+                  console.log(data.toString());
+                } else {
+                  console.log(data.toString());
+                }
+              })*/
+
+    //resolve = wixToolsetLight + " " + newWixobj;
+
+    //child.execSync(resolve);
+
+    /*child(wixToolsetCandle, wixToolsetParameters, function(err, data) {
+        if(err) {
+          console.log(err);
+          console.log(data.toString());
+        } else {
+          console.log(originalWixobj + ' created.');
+              fsExtra.move(originalWixobj, newWixobj, { overwrite: true }, err => {
+                if (err) {
+                  console.error(err)
+                } else {
+                  console.log('success!')
+                }
+              })
+        }
+    });
+
+    wixToolsetParameters = [newWixobj];
+
+
+runExec
+    child(wixToolsetLight, wixToolsetParameters, function(err, data) {
+      if(err) {
+        console.log(err);
+        console.log(data.toString());
+      } else {
+        console.log(data.toString());
+      }
+    });*/
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function buildWSX (){
+    var RC;
+
+    RC = saveWSXFile (wxsHeaderTemplate, 'WORKING/' + 'wrapper' + '.wsx', 'wxsHeader');
+    RC = harwestDirsFiles('\IN', 'wrapper', 'files');
+    RC = saveWSXFile (wxsComponentTemplateClose, 'WORKING/' + 'wrapper' + '.wsx', 'closeTag');
+    RC = saveWSXFile ("", 'WORKING/' + 'wrapper' + '.wsx', 'features');
+    RC = saveWSXFile (wxsFooterTemplate, 'WORKING/' + 'wrapper' + '.wsx', 'wxsFooter');
+
+      //pause(3000);
+
+          /*fsExtra.copy(wsxFile, path.join(wixToolsetPath, 'wrapper.wsx'), function (err) {
+            if (err) {
+              console.error(err);
+            }
+          });*/
+
+      //buildMSI ();
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function pause(milliseconds) {
+	var dt = new Date();
+	while ((new Date()) - dt <= milliseconds) { /* Do nothing */ }
 }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -363,12 +585,8 @@ function buildMSI (){
 
 
 
-
-
 //----------------------------------------------------------------------------------------------------------------------
 function createWindow () {
-    var RC;
-
       mainWindow = new BrowserWindow({width: 920, height: 680, icon: __dirname+'/App/images/build/icon.png', 'node-integration':true, resizable: false});
 
       mainWindow.loadURL(url.format({
@@ -377,15 +595,8 @@ function createWindow () {
           slashes: true
       }))
 
-            RC = saveWSXFile (wxsHeaderTemplate, 'WORKING/' + 'wrapper' + '.wsx', 'wxsHeader');
-              harwestDirsFiles('\IN', 'wrapper', 'files');
-            RC = saveWSXFile (wxsComponentTemplateClose, 'WORKING/' + 'wrapper' + '.wsx', 'closeTag');
-            RC = saveWSXFile ("", 'WORKING/' + 'wrapper' + '.wsx', 'features');
-            RC = saveWSXFile (wxsFooterTemplate, 'WORKING/' + 'wrapper' + '.wsx', 'wxsFooter');
-
-
-      //if (varDbg) { mainWindow.webContents.openDevTools() }
-      //mainWindow.webContents.openDevTools()
+        removeFile (path.join(__dirname,  'WORKING/wrapper.wsx'));
+        buildWSX ();
 
       mainWindow.on('closed', () => {
           mainWindow = null;
