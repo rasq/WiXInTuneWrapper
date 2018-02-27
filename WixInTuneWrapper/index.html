@@ -12,8 +12,8 @@
 
 </head>
 <body>
-    
-    
+
+
 <div class="ui basic update-available modal">
   <div class="ui icon header">
     <i class="gift icon"></i>
@@ -33,8 +33,8 @@
     </div>
   </div>
 </div>
-    
-    
+
+
 
 
 <script>
@@ -45,7 +45,7 @@
 <script type="text/javascript">
     const settings = require('electron-settings');
     const appVersion = require(__dirname+'/package.json').version;
-    
+
     function translate(text){
         if(!settings.get('general.language') || settings.get('general.language')=="English"){
             return text;
@@ -61,6 +61,7 @@
     }
 
     var template = `
+        <div class="starter">
             <div class="ui center aligned loading grid">
                 <div class="ui dimmer">
                     <div class="ui big text loader">${translate("Loading application")}</div>
@@ -90,46 +91,146 @@
                                 </br>
                             </div>
                             <a class="start-button item">
-                                <i class="ui fluid green button">${translate("Start")}</i> 
+                                <i class="ui fluid green button">${translate("Start")}</i>
                             </a>
                     </div>
                 </div>
             </div>
+        </div>
 
 
 
+            <div class="ui dashboard">
 
-            <div class="ui dashboard">       
-                <div class="ui Opcja01 dimmer">
-                  <div class="ui big text loader">${translate("Loading Option01")}</div>
-                </div>
-                 <div class="ui Opcja02 dimmer">
-                  <div class="ui big text loader">${translate("Loading Option02")}</div>
-                </div>
-                <div class="ui Opcja03 dimmer">
-                  <div class="ui big text loader">${translate("Loading Option03")}</div>
-                </div> 
-
+            <div class="content">
                 <div class="ui left vertical inverted sidebar labeled icon menu visible">
                     <a class="Opcja01-sidebar item">
-                      <i class="file video icon"></i>
-                      ${translate("Opcja01")}
+                      <i class="edit icon"></i>
+                      ${translate("Config")}
                     </a>
                     <a class="Opcja02-sidebar item">
-                      <i class="wrench icon"></i>
-                      ${translate("Opcja02")}
+                      <i class="archive icon"></i>
+                      ${translate("Build")}
                     </a>
                     <a class="Opcja03-sidebar item">
+                      <i class="wrench icon"></i>
+                      ${translate("Options")}
+                    </a>
+                    <a class="Opcja04-sidebar item">
                       <i class="info icon"></i>
-                      ${translate("Opcja03")}
+                      ${translate("About")}
                     </a>
                 </div>
-                <div class="content">
-                    <div class="ui Opcja01"> 
+
+
+                    <div class="ui Opcja01">
+                      <div class="ui center aligned grid">
+                          <div class="ten wide column">
+                            <form class="ui form">
+                                </br>
+                                </br>
+                                  <div class="ui fluid icon input">
+                                    <input type="text" name="Manufacturer" placeholder="${translate("Manufacturer")}">
+                                    <i class="users icon"></i>
+                                  </div>
+                                  <p></p>
+                                  <div class="ui fluid icon input">
+                                    <input type="text" name="AppName" placeholder="${translate("App Name")}">
+                                    <i class="users icon"></i>
+                                  </div>
+                                  <p></p>
+                                  <div class="ui fluid icon input">
+                                    <input type="text" name="AppVersion" placeholder="${translate("App Version")}">
+                                    <i class="users icon"></i>
+                                  </div>
+                                  <p></p>
+                                  <div class="ui fluid icon input">
+                                    <input type="text" name="PKGName" placeholder="${translate("Package Name")}">
+                                    <i class="users icon"></i>
+                                  </div>
+                                  <p></p>
+                                  <div class="ui fluid action input">
+                                    <input type="text" name="ProductCode" placeholder="${translate("MSI Product Code")}">
+                                    <i class="ui green button">Generate</i>
+                                  </div>
+                                  <p></p>
+                                  <div class="ui fluid action input">
+                                    <input type="text" name="UpgradeCode" placeholder="${translate("MSI Upgrade Code")}">
+                                    <i class="ui green button">Generate</i>
+                                  </div>
+                                </br>
+                                </br>
+                                <i class="ui fluid green button">${translate("Generate")}</i>
+                            </form>
+                          </div>
+                      </div>
                     </div>
-                    <div class="ui Opcja02"> 
+
+                    <div class="ui Opcja02">
+                      <p>Opcja02</p>
                     </div>
-                    <div class="ui Opcja03"> 
+
+                    <div class="ui Opcja03">
+                      <p>Opcja03</p>
+                    </div>
+
+                    <div class="ui Opcja04">
+                        <div class="ui segment">
+                           <h4 class="ui center aligned icon header">
+                             <i class="grey file code outline icon"></i>
+                             Wix MS InTune MSI Wrapper v${appVersion}
+                           </h4>
+                           <button class="ui tiny fluid basic check-updates button">Check for updates</button>
+                           <h3 class="ui header">Links</h3>
+                           <div class="ui relaxed divided list">
+                             <div class="item">
+                               <i class="large github middle aligned icon"></i>
+                               <div class="content">
+                                 <a class="header" href="https://github.com/rasq/WiXInTuneWrapper/">WiXInTuneWrapper</a>
+                                 <div class="description">Repository</div>
+                               </div>
+                             </div>
+                             <div class="item">
+                               <i class="large github middle aligned icon"></i>
+                               <div class="content">
+                                 <a class="header" href="https://github.com/rasq/">Grzegorz Gorol (Rasq)</a>
+                                 <div class="description">Developer</div>
+                               </div>
+                             </div>
+                             <div class="item">
+                               <i class="large world middle aligned icon"></i>
+                               <div class="content">
+                                 <a class="header" href="https://www.linkedin.com/in/grzegorz-gorol-42992120/">Grzegorz Gorol on LinkedIn</a>
+                                 <div class="description">Website</div>
+                               </div>
+                             </div>
+                           </div>
+                           <h3 class="ui header">Development</h3>
+                             <div class="ui relaxed divided list">
+                               <div class="item">
+                                 <i class="large github middle aligned icon"></i>
+                                 <div class="content">
+                                   <a class="header" href="https://github.com/rasq/WiXInTuneWrapper/issues">WiXInTuneWrapper/issues</a>
+                                   <div class="description">Report Bug</div>
+                                 </div>
+                               </div>
+                               <div class="item">
+                                 <i class="large github middle aligned icon"></i>
+                                 <div class="content">
+                                   <a class="header" href="https://github.com/rasq/WiXInTuneWrapper/pulls">WiXInTuneWrapper/pulls</a>
+                                   <div class="description">Contribute</div>
+                                 </div>
+                               </div>
+                             </div>
+                           <h3 class="ui header">Donate</h3>
+                             <p>
+                             Udeler is free and without any ads. If you appreciate that, please consider donating to the Developer.
+                             </p>
+                             <br>
+                             <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=g.gorol@gmail.com&lc=US&item_name=Donation+for+WixInTuneWrapper+Development&no_note=0&cn=&curency_code=USD&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted" class="ui centered donate grid">
+                               <img src="App/images/donate.png" alt="Donate"/>
+                             </a>
+                         </div>
                     </div>
                 </div>
             </div>
@@ -144,7 +245,7 @@
             });
         });
 </script>
-    
+
 <script src="App/JS/wrapper.js"></script>
 <script>
   /*!function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="4.0.0";

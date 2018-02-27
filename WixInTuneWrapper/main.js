@@ -577,7 +577,7 @@ function pause(milliseconds) {
 
 //----------------------------------------------------------------------------------------------------------------------
 function createWindow () {
-      mainWindow = new BrowserWindow({width: 920, height: 680, icon: __dirname+'/App/images/build/icon.png', 'node-integration':true, resizable: false});
+      mainWindow = new BrowserWindow({width: 1024, height: 680, icon: __dirname+'/App/images/build/icon.png', 'node-integration':true, resizable: false});
 
       mainWindow.loadURL(url.format({
           pathname: path.join(__dirname, 'index.html'),
@@ -585,9 +585,9 @@ function createWindow () {
           slashes: true
       }))
 
-        removeFile (path.join(__dirname,  'WORKING/wrapper.wsx'));
+        //removeFile (path.join(__dirname,  'WORKING/wrapper.wsx'));
 
-        buildWSX ();
+        //buildWSX ();
 
       mainWindow.on('closed', () => {
           mainWindow = null;
