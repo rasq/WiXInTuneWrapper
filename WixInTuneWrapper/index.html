@@ -100,8 +100,7 @@
 
 
 
-            <div class="ui dashboard">
-
+          <div class="ui dashboard">
             <div class="content">
                 <div class="ui left vertical inverted sidebar labeled icon menu visible">
                     <a class="Opcja01-sidebar item">
@@ -120,33 +119,40 @@
                       <i class="info icon"></i>
                       ${translate("About")}
                     </a>
+                    <a class="Opcja05-sidebar item">
+                      <i class="question circle icon"></i>
+                      ${translate("Help")}
+                    </a>
                 </div>
 
 
                     <div class="ui Opcja01">
-                      <div class="ui center aligned grid">
+                    <div  style="left: 880px;" class="ui vertical divider">
+                      MSI
+                    </div>
+                      <div class="ui left aligned grid">
                           <div class="ten wide column">
                             <form class="ui form">
                                 </br>
                                 </br>
                                   <div class="ui fluid icon input">
                                     <input type="text" name="Manufacturer" placeholder="${translate("Manufacturer")}">
-                                    <i class="users icon"></i>
+                                    <i class="edit icon"></i>
                                   </div>
                                   <p></p>
                                   <div class="ui fluid icon input">
                                     <input type="text" name="AppName" placeholder="${translate("App Name")}">
-                                    <i class="users icon"></i>
+                                    <i class="edit icon"></i>
                                   </div>
                                   <p></p>
                                   <div class="ui fluid icon input">
                                     <input type="text" name="AppVersion" placeholder="${translate("App Version")}">
-                                    <i class="users icon"></i>
+                                    <i class="edit icon"></i>
                                   </div>
                                   <p></p>
                                   <div class="ui fluid icon input">
                                     <input type="text" name="PKGName" placeholder="${translate("Package Name")}">
-                                    <i class="users icon"></i>
+                                    <i class="edit icon"></i>
                                   </div>
                                   <p></p>
                                   <div class="ui fluid action input">
@@ -158,6 +164,46 @@
                                     <input type="text" name="UpgradeCode" placeholder="${translate("MSI Upgrade Code")}">
                                     <i class="ui green button">Generate</i>
                                   </div>
+                                  <div>
+                                      <p></p>
+                                      <div class="ui checkbox left A">
+                                        <input id="CB_CA" type="checkbox">
+                                        <label for="CB_CA">Custom Action</label>
+                                      </div>
+                                      <p></p>
+                                      <div class="ui checkbox left B">
+                                        <input id="CB_LC" type="checkbox">
+                                        <label for="CB_LC">Launch Condition</label>
+                                      </div>
+                                      <p></p>
+                                      <div class="ui checkbox left C">
+                                        <input id="CB_Shortcuts" type="checkbox">
+                                        <label for="CB_Shortcuts">Shortcuts</label>
+                                      </div>
+                                      <p></p>
+                                      <div class="ui checkbox left D">
+                                        <input id="CB_Reg" type="checkbox">
+                                        <label for="CB_Reg">Registry</label>
+                                      </div>
+                                  </div>
+
+                                <div class="CB_CA">
+                                  <p></p>
+                                  <p>custom action</p>
+                                </div>
+                                <div class="CB_LC">
+                                  <p></p>
+                                  <p>launch condition</p>
+                                </div>
+                                <div class="CB_Shortcuts">
+                                  <p></p>
+                                  <p>shortcuts</p>
+                                </div>
+                                <div class="CB_Reg">
+                                  <p></p>
+                                  <p>registry</p>
+                                </div>
+
                                 </br>
                                 </br>
                                 <i class="ui fluid green button">${translate("Generate")}</i>
@@ -166,13 +212,80 @@
                       </div>
                     </div>
 
+
                     <div class="ui Opcja02">
-                      <p>Opcja02</p>
+                      <div class="ui segment">
+                        <div class="ui left aligned grid">
+                            <div class="ten wide column">
+                                </br>
+                                </br>
+                                <div class="content">
+                                  <div class="ui medium labels">
+                                    <div class="ui label">
+                                      WXS File Location.
+                                    </div>
+                                    <button class="ui labeled icon button">
+                                      <i class="edit outline icon"></i>
+                                      Open/Edit
+                                    </button>
+                                  </div>
+                                  <p></p>
+                                    <i class="ui fluid green button">${translate("Generate wixobj file")}</i>
+                                  </br>
+                                </div>
+                                </br>
+                                <div class="content">
+                                  <div class="ui medium labels">
+                                    <div class="ui label">
+                                      WIXobj File Location.
+                                    </div>
+                                    <button class="ui labeled icon button">
+                                      <i class="edit outline icon"></i>
+                                      Open/Edit
+                                    </button>
+                                  </div>
+                                  <p></p>
+                                    <i class="ui fluid green button">${translate("Generate MSI file")}</i>
+                                  </br>
+                                </div>
+                                </br>
+                                <div class="content">
+                                  <div class="ui medium labels">
+                                    <div class="ui label">
+                                      MSI File Location.
+                                    </div>
+                                    <button class="ui labeled icon button">
+                                      <i class="edit outline icon"></i>
+                                      Open/Edit
+                                    </button>
+                                  </div>
+                                  <p></p>
+                                    <i class="ui fluid green button">${translate("Generate/archive project directory")}</i>
+                                  </br>
+                                </div>
+                                </br>
+                                <div class="content">
+                                  <div class="ui medium labels">
+                                    <div class="ui label">
+                                      Project Location.
+                                    </div>
+                                    <button class="ui labeled icon button">
+                                      <i class="edit outline icon"></i>
+                                      Open directory
+                                    </button>
+                                  </div>
+                                  <p></p>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
                     </div>
+
 
                     <div class="ui Opcja03">
                       <p>Opcja03</p>
                     </div>
+
 
                     <div class="ui Opcja04">
                         <div class="ui segment">
@@ -224,7 +337,7 @@
                              </div>
                            <h3 class="ui header">Donate</h3>
                              <p>
-                             Udeler is free and without any ads. If you appreciate that, please consider donating to the Developer.
+                              WixInTuneWrapper is free and without any ads. If you appreciate that, please consider donating to the Developer.
                              </p>
                              <br>
                              <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=g.gorol@gmail.com&lc=US&item_name=Donation+for+WixInTuneWrapper+Development&no_note=0&cn=&curency_code=USD&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted" class="ui centered donate grid">

@@ -1,13 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">    
+<?xml version="1.0" encoding="UTF-8"?>   
 	<Product Id="{97ca1bda-17ed-4407-a9bb-3a30294b43a4}" Codepage="1252" Language="1033" Manufacturer="VarManufacturer" Name="VarSoftwareName" UpgradeCode="{024c6f23-8ebb-492f-8348-badfa78f3811}" Version="1.0.0.0">    
 	<Package Comments="Contact:  Your local administrator" Description="VarSoftwareDesc" InstallerVersion="450" Keywords="Installer,MSI,Database" Languages="1033" Manufacturer="VarMSIVendor" Platform="x86" />
 	<Directory Id="TARGETDIR" Name="SourceDir">
 	<Directory Id="CommonAppDataFolder">
-	<Directory Id="PkgName_447" Name="PkgName">
-	<Directory Id="Sources_182" Name="Sources">
-	<Directory Id="Atypes_17" Name="@types">
-	<Directory Id="node_896" Name="node">
+	<Directory Id="PkgName" Name="PkgName">
+	<Directory Id="Sources" Name="Sources">
+	<Directory Id="Atypes" Name="@types">
+	<Directory Id="node" Name="node">
 				<Component Id="index.d.ts" Guid="{69c9bebf-9062-419e-b243-53cd3063e5d3}" KeyPath="yes">    
 					<File Id="index.d.ts_0" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\@types\node\index.d.ts"/>    
 					<File Id="package.json_2" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\@types\node\package.json"/>    
@@ -20,9 +19,9 @@
 	</Directory>
 	</Directory>
 	<Directory Id="CommonAppDataFolder">
-	<Directory Id="PkgName_26" Name="PkgName">
-	<Directory Id="Sources_406" Name="Sources">
-	<Directory Id="ajv_985" Name="ajv">
+	<Directory Id="PkgName" Name="PkgName">
+	<Directory Id="Sources" Name="Sources">
+	<Directory Id="ajv" Name="ajv">
 				<Component Id="Utonic_example.js" Guid="{18445ebb-9055-4ef6-89a2-363740830961}" KeyPath="yes">    
 					<File Id="Utonic_example.js_4" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\.tonic_example.js"/>    
 					<File Id="ajv.min.js.map_7" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\dist\ajv.min.js.map"/>
@@ -32,10 +31,10 @@
 	</Directory>
 	</Directory>
 	<Directory Id="CommonAppDataFolder">
-	<Directory Id="PkgName_173" Name="PkgName">
-	<Directory Id="Sources_720" Name="Sources">
-	<Directory Id="ajv_407" Name="ajv">
-	<Directory Id="dist_53" Name="dist">
+	<Directory Id="PkgName" Name="PkgName">
+	<Directory Id="Sources" Name="Sources">
+	<Directory Id="ajv" Name="ajv">
+	<Directory Id="dist" Name="dist">
 				<Component Id="ajv.bundle.js" Guid="{f3d99131-f6cd-4067-9ed4-56b7b6c58a5b}" KeyPath="yes">    
 					<File Id="ajv.bundle.js_5" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\dist\ajv.bundle.js"/>    
 					<File Id="regenerator.min.js_9" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\dist\regenerator.min.js"/>    
@@ -47,10 +46,10 @@
 	</Directory>
 	</Directory>
 	<Directory Id="CommonAppDataFolder">
-	<Directory Id="PkgName_882" Name="PkgName">
-	<Directory Id="Sources_677" Name="Sources">
-	<Directory Id="ajv_19" Name="ajv">
-	<Directory Id="lib_100" Name="lib">
+	<Directory Id="PkgName" Name="PkgName">
+	<Directory Id="Sources" Name="Sources">
+	<Directory Id="ajv" Name="ajv">
+	<Directory Id="lib" Name="lib">
 				<Component Id="Ddata.js" Guid="{bbc89018-1440-43fb-a421-563277ae7d58}" KeyPath="yes">    
 					<File Id="Ddata.js_10" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\$data.js"/>    
 					<File Id="ajv.min.js_6" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\dist\ajv.min.js"/>    
@@ -62,10 +61,10 @@
 	</Directory>
 	</Directory>
 	<Directory Id="CommonAppDataFolder">
-	<Directory Id="PkgName_355" Name="PkgName">
-	<Directory Id="Sources_546" Name="Sources">
-	<Directory Id="ajv_291" Name="ajv">
-	<Directory Id="lib_577" Name="lib">
+	<Directory Id="PkgName" Name="PkgName">
+	<Directory Id="Sources" Name="Sources">
+	<Directory Id="ajv" Name="ajv">
+	<Directory Id="lib" Name="lib">
 	<Directory Id="compile_443" Name="compile">
 				<Component Id="async.js" Guid="{3f0d9312-1484-4f4b-9819-b8554704c77a}" KeyPath="yes">    
 					<File Id="async.js_14" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\compile\async.js"/>    
@@ -87,11 +86,11 @@
 	</Directory>
 	</Directory>
 	<Directory Id="CommonAppDataFolder">
-	<Directory Id="PkgName_123" Name="PkgName">
-	<Directory Id="Sources_13" Name="Sources">
-	<Directory Id="ajv_628" Name="ajv">
-	<Directory Id="lib_316" Name="lib">
-	<Directory Id="dot_42" Name="dot">
+	<Directory Id="PkgName" Name="PkgName">
+	<Directory Id="Sources" Name="Sources">
+	<Directory Id="ajv" Name="ajv">
+	<Directory Id="lib" Name="lib">
+	<Directory Id="dot" Name="dot">
 				<Component Id="allOf.jst" Guid="{c2b985ba-7da5-4f20-969a-d8cb39931d04}" KeyPath="yes">    
 					<File Id="allOf.jst_25" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\allOf.jst"/>    
 					<File Id="anyOf.jst_26" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\anyOf.jst"/>    
@@ -131,11 +130,11 @@
 	</Directory>
 	</Directory>
 	<Directory Id="CommonAppDataFolder">
-	<Directory Id="PkgName_165" Name="PkgName">
-	<Directory Id="Sources_382" Name="Sources">
-	<Directory Id="ajv_167" Name="ajv">
-	<Directory Id="lib_3" Name="lib">
-	<Directory Id="dotjs_434" Name="dotjs">
+	<Directory Id="PkgName" Name="PkgName">
+	<Directory Id="Sources" Name="Sources">
+	<Directory Id="ajv" Name="ajv">
+	<Directory Id="lib" Name="lib">
+	<Directory Id="dotjs" Name="dotjs">
 				<Component Id="allOf.js" Guid="{a526a6c8-3c19-41c9-a261-a64e0c11273e}" KeyPath="yes">    
 					<File Id="allOf.js_53" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\allOf.js"/>    
 					<File Id="contains.js_56" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\contains.js"/>    
@@ -168,10 +167,10 @@
 	</Directory>
 	</Directory>
 	<Directory Id="CommonAppDataFolder">
-	<Directory Id="PkgName_881" Name="PkgName">
-	<Directory Id="Sources_194" Name="Sources">
-	<Directory Id="ajv_194" Name="ajv">
-	<Directory Id="lib_105" Name="lib">
+	<Directory Id="PkgName" Name="PkgName">
+	<Directory Id="Sources" Name="Sources">
+	<Directory Id="ajv" Name="ajv">
+	<Directory Id="lib" Name="lib">
 				<Component Id="keyword.js" Guid="{d3e6bfa9-cd39-4177-9119-1286ceb6b076}" KeyPath="yes">    
 					<File Id="keyword.js_77" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\keyword.js"/>
 				</Component>
@@ -181,11 +180,11 @@
 	</Directory>
 	</Directory>
 	<Directory Id="CommonAppDataFolder">
-	<Directory Id="PkgName_994" Name="PkgName">
-	<Directory Id="Sources_950" Name="Sources">
-	<Directory Id="ajv_118" Name="ajv">
-	<Directory Id="lib_275" Name="lib">
-	<Directory Id="refs_706" Name="refs">
+	<Directory Id="PkgName" Name="PkgName">
+	<Directory Id="Sources" Name="Sources">
+	<Directory Id="ajv" Name="ajv">
+	<Directory Id="lib" Name="lib">
+	<Directory Id="refs" Name="refs">
 				<Component Id="Ddata.json" Guid="{b55267e5-777a-4645-bd55-b43ed44092e3}" KeyPath="yes">    
 					<File Id="Ddata.json_79" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\refs\$data.json"/>    
 					<File Id="UlimitItems.js_74" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\_limitItems.js"/>    
@@ -199,9 +198,9 @@
 	</Directory>
 	</Directory>
 	<Directory Id="CommonAppDataFolder">
-	<Directory Id="PkgName_886" Name="PkgName">
-	<Directory Id="Sources_265" Name="Sources">
-	<Directory Id="ajv_776" Name="ajv">
+	<Directory Id="PkgName" Name="PkgName">
+	<Directory Id="Sources" Name="Sources">
+	<Directory Id="ajv" Name="ajv">
 				<Component Id="LICENSE" Guid="{19679807-7fb0-4069-bb4d-0b20c0bf1c30}" KeyPath="yes">    
 					<File Id="LICENSE_83" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\LICENSE"/>    
 					<File Id="package.json_84" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\package.json"/>    
@@ -213,9 +212,9 @@
 	</Directory>
 	</Directory>
 	<Directory Id="CommonAppDataFolder">
-	<Directory Id="PkgName_380" Name="PkgName">
-	<Directory Id="Sources_767" Name="Sources">
-	<Directory Id="ajv_320" Name="ajv">
+	<Directory Id="PkgName" Name="PkgName">
+	<Directory Id="Sources" Name="Sources">
+	<Directory Id="ajv" Name="ajv">
 	<Directory Id="scripts_304" Name="scripts">
 				<Component Id="Ueslintrc.yml" Guid="{55d3bcd1-a4d3-42d7-945a-e9f11f792f06}" KeyPath="yes">    
 					<File Id="Ueslintrc.yml_86" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\scripts\.eslintrc.yml"/>    
@@ -232,8 +231,8 @@
 	</Directory>
 	</Directory>
 	<Directory Id="CommonAppDataFolder">
-	<Directory Id="PkgName_6" Name="PkgName">
-	<Directory Id="Wrapper_504" Name="Wrapper">
+	<Directory Id="PkgName" Name="PkgName">
+	<Directory Id="Wrapper" Name="Wrapper">
 				<Component Id="conf.ini" Guid="{222c2112-3568-4744-a2c0-606f0ed60a47}" KeyPath="yes">    
 					<File Id="conf.ini_92" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\conf.ini"/>
 				</Component>
@@ -243,9 +242,9 @@
 	</Directory>
 	</Directory>
 	<Directory Id="CommonAppDataFolder">
-	<Directory Id="PkgName_840" Name="PkgName">
-	<Directory Id="Wrapper_72" Name="Wrapper">
-	<Directory Id="Include_90" Name="Include">
+	<Directory Id="PkgName" Name="PkgName">
+	<Directory Id="Wrapper" Name="Wrapper">
+	<Directory Id="Include" Name="Include">
 				<Component Id="AccountSpecific.vbs" Guid="{f8ecceeb-a1e4-48bb-b52d-a7abb9a2edc3}" KeyPath="yes">    
 					<File Id="AccountSpecific.vbs_94" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\AccountSpecific.vbs"/>
 				</Component>
@@ -253,10 +252,10 @@
 	</Directory>
 	</Directory>
 	<Directory Id="CommonAppDataFolder">
-	<Directory Id="PkgName_418" Name="PkgName">
-	<Directory Id="Wrapper_410" Name="Wrapper">
-	<Directory Id="Include_666" Name="Include">
-	<Directory Id="AccountSpecific_453" Name="AccountSpecific">
+	<Directory Id="PkgName" Name="PkgName">
+	<Directory Id="Wrapper" Name="Wrapper">
+	<Directory Id="Include" Name="Include">
+	<Directory Id="AccountSpecific" Name="AccountSpecific">
 				<Component Id="GLOBAL.ini" Guid="{a7e9e511-8d58-426a-8047-6cd26ac78f78}" KeyPath="yes">    
 					<File Id="GLOBAL.ini_93" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\AccountSpecific\GLOBAL.ini"/>    
 					<File Id="DirectoryOperations.vbs_97" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\DirectoryOperations.vbs"/>
@@ -266,10 +265,10 @@
 	</Directory>
 	</Directory>
 	<Directory Id="CommonAppDataFolder">
-	<Directory Id="PkgName_308" Name="PkgName">
-	<Directory Id="Wrapper_902" Name="Wrapper">
-	<Directory Id="Include_443" Name="Include">
-	<Directory Id="EXE_18" Name="EXE">
+	<Directory Id="PkgName" Name="PkgName">
+	<Directory Id="Wrapper" Name="Wrapper">
+	<Directory Id="Include" Name="Include">
+	<Directory Id="EXE" Name="EXE">
 				<Component Id="ProgressBar.exe" Guid="{05ea1534-71f9-4abe-b24c-c816029259ca}" KeyPath="yes">    
 					<File Id="ProgressBar.exe_98" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\EXE\ProgressBar.exe"/>
 				</Component>
@@ -279,9 +278,9 @@
 	</Directory>
 	</Directory>
 	<Directory Id="CommonAppDataFolder">
-	<Directory Id="PkgName_241" Name="PkgName">
-	<Directory Id="Wrapper_783" Name="Wrapper">
-	<Directory Id="Include_288" Name="Include">
+	<Directory Id="PkgName" Name="PkgName">
+	<Directory Id="Wrapper" Name="Wrapper">
+	<Directory Id="Include" Name="Include">
 				<Component Id="EXE.vbs" Guid="{23e19adc-72ec-48c5-a45c-95194c72c102}" KeyPath="yes">    
 					<File Id="EXE.vbs_99" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\EXE.vbs"/>    
 					<File Id="Const.vbs_96" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\Const.vbs"/>    
@@ -292,10 +291,10 @@
 	</Directory>
 	</Directory>
 	<Directory Id="CommonAppDataFolder">
-	<Directory Id="PkgName_461" Name="PkgName">
-	<Directory Id="Wrapper_389" Name="Wrapper">
-	<Directory Id="Include_545" Name="Include">
-	<Directory Id="HTA_718" Name="HTA">
+	<Directory Id="PkgName" Name="PkgName">
+	<Directory Id="Wrapper" Name="Wrapper">
+	<Directory Id="Include" Name="Include">
+	<Directory Id="HTA" Name="HTA">
 				<Component Id="N5thStrikeWindow.hta" Guid="{6baea9d5-6c22-4ce2-9c8c-853f4099adf9}" KeyPath="yes">    
 					<File Id="N5thStrikeWindow.hta_102" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\HTA\5thStrikeWindow.hta"/>    
 					<File Id="Banner.hta_103" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\HTA\Banner.hta"/>    
@@ -321,9 +320,9 @@
 	</Directory>
 	</Directory>
 	<Directory Id="CommonAppDataFolder">
-	<Directory Id="PkgName_62" Name="PkgName">
-	<Directory Id="Wrapper_873" Name="Wrapper">
-	<Directory Id="Include_927" Name="Include">
+	<Directory Id="PkgName" Name="PkgName">
+	<Directory Id="Wrapper" Name="Wrapper">
+	<Directory Id="Include" Name="Include">
 				<Component Id="Logs.vbs" Guid="{cbd08fbd-e8b9-4a07-82ef-6d58c01e7df2}" KeyPath="yes">    
 					<File Id="Logs.vbs_118" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\Logs.vbs"/>    
 					<File Id="CAB.vbs_95" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\CAB.vbs"/>    
@@ -345,8 +344,8 @@
 	</Directory>
 	</Directory>
 	<Directory Id="CommonAppDataFolder">
-	<Directory Id="PkgName_591" Name="PkgName">
-	<Directory Id="Wrapper_345" Name="Wrapper">
+	<Directory Id="PkgName" Name="PkgName">
+	<Directory Id="Wrapper" Name="Wrapper">
 				<Component Id="TemplateFinal.vbs" Guid="{75a658d7-8efb-4f07-bb6e-7e9d39b89f39}" KeyPath="yes">    
 					<File Id="TemplateFinal.vbs_131" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\TemplateFinal.vbs"/>
 				</Component>
@@ -378,4 +377,4 @@
 				<ComponentRef Id="TemplateFinal.vbs_0_18" />    
 			</Feature>
     
-	</Product></Wix>
+	</Product>

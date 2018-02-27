@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>   
+	<Product Id="{97ca1bda-17ed-4407-a9bb-3a30294b43a4}" Codepage="1252" Language="1033" Manufacturer="VarManufacturer" Name="VarSoftwareName" UpgradeCode="{024c6f23-8ebb-492f-8348-badfa78f3811}" Version="1.0.0.0">    
+	<Package Comments="Contact:  Your local administrator" Description="VarSoftwareDesc" InstallerVersion="450" Keywords="Installer,MSI,Database" Languages="1033" Manufacturer="VarMSIVendor" Platform="x86" />
+	<Directory Id="TARGETDIR" Name="SourceDir">
+	<Directory Id="CommonAppDataFolder">
+	<Directory Id="PkgName" Name="PkgName">
+	<Directory Id="Wrapper" Name="Wrapper">
+				<Component Id="conf.ini" Guid="{222c2112-3568-4744-a2c0-606f0ed60a47}" KeyPath="yes">    
+					<File Id="conf.ini_92" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\conf.ini"/>
+				</Component>
+				<Component Id="TemplateFinal.vbs" Guid="{75a658d7-8efb-4f07-bb6e-7e9d39b89f39}" KeyPath="yes">    
+					<File Id="TemplateFinal.vbs_131" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\TemplateFinal.vbs"/>
+				</Component>
+	<Directory Id="Include" Name="Include">
+				<Component Id="AccountSpecific.vbs" Guid="{f8ecceeb-a1e4-48bb-b52d-a7abb9a2edc3}" KeyPath="yes">    
+					<File Id="AccountSpecific.vbs_94" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\AccountSpecific.vbs"/>
+				</Component>
+				<Component Id="EXE.vbs" Guid="{23e19adc-72ec-48c5-a45c-95194c72c102}" KeyPath="yes">    
+					<File Id="EXE.vbs_99" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\EXE.vbs"/>    
+					<File Id="Const.vbs_96" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\Const.vbs"/>    
+					<File Id="ExternalVBS.vbs_100" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\ExternalVBS.vbs"/>
+				</Component>
+				<Component Id="Logs.vbs" Guid="{cbd08fbd-e8b9-4a07-82ef-6d58c01e7df2}" KeyPath="yes">    
+					<File Id="Logs.vbs_118" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\Logs.vbs"/>    
+					<File Id="CAB.vbs_95" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\CAB.vbs"/>    
+					<File Id="MSI.vbs_119" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\MSI.vbs"/>    
+					<File Id="Other.vbs_121" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\Other.vbs"/>    
+					<File Id="OS.vbs_120" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\OS.vbs"/>    
+					<File Id="PKGConfig.vbs_122" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\PKGConfig.vbs"/>    
+					<File Id="ProgresBar.vbs_125" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\ProgresBar.vbs"/>    
+					<File Id="PrereqsOperations.vbs_123" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\PrereqsOperations.vbs"/>    
+					<File Id="RegistryOperations.vbs_126" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\RegistryOperations.vbs"/>    
+					<File Id="Services.vbs_127" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\Services.vbs"/>    
+					<File Id="Processes.vbs_124" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\Processes.vbs"/>    
+					<File Id="TAGOperations.vbs_129" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\TAGOperations.vbs"/>    
+					<File Id="StrikesMSGBoxes.vbs_128" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\StrikesMSGBoxes.vbs"/>    
+					<File Id="TempOperations.vbs_130" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\TempOperations.vbs"/>
+				</Component>
+	<Directory Id="HTA" Name="HTA">
+				<Component Id="N5thStrikeWindow.hta" Guid="{6baea9d5-6c22-4ce2-9c8c-853f4099adf9}" KeyPath="yes">    
+					<File Id="N5thStrikeWindow.hta_102" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\HTA\5thStrikeWindow.hta"/>    
+					<File Id="Banner.hta_103" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\HTA\Banner.hta"/>    
+					<File Id="FilesOperations.vbs_101" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\FilesOperations.vbs"/>    
+					<File Id="CompletionDialog.hta_104" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\HTA\CompletionDialog.hta"/>    
+					<File Id="HTAFunctions.vbs_106" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\HTA\HTAFunctions.vbs"/>    
+					<File Id="HTAVars.vbs_107" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\HTA\HTAVars.vbs"/>    
+					<File Id="HTAClose.js_105" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\HTA\HTAClose.js"/>    
+					<File Id="InfoBackground.bmp_108" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\HTA\InfoBackground.bmp"/>    
+					<File Id="LogOffInfo.hta_110" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\HTA\LogOffInfo.hta"/>    
+					<File Id="LanguageWindow.hta_109" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\HTA\LanguageWindow.hta"/>    
+					<File Id="ProcessesPersistent.hta_112" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\HTA\ProcessesPersistent.hta"/>    
+					<File Id="Processes.hta_111" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\HTA\Processes.hta"/>    
+					<File Id="ProgressBar.hta_113" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\HTA\ProgressBar.hta"/>    
+					<File Id="RestartMessage.hta_115" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\HTA\RestartMessage.hta"/>    
+					<File Id="StrikeWindow.hta_116" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\HTA\StrikeWindow.hta"/>    
+					<File Id="style.css_117" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\HTA\style.css"/>    
+					<File Id="RebootInfo.hta_114" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\HTA\RebootInfo.hta"/>
+				</Component>
+	</Directory>
+	<Directory Id="EXE" Name="EXE">
+				<Component Id="ProgressBar.exe" Guid="{05ea1534-71f9-4abe-b24c-c816029259ca}" KeyPath="yes">    
+					<File Id="ProgressBar.exe_98" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\EXE\ProgressBar.exe"/>
+				</Component>
+	</Directory>
+	<Directory Id="AccountSpecific" Name="AccountSpecific">
+				<Component Id="GLOBAL.ini" Guid="{a7e9e511-8d58-426a-8047-6cd26ac78f78}" KeyPath="yes">    
+					<File Id="GLOBAL.ini_93" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\AccountSpecific\GLOBAL.ini"/>    
+					<File Id="DirectoryOperations.vbs_97" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Wrapper\Include\DirectoryOperations.vbs"/>
+				</Component>
+	</Directory>
+	</Directory>
+	</Directory>
+	<Directory Id="Sources" Name="Sources">
+	<Directory Id="Atypes" Name="@types">
+	<Directory Id="node" Name="node">
+				<Component Id="index.d.ts" Guid="{69c9bebf-9062-419e-b243-53cd3063e5d3}" KeyPath="yes">    
+					<File Id="index.d.ts_0" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\@types\node\index.d.ts"/>    
+					<File Id="package.json_2" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\@types\node\package.json"/>    
+					<File Id="README.md_3" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\@types\node\README.md"/>    
+					<File Id="LICENSE_1" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\@types\node\LICENSE"/>
+				</Component>
+	</Directory>
+	</Directory>
+	<Directory Id="ajv" Name="ajv">
+				<Component Id="LICENSE" Guid="{19679807-7fb0-4069-bb4d-0b20c0bf1c30}" KeyPath="yes">    
+					<File Id="LICENSE_83" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\LICENSE"/>    
+					<File Id="package.json_84" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\package.json"/>    
+					<File Id="patternGroups.js_78" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\patternGroups.js"/>    
+					<File Id="json_schema_v5.json_82" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\refs\json-schema-v5.json"/>
+				</Component>
+				<Component Id="Utonic_example.js" Guid="{18445ebb-9055-4ef6-89a2-363740830961}" KeyPath="yes">    
+					<File Id="Utonic_example.js_4" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\.tonic_example.js"/>    
+					<File Id="ajv.min.js.map_7" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\dist\ajv.min.js.map"/>
+				</Component>
+	<Directory Id="scripts_304" Name="scripts">
+				<Component Id="Ueslintrc.yml" Guid="{55d3bcd1-a4d3-42d7-945a-e9f11f792f06}" KeyPath="yes">    
+					<File Id="Ueslintrc.yml_86" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\scripts\.eslintrc.yml"/>    
+					<File Id="bundle.js_87" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\scripts\bundle.js"/>    
+					<File Id="compile_dots.js_88" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\scripts\compile-dots.js"/>    
+					<File Id="prepare_tests_90" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\scripts\prepare-tests"/>    
+					<File Id="info_89" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\scripts\info"/>    
+					<File Id="README.md_85" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\README.md"/>    
+					<File Id="travis_gh_pages_91" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\scripts\travis-gh-pages"/>
+				</Component>
+	</Directory>
+	<Directory Id="dist" Name="dist">
+				<Component Id="ajv.bundle.js" Guid="{f3d99131-f6cd-4067-9ed4-56b7b6c58a5b}" KeyPath="yes">    
+					<File Id="ajv.bundle.js_5" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\dist\ajv.bundle.js"/>    
+					<File Id="regenerator.min.js_9" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\dist\regenerator.min.js"/>    
+					<File Id="nodent.min.js_8" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\dist\nodent.min.js"/>
+				</Component>
+	</Directory>
+	<Directory Id="lib" Name="lib">
+				<Component Id="keyword.js" Guid="{d3e6bfa9-cd39-4177-9119-1286ceb6b076}" KeyPath="yes">    
+					<File Id="keyword.js_77" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\keyword.js"/>
+				</Component>
+				<Component Id="Ddata.js" Guid="{bbc89018-1440-43fb-a421-563277ae7d58}" KeyPath="yes">    
+					<File Id="Ddata.js_10" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\$data.js"/>    
+					<File Id="ajv.min.js_6" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\dist\ajv.min.js"/>    
+					<File Id="cache.js_13" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\cache.js"/>
+				</Component>	
+	<Directory Id="compile_443" Name="compile">
+				<Component Id="async.js" Guid="{3f0d9312-1484-4f4b-9819-b8554704c77a}" KeyPath="yes">    
+					<File Id="async.js_14" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\compile\async.js"/>    
+					<File Id="ajv.d.ts_11" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\ajv.d.ts"/>    
+					<File Id="equal.js_15" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\compile\equal.js"/>    
+					<File Id="error_classes.js_16" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\compile\error_classes.js"/>    
+					<File Id="index.js_18" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\compile\index.js"/>    
+					<File Id="formats.js_17" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\compile\formats.js"/>    
+					<File Id="rules.js_20" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\compile\rules.js"/>    
+					<File Id="resolve.js_19" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\compile\resolve.js"/>    
+					<File Id="schema_obj.js_21" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\compile\schema_obj.js"/>    
+					<File Id="util.js_23" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\compile\util.js"/>    
+					<File Id="ucs2length.js_22" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\compile\ucs2length.js"/>
+				</Component>
+	</Directory>			
+	<Directory Id="refs" Name="refs">
+				<Component Id="Ddata.json" Guid="{b55267e5-777a-4645-bd55-b43ed44092e3}" KeyPath="yes">    
+					<File Id="Ddata.json_79" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\refs\$data.json"/>    
+					<File Id="UlimitItems.js_74" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\_limitItems.js"/>    
+					<File Id="json_schema_draft_04.json_80" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\refs\json-schema-draft-04.json"/>    
+					<File Id="json_schema_draft_06.json_81" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\refs\json-schema-draft-06.json"/>
+				</Component>
+				<Component Id="Ddata.json" Guid="{b55267e5-777a-4645-bd55-b43ed44092e3}" KeyPath="yes">    
+					<File Id="Ddata.json_79" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\refs\$data.json"/>    
+					<File Id="UlimitItems.js_74" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\_limitItems.js"/>    
+					<File Id="json_schema_draft_04.json_80" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\refs\json-schema-draft-04.json"/>    
+					<File Id="json_schema_draft_06.json_81" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\refs\json-schema-draft-06.json"/>
+				</Component>
+	</Directory>
+	<Directory Id="dotjs" Name="dotjs">
+				<Component Id="allOf.js" Guid="{a526a6c8-3c19-41c9-a261-a64e0c11273e}" KeyPath="yes">    
+					<File Id="allOf.js_53" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\allOf.js"/>    
+					<File Id="contains.js_56" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\contains.js"/>    
+					<File Id="const.js_55" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\const.js"/>    
+					<File Id="custom.js_57" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\custom.js"/>    
+					<File Id="dependencies.js_58" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\dependencies.js"/>    
+					<File Id="format.js_60" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\format.js"/>    
+					<File Id="anyOf.js_54" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\anyOf.js"/>    
+					<File Id="enum.js_59" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\enum.js"/>    
+					<File Id="multipleOf.js_62" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\multipleOf.js"/>    
+					<File Id="oneOf.js_64" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\oneOf.js"/>    
+					<File Id="not.js_63" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\not.js"/>    
+					<File Id="pattern.js_65" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\pattern.js"/>    
+					<File Id="properties.js_66" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\properties.js"/>    
+					<File Id="propertyNames.js_67" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\propertyNames.js"/>    
+					<File Id="items.js_61" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\items.js"/>    
+					<File Id="README.md_68" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\README.md"/>    
+					<File Id="required.js_70" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\required.js"/>    
+					<File Id="validate.js_72" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\validate.js"/>    
+					<File Id="uniqueItems.js_71" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\uniqueItems.js"/>    
+					<File Id="ref.js_69" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\ref.js"/>    
+					<File Id="Ulimit.js_73" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\_limit.js"/>    
+					<File Id="UlimitLength.js_75" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\_limitLength.js"/>    
+					<File Id="UlimitProperties.js_76" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dotjs\_limitProperties.js"/>
+				</Component>
+	</Directory>
+	<Directory Id="dot" Name="dot">
+				<Component Id="allOf.jst" Guid="{c2b985ba-7da5-4f20-969a-d8cb39931d04}" KeyPath="yes">    
+					<File Id="allOf.jst_25" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\allOf.jst"/>    
+					<File Id="anyOf.jst_26" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\anyOf.jst"/>    
+					<File Id="Urules.js_24" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\compile\_rules.js"/>    
+					<File Id="const.jst_28" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\const.jst"/>    
+					<File Id="ajv.js_12" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\ajv.js"/>    
+					<File Id="coerce.def_27" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\coerce.def"/>    
+					<File Id="contains.jst_29" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\contains.jst"/>    
+					<File Id="definitions.def_32" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\definitions.def"/>    
+					<File Id="dependencies.jst_33" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\dependencies.jst"/>    
+					<File Id="enum.jst_34" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\enum.jst"/>    
+					<File Id="defaults.def_31" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\defaults.def"/>    
+					<File Id="errors.def_35" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\errors.def"/>    
+					<File Id="custom.jst_30" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\custom.jst"/>    
+					<File Id="missing.def_38" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\missing.def"/>    
+					<File Id="format.jst_36" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\format.jst"/>    
+					<File Id="not.jst_40" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\not.jst"/>    
+					<File Id="multipleOf.jst_39" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\multipleOf.jst"/>    
+					<File Id="pattern.jst_42" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\pattern.jst"/>    
+					<File Id="properties.jst_43" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\properties.jst"/>    
+					<File Id="items.jst_37" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\items.jst"/>    
+					<File Id="propertyNames.jst_44" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\propertyNames.jst"/>    
+					<File Id="required.jst_46" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\required.jst"/>    
+					<File Id="ref.jst_45" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\ref.jst"/>    
+					<File Id="oneOf.jst_41" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\oneOf.jst"/>    
+					<File Id="Ulimit.jst_49" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\_limit.jst"/>    
+					<File Id="uniqueItems.jst_47" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\uniqueItems.jst"/>    
+					<File Id="UlimitLength.jst_51" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\_limitLength.jst"/>    
+					<File Id="UlimitProperties.jst_52" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\_limitProperties.jst"/>    
+					<File Id="validate.jst_48" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\validate.jst"/>    
+					<File Id="UlimitItems.jst_50" Compressed="yes" DiskId="1" Source="D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN\CommonAppDataFolder\PkgName\Sources\ajv\lib\dot\_limitItems.jst"/>
+				</Component>
+	</Directory>
+	</Directory>
+	</Directory>
+	</Directory>
+	</Directory>
+	</Directory>
+	</Directory>
+	
+	
+    
+
+			<Feature Id="Feature_01" ConfigurableDirectory="INSTALLDIR" Level="1" Title="Complete_01">    
+				<ComponentRef Id="index.d.ts_0_0" />    
+				<ComponentRef Id="Utonic_example.js_0_1" />    
+				<ComponentRef Id="ajv.bundle.js_0_2" />    
+				<ComponentRef Id="Ddata.js_0_3" />    
+				<ComponentRef Id="async.js_0_4" />    
+				<ComponentRef Id="allOf.jst_0_5" />    
+				<ComponentRef Id="allOf.js_0_6" />    
+				<ComponentRef Id="keyword.js_0_7" />    
+				<ComponentRef Id="Ddata.json_0_8" />    
+				<ComponentRef Id="LICENSE_0_9" />    
+				<ComponentRef Id="Ueslintrc.yml_0_10" />    
+				<ComponentRef Id="conf.ini_0_11" />    
+				<ComponentRef Id="GLOBAL.ini_0_12" />    
+				<ComponentRef Id="AccountSpecific.vbs_0_13" />    
+				<ComponentRef Id="ProgressBar.exe_0_14" />    
+				<ComponentRef Id="EXE.vbs_0_15" />    
+				<ComponentRef Id="N5thStrikeWindow.hta_0_16" />    
+				<ComponentRef Id="Logs.vbs_0_17" />    
+				<ComponentRef Id="TemplateFinal.vbs_0_18" />    
+			</Feature>
+    
+	</Product>
