@@ -25,4 +25,6 @@ To build project you must:
 	npm install child_process -S
 	npm install --save async-child-process
 	npm install --save random-int
+	npm install --save uuid-validate
+	
 4. Run by: npm start electron

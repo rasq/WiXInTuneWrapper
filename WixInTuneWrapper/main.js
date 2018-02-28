@@ -17,6 +17,7 @@ const randomInt = require('random-int');
 const app = electron.app
 const Menu = electron.Menu
 const BrowserWindow = electron.BrowserWindow
+const dialog      = electron.dialog;
 
 var splitChar = "\\";
 
@@ -146,7 +147,6 @@ var wxsFooterTemplate = tabString + '<Media Id="1" Cabinet="Data1.cab" DiskPromp
         '<Property Id="INSTALLDIR" Secure="yes" />\r\n' +
 '</Product>\r\n' +
 '</Wix>';
-
 
 
 

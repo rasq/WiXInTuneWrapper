@@ -7,30 +7,62 @@ const prompt      = require('dialogs')(opts={});
 const mkdirp      = require('mkdirp');
 const homedir     = require('os').homedir();
 const sanitize    = require("sanitize-filename");
-var Downloader    = require('mt-files-downloader');
+const uuidV4      = require('uuid/v4');
+const uuidValidate = require('uuid-validate');
+//var Downloader    = require('mt-files-downloader');
 var shell         = require('electron').shell;
 
-$('.ui.dropdown').dropdown();
 
 
-jQuery.expr[':'].contains = function(a, i, m) {
-  return jQuery(a).text().toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
-};
 
 
-$('.ui.loading .form').submit((e)=>{
-    console.dir('bvbvbvbvvbvb');
+
+
+
+
+
+
+
+
+
+$('.getFolder-button').click(function(){
+  selectDirectory();
+  //document.getElementById('selectFolderA').click();
 });
 
+$('.getIco-button').click(function(){
+  var dataIco = document.getElementById("selectIcoA");
+    dataIco.click(function(){
+    });
+});
+
+function updateIcoVar(){
+  const icoPath = document.querySelector('#selectIcoA').value;
+  var imgTpl = '<img class="ui small image" src="' + icoPath + '">';
+        console.log('value ' + icoPath);
+        document.getElementById('icoPlace').innerHTML = imgTpl;
+}
 
 
-
-
-
+//----------------------------------------------------------------------------------------------------------------------
+$('.generateWXS-button').click(function(){
+  harvestDataFromForms(1);
+});
+//----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
 $('.start-button').click(function(){
   startApp('.Opcja01-sidebar');
+});
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+$('.ui.green.button.PC').click(function(){
+  document.getElementsByName("ProductCode")[0].value = '{' + uuidV4() + '}';
+});
+
+$('.ui.green.button.UC').click(function(){
+  document.getElementsByName("UpgradeCode")[0].value = '{' + uuidV4() + '}';
 });
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -124,5 +156,121 @@ function CheckBoxMSIActions(state, action){
   } else {
     $('.' + action).fadeOut('fast');
   }
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function harvestDataFromForms(pageID){
+  if (pageID == 1) {
+    formConfigMSI();
+  } else if (pageID == 2) {
+
+  } else if (pageID == 3) {
+
+  }
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function validateAppVersion(number){
+  var tmpVar = number.split('.');
+  var isOk = true;
+
+    if (tmpVar.length < 3){
+      isOk = false;
+    } else {
+      if (tmpVar[0] > 255) {
+        isOk = false;
+      } else if (tmpVar[0] < 1) {
+        isOk = false;
+      }
+
+      if (tmpVar[1] > 255) {
+        isOk = false;
+      } else if (tmpVar[1] < 1) {
+        isOk = false;
+      }
+
+      if (tmpVar[2] > 65535) {
+        isOk = false;
+      } else if (tmpVar[2] < 1) {
+        isOk = false;
+      }
+    }
+
+    return isOk;
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function formConfigMSI(){
+  var tmpAppVersion   = document.getElementsByName("AppVersion")[0].value;
+  var tmpManufacturer = document.getElementsByName("Manufacturer")[0].value;
+  var tmpAppName      = document.getElementsByName("AppName")[0].value;
+  var tmpPKGName      = document.getElementsByName("PKGName")[0].value;
+  var tmpProductCode  = document.getElementsByName("ProductCode")[0].value;
+  var tmpUpgradeCode  = document.getElementsByName("UpgradeCode")[0].value;
+
+    if (tmpAppVersion != '') {
+      if (validateAppVersion(tmpAppVersionx) == false) {
+        document.getElementsByName("AppVersion")[0].value = tmpAppVersion + ' is invalid version format.';
+      } else {
+        console.log(tmpAppVersion);
+      }
+    } else {
+      document.getElementsByName("AppVersion")[0].value = 'Field is reqired.';
+    }
+
+    if (tmpManufacturer != '') {
+      console.log(tmpManufacturer);
+    } else {
+      document.getElementsByName("Manufacturer")[0].value = 'Field is reqired.';
+    }
+
+    if (tmpAppName != '') {
+      console.log(tmpAppName);
+    } else {
+      document.getElementsByName("AppName")[0].value = 'Field is reqired.';
+    }
+
+    if (tmpPKGName != '') {
+      console.log(tmpPKGName);
+    } else {
+      document.getElementsByName("PKGName")[0].value = 'Field is reqired.';
+    }
+
+    if (tmpProductCode != '') {
+      if (uuidValidate(tmpProductCode.replace('{','').replace('}',''))) {
+        console.log(tmpProductCode);
+      } else {
+        document.getElementsByName("ProductCode")[0].value = tmpProductCode + ' is invalid GUID.';
+      }
+    } else {
+      document.getElementsByName("ProductCode")[0].value = 'Field is reqired.';
+    }
+
+    if (tmpUpgradeCode != '') {
+      if (uuidValidate(tmpUpgradeCode.replace('{','').replace('}',''))) {
+        console.log(tmpUpgradeCode);
+      } else {
+        document.getElementsByName("UpgradeCode")[0].value = tmpUpgradeCode + ' is invalid GUID.';
+      }
+    } else {
+      document.getElementsByName("UpgradeCode")[0].value = 'Field is reqired.';
+    }
+
+
+
+    if ($('.ui.checkbox.left.A').checkbox('is checked')) {
+    }
+
+    if ($('.ui.checkbox.left.B').checkbox('is checked')) {
+    }
+
+    if ($('.ui.checkbox.left.C').checkbox('is checked')) {
+    }
+
+    if ($('.ui.checkbox.left.D').checkbox('is checked')) {
+    }
 }
 //----------------------------------------------------------------------------------------------------------------------

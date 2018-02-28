@@ -146,7 +146,7 @@
                                   </div>
                                   <p></p>
                                   <div class="ui fluid icon input">
-                                    <input type="text" name="AppVersion" placeholder="${translate("App Version")}">
+                                    <input type="text" name="AppVersion" placeholder="${translate("App Version: major.minor.build")}">
                                     <i class="edit icon"></i>
                                   </div>
                                   <p></p>
@@ -157,12 +157,28 @@
                                   <p></p>
                                   <div class="ui fluid action input">
                                     <input type="text" name="ProductCode" placeholder="${translate("MSI Product Code")}">
-                                    <i class="ui green button">Generate</i>
+                                    <i class="ui green button PC">Generate</i>
                                   </div>
                                   <p></p>
                                   <div class="ui fluid action input">
                                     <input type="text" name="UpgradeCode" placeholder="${translate("MSI Upgrade Code")}">
-                                    <i class="ui green button">Generate</i>
+                                    <i class="ui green button UC">Generate</i>
+                                  </div>
+                                  <p></p>
+                                  <a class="getFolder-button item">
+                                    <i id="selectFolder" class="ui button">Select project folder</i>
+                                    <input id="selectFolderA" type="file" style="display: none" />
+                                  </a>
+                                  <div class="ui label">
+                                    Selected folder.
+                                  </div>
+                                  <p></p>
+                                  <a class="getIco-button item">
+                                    <i id="selectIco" class="ui button">Select MSI icon</i>
+                                    <input type="file" accept=".ico, .jpg, .png, .jpeg, .gif, .bmp|images/*" id="selectIcoA" class="getIco-buttonA item" style="display: none" onchange="updateIcoVar()" />
+                                  </a>
+                                  <div class="ui label" id="icoPlace">
+                                    Selected ico.
                                   </div>
                                   <div>
                                       <p></p>
@@ -189,24 +205,30 @@
 
                                 <div class="CB_CA">
                                   <p></p>
-                                  <p>custom action</p>
+                                  <h3>Custom Actions - config</h3>
+                                  <p>This section is still under development.</p>
                                 </div>
                                 <div class="CB_LC">
                                   <p></p>
-                                  <p>launch condition</p>
+                                  <h3>Launch Conditions - config</h3>
+                                  <p>This section is still under development.</p>
                                 </div>
                                 <div class="CB_Shortcuts">
                                   <p></p>
-                                  <p>shortcuts</p>
+                                  <h3>Shortcuts - config</h3>
+                                  <p>This section is still under development.</p>
                                 </div>
                                 <div class="CB_Reg">
                                   <p></p>
-                                  <p>registry</p>
+                                  <h3>Registry - config</h3>
+                                  <p>This section is still under development.</p>
                                 </div>
 
                                 </br>
                                 </br>
-                                <i class="ui fluid green button">${translate("Generate")}</i>
+                                <a class="generateWXS-button item">
+                                  <i class="ui fluid green button WXSG">${translate("Generate")}</i>
+                                </a>
                             </form>
                           </div>
                       </div>
