@@ -13,10 +13,18 @@ const uuidValidate = require('uuid-validate');
 var shell         = require('electron').shell;
 
 
+var customActionTPL = "<?xml version='1.0'?>" +
+"<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>" +
+   '<Fragment>' +
+      "<CustomAction Id='FooAction' BinaryKey='FooBinary' DllEntry='FooEntryPoint' Execute='immediate' Return='check'/>" +
+      "<Binary Id='FooBinary' SourceFile='foo.dll'/>" +
+   "</Fragment>" +
+"</Wix>"
 
 
-
-
+var installExecuteSeqTPLH = "<InstallExecuteSequence>" +
+         "<Custom Action='actionName' After='InstallFiles'/>" +
+      "</InstallExecuteSequence>"
 
 
 
@@ -36,13 +44,27 @@ $('.getIco-button').click(function(){
     });
 });
 
-function updateIcoVar(){
-  const icoPath = document.querySelector('#selectIcoA').value;
-  var imgTpl = '<img class="ui small image" src="' + icoPath + '">';
-        console.log('value ' + icoPath);
-        document.getElementById('icoPlace').innerHTML = imgTpl;
-}
 
+function updateIcoVar(fileInput) {
+        var files = fileInput.files;
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            var imageType = /image.*/;
+            if (!file.type.match(imageType)) {
+                continue;
+            }
+            var img = document.getElementById("thumbnil");
+            img.file = file;
+            //console.log('value ' + file.path);
+            var reader = new FileReader();
+            reader.onload = (function(aImg) {
+                return function(e) {
+                    aImg.src = e.target.result;
+                };
+            })(img);
+            reader.readAsDataURL(file);
+        }
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 $('.generateWXS-button').click(function(){
@@ -108,6 +130,22 @@ $('.ui.checkbox.left.C').click(function(){
 $('.ui.checkbox.left.D').click(function(){
   CheckBoxMSIActions(!$(this).checkbox('is checked'), 'CB_Reg');
 });
+
+$('.ui.checkbox.left.A').click(function(){
+  CheckBoxMSIActions(!$(this).checkbox('is checked'), 'CB_CA');
+});
+
+/*$('.ui.checkbox.left.P').click(function(){
+  CheckBoxMSIActions(!$(this).checkbox('is checked'));
+});
+
+$('.ui.checkbox.left.L').click(function(){
+  CheckBoxMSIActions(!$(this).checkbox('is checked'));
+});
+
+$('.ui.checkbox.left.M').click(function(){
+  CheckBoxMSIActions(!$(this).checkbox('is checked'));
+});*/
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -137,6 +175,10 @@ function HideAll(optionName, tabName){
 
 //----------------------------------------------------------------------------------------------------------------------
 function HideAllCheckBoxMSI(){
+    $('.ui.checkbox.left.P').checkbox('set unchecked');
+    $('.ui.checkbox.left.L').checkbox('set unchecked');
+    $('.ui.checkbox.left.M').checkbox('set unchecked');
+
     $('.ui.checkbox.left.A').checkbox('set unchecked');
     $('.ui.checkbox.left.B').checkbox('set unchecked');
     $('.ui.checkbox.left.C').checkbox('set unchecked');
@@ -204,6 +246,8 @@ function validateAppVersion(number){
 
 //----------------------------------------------------------------------------------------------------------------------
 function formConfigMSI(){
+  var xmlPropertyTpl  = '';
+  var isOK = true;
   var tmpAppVersion   = document.getElementsByName("AppVersion")[0].value;
   var tmpManufacturer = document.getElementsByName("Manufacturer")[0].value;
   var tmpAppName      = document.getElementsByName("AppName")[0].value;
@@ -215,50 +259,70 @@ function formConfigMSI(){
       if (validateAppVersion(tmpAppVersionx) == false) {
         document.getElementsByName("AppVersion")[0].value = tmpAppVersion + ' is invalid version format.';
       } else {
-        console.log(tmpAppVersion);
+        xmlPropertyTpl = '<Property Id="ProductVersion" Value="' + tmpAppVersion + '" />\r\n';
+        isOK = false;
       }
     } else {
       document.getElementsByName("AppVersion")[0].value = 'Field is reqired.';
+      isOK = false;
     }
 
     if (tmpManufacturer != '') {
-      console.log(tmpManufacturer);
+      xmlPropertyTpl = xmlPropertyTpl + '<Property Id="Manufacturer" Value="' + tmpManufacturer + '" />\r\n';
     } else {
       document.getElementsByName("Manufacturer")[0].value = 'Field is reqired.';
+      isOK = false;
     }
 
     if (tmpAppName != '') {
-      console.log(tmpAppName);
+      xmlPropertyTpl = xmlPropertyTpl + '<Property Id="ProductName" Value="' + tmpAppName + '" />\r\n';
     } else {
       document.getElementsByName("AppName")[0].value = 'Field is reqired.';
+      isOK = false;
     }
 
     if (tmpPKGName != '') {
-      console.log(tmpPKGName);
+      xmlPropertyTpl = xmlPropertyTpl + '<Property Id="PKGName" Value="' + tmpPKGName + '" />\r\n';
     } else {
       document.getElementsByName("PKGName")[0].value = 'Field is reqired.';
+      isOK = false;
     }
 
     if (tmpProductCode != '') {
       if (uuidValidate(tmpProductCode.replace('{','').replace('}',''))) {
-        console.log(tmpProductCode);
+        xmlPropertyTpl = xmlPropertyTpl + '<Property Id="ProductCode" Value="' + tmpProductCode + '" />\r\n';
       } else {
         document.getElementsByName("ProductCode")[0].value = tmpProductCode + ' is invalid GUID.';
+        isOK = false;
       }
     } else {
       document.getElementsByName("ProductCode")[0].value = 'Field is reqired.';
+      isOK = false;
     }
 
     if (tmpUpgradeCode != '') {
       if (uuidValidate(tmpUpgradeCode.replace('{','').replace('}',''))) {
-        console.log(tmpUpgradeCode);
+        xmlPropertyTpl = xmlPropertyTpl + '<Property Id="UpgradeCode" Value="' + tmpUpgradeCode + '" />\r\n';
       } else {
         document.getElementsByName("UpgradeCode")[0].value = tmpUpgradeCode + ' is invalid GUID.';
+        isOK = false;
       }
     } else {
       document.getElementsByName("UpgradeCode")[0].value = 'Field is reqired.';
+      isOK = false;
     }
 
+    if ($('.ui.checkbox.left.P').checkbox('is checked')) {
+      xmlPropertyTpl = xmlPropertyTpl + '<Property Id="ARPNOMODIFY" Value="1" />\r\n';
+    }
+
+    if ($('.ui.checkbox.left.L').checkbox('is checked')) {
+      xmlPropertyTpl = xmlPropertyTpl + '<Property Id="ARPNOREMOVE" Value="1" />\r\n';
+    }
+
+    if ($('.ui.checkbox.left.M').checkbox('is checked')) {
+      xmlPropertyTpl = xmlPropertyTpl + '<Property Id="ARPNOREPAIR" Value="1" />\r\n';
+    }
 
 
     if ($('.ui.checkbox.left.A').checkbox('is checked')) {
@@ -271,6 +335,16 @@ function formConfigMSI(){
     }
 
     if ($('.ui.checkbox.left.D').checkbox('is checked')) {
+    }
+
+
+        console.log(xmlPropertyTpl);
+
+
+    if (isOK === true) {
+
+    } else {
+
     }
 }
 //----------------------------------------------------------------------------------------------------------------------

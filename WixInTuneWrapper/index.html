@@ -164,7 +164,22 @@
                                     <input type="text" name="UpgradeCode" placeholder="${translate("MSI Upgrade Code")}">
                                     <i class="ui green button UC">Generate</i>
                                   </div>
-                                  <p></p>
+                                  </br></br>
+                                  <div>
+                                    <div class="ui checkbox left P">
+                                      <input id="ARPNOMODIFY" type="checkbox">
+                                      <label for="ARPNOMODIFY">ARPNOMODIFY </label>
+                                    </div>
+                                    <div class="ui checkbox left L">
+                                      <input id="ARPNOREMOVE" type="checkbox">
+                                      <label for="ARPNOREMOVE">ARPNOREMOVE </label>
+                                    </div>
+                                    <div class="ui checkbox left M">
+                                      <input id="ARPNOREPAIR" type="checkbox">
+                                      <label for="ARPNOREPAIR">ARPNOREPAIR </label>
+                                    </div>
+                                  </div>
+                                  </br></br>
                                   <a class="getFolder-button item">
                                     <i id="selectFolder" class="ui button">Select project folder</i>
                                     <input id="selectFolderA" type="file" style="display: none" />
@@ -175,11 +190,13 @@
                                   <p></p>
                                   <a class="getIco-button item">
                                     <i id="selectIco" class="ui button">Select MSI icon</i>
-                                    <input type="file" accept=".ico, .jpg, .png, .jpeg, .gif, .bmp|images/*" id="selectIcoA" class="getIco-buttonA item" style="display: none" onchange="updateIcoVar()" />
+                                    <input type="file" accept=".ico, .jpg, .png, .jpeg, .gif, .bmp|images/*" id="selectIcoA" class="getIco-buttonA item" style="display: none" onchange="updateIcoVar(this)" />
                                   </a>
-                                  <div class="ui label" id="icoPlace">
-                                    Selected ico.
-                                  </div>
+                                    <div class="ui label" id="icoPlace">
+                                        Icon.
+                                      <img class="ui tiny image" id = "thumbnil" src="">
+                                      </img>
+                                    </div>
                                   <div>
                                       <p></p>
                                       <div class="ui checkbox left A">
@@ -305,7 +322,7 @@
 
 
                     <div class="ui Opcja03">
-                      <p>Opcja03</p>
+                      <p></p>
                     </div>
 
 
