@@ -1,16 +1,20 @@
-const remote      = require('electron').remote;
-const dialog      = remote.dialog;
-const fs          = require('fs');
-const session     = remote.session;
-const needle      = require('needle');
-const prompt      = require('dialogs')(opts={});
-const mkdirp      = require('mkdirp');
-const homedir     = require('os').homedir();
-const sanitize    = require("sanitize-filename");
-const uuidV4      = require('uuid/v4');
-const uuidValidate = require('uuid-validate');
+//const prompt      = require('dialogs')(opts={});
 //var Downloader    = require('mt-files-downloader');
-var shell         = require('electron').shell;
+//const homedir     = require('os').homedir();
+//const mkdirp      = require('mkdirp');
+//const sanitize    = require("sanitize-filename");
+//const shell           = require('electron').shell;
+
+const remote        = require('electron').remote;
+const dialog        = remote.dialog;
+const session       = remote.session;
+
+const uuidV4        = require('uuid/v4');
+const uuidValidate  = require('uuid-validate');
+
+const {ipcRenderer} = require('electron');
+
+
 
 
 
@@ -57,12 +61,6 @@ function updateIcoVar(fileInput) {
             reader.readAsDataURL(file);
         }
 }
-
-//----------------------------------------------------------------------------------------------------------------------
-$('.generateWXS-button').click(function(){
-  harvestDataFromForms(1);
-});
-//----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
 $('.start-button').click(function(){
@@ -209,13 +207,13 @@ function validateAppVersion(number){
 
       if (tmpVar[1] > 255) {
         isOk = false;
-      } else if (tmpVar[1] < 1) {
+      } else if (tmpVar[1] < 0) {
         isOk = false;
       }
 
       if (tmpVar[2] > 65535) {
         isOk = false;
-      } else if (tmpVar[2] < 1) {
+      } else if (tmpVar[2] < 0) {
         isOk = false;
       }
     }
@@ -304,6 +302,7 @@ function formConfigMSI(){
   var x               = 0;
   var xmlPropertyTpl  = '';
   var isOK            = true;
+  var tmpMSIConf      = new Array();
   var tmpAppVersion   = document.getElementsByName("AppVersion")[0].value;
   var tmpManufacturer = document.getElementsByName("Manufacturer")[0].value;
   var tmpAppName      = document.getElementsByName("AppName")[0].value;
@@ -321,9 +320,10 @@ function formConfigMSI(){
     if (tmpAppVersion != '' && tmpAppVersion != tmpFiR) {
       if (validateAppVersion(tmpAppVersion) == false) {
         document.getElementsByName("AppVersion")[0].value = tmpAppVersion + ' is invalid version format.';
-      } else {
-        xmlPropertyTpl = '<Property Id="ProductVersion" Value="' + tmpAppVersion + '" />\r\n';
         isOK = false;
+      } else {
+        tmpMSIConf[1] = tmpAppVersion;
+        //xmlPropertyTpl = '<Property Id="ProductVersion" Value="' + tmpAppVersion + '" />\r\n';
       }
     } else {
       document.getElementsByName("AppVersion")[0].value = tmpFiR;
@@ -331,14 +331,16 @@ function formConfigMSI(){
     }
 
     if (tmpManufacturer != '' && tmpManufacturer != tmpFiR) {
-      xmlPropertyTpl = xmlPropertyTpl + '<Property Id="Manufacturer" Value="' + tmpManufacturer + '" />\r\n';
+      tmpMSIConf[0] = tmpManufacturer;
+      //xmlPropertyTpl = xmlPropertyTpl + '<Property Id="Manufacturer" Value="' + tmpManufacturer + '" />\r\n';
     } else {
       document.getElementsByName("Manufacturer")[0].value = tmpFiR;
       isOK = false;
     }
 
     if (tmpAppName != '' && tmpAppName != tmpFiR) {
-      xmlPropertyTpl = xmlPropertyTpl + '<Property Id="ProductName" Value="' + tmpAppName + '" />\r\n';
+      tmpMSIConf[2] = tmpAppName;
+      //xmlPropertyTpl = xmlPropertyTpl + '<Property Id="ProductName" Value="' + tmpAppName + '" />\r\n';
     } else {
       document.getElementsByName("AppName")[0].value = tmpFiR;
       isOK = false;
@@ -353,7 +355,8 @@ function formConfigMSI(){
 
     if (tmpProductCode != '' && tmpProductCode != tmpFiR) {
       if (uuidValidate(tmpProductCode.replace('{','').replace('}',''))) {
-        xmlPropertyTpl = xmlPropertyTpl + '<Property Id="ProductCode" Value="' + tmpProductCode + '" />\r\n';
+        tmpMSIConf[3] = tmpProductCode;
+        //xmlPropertyTpl = xmlPropertyTpl + '<Property Id="ProductCode" Value="' + tmpProductCode + '" />\r\n';
       } else {
         document.getElementsByName("ProductCode")[0].value = tmpProductCode + ' is invalid GUID.';
         isOK = false;
@@ -365,7 +368,8 @@ function formConfigMSI(){
 
     if (tmpUpgradeCode != '' && tmpUpgradeCode != tmpFiR) {
       if (uuidValidate(tmpUpgradeCode.replace('{','').replace('}',''))) {
-        xmlPropertyTpl = xmlPropertyTpl + '<Property Id="UpgradeCode" Value="' + tmpUpgradeCode + '" />\r\n';
+        tmpMSIConf[4] = tmpUpgradeCode;
+        //xmlPropertyTpl = xmlPropertyTpl + '<Property Id="UpgradeCode" Value="' + tmpUpgradeCode + '" />\r\n';
       } else {
         document.getElementsByName("UpgradeCode")[0].value = tmpUpgradeCode + ' is invalid GUID.';
         isOK = false;
@@ -419,13 +423,18 @@ function formConfigMSI(){
 
 
 
-        console.log(xmlPropertyTpl);
-
-
     if (isOK === true) {
-
+            console.log('itsOK');
+      ipcRenderer.sendSync('send-msiConf', tmpMSIConf);
+      ipcRenderer.sendSync('send-xml-properties', xmlPropertyTpl);
+      ipcRenderer.sendSync('send-xml-generate', 0);
+      ipcRenderer.sendSync('send-xml-generate', 1);
+      ipcRenderer.sendSync('send-xml-generate', 2);
+      ipcRenderer.sendSync('send-xml-generate', 3);
+      ipcRenderer.sendSync('send-xml-generate', 4);
+            console.log('xml generated');
     } else {
-
+            console.log('itsNotOK');
     }
 }
 //----------------------------------------------------------------------------------------------------------------------
@@ -461,5 +470,18 @@ function schortcuts() {
 //----------------------------------------------------------------------------------------------------------------------
 function registry() {
 
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function generateMSI(arg) {
+  if (arg === 0) {
+    ipcRenderer.sendSync('send-msi-generate', 0);
+    ipcRenderer.sendSync('send-msi-generate', 1);
+  }
+
+  if (arg === 2) {
+    ipcRenderer.sendSync('send-msi-generate', 2);
+  }
 }
 //----------------------------------------------------------------------------------------------------------------------

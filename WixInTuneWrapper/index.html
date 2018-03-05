@@ -230,7 +230,7 @@
                                 <div class="CB_CA">
                                   <p></p>
                                   <h3>Custom Actions - config</h3>
-                                  <p>This section is still under development. Only BinaryKey related custom actions allowed.</p>
+                                  <p>This section is still under development. Only BinaryKey related custom actions will be allowed.</p>
                                     <p></p>
                                     <a class="addCA-button item">
                                       <i id="addProp" class="ui medium green button CA" onclick="addCA()">${translate("Add custom action")}</i>
@@ -258,7 +258,7 @@
                                 </br>
                                 </br>
                                 <a class="generateWXS-button item">
-                                  <i class="ui fluid green button WXSG">${translate("Generate")}</i>
+                                  <i class="ui fluid green button WXSG" onclick="harvestDataFromForms(1)">"Generate"</i>
                                 </a>
                             </form>
                           </div>
@@ -283,7 +283,7 @@
                                     </button>
                                   </div>
                                   <p></p>
-                                    <i class="ui fluid green button">${translate("Generate wixobj file")}</i>
+                                    <i class="ui fluid green button" onclick="generateMSI(0)">${translate("Generate wixobj file")}</i>
                                   </br>
                                 </div>
                                 </br>
@@ -298,7 +298,7 @@
                                     </button>
                                   </div>
                                   <p></p>
-                                    <i class="ui fluid green button">${translate("Generate MSI file")}</i>
+                                    <i class="ui fluid green button" onclick="generateMSI(2)">${translate("Generate MSI file")}</i>
                                   </br>
                                 </div>
                                 </br>

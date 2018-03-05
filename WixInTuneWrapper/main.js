@@ -1,23 +1,27 @@
-
-//const xlTpl = require('random-int');
+//const klaw      = require('klaw')
+//const through2  = require('through2')
+//const url       = require('url')
 
 const electron  = require('electron')
 const fsExtra   = require('fs-extra')
-const klaw      = require('klaw')
 const klawSync  = require('klaw-sync')
-const through2  = require('through2')
 const fs        = require('fs');
 const path      = require('path')
-const url       = require('url')
 const uuidV4    = require('uuid/v4');
 const child     = require('child_process');
 const runExec   = require('async-child-process');
 const randomInt = require('random-int');
 
-const app = electron.app
-const Menu = electron.Menu
+const {ipcMain} = require('electron');
+
+const app           = electron.app
+const Menu          = electron.Menu
 const BrowserWindow = electron.BrowserWindow
-const dialog      = electron.dialog;
+const dialog        = electron.dialog;
+
+
+
+
 
 var splitChar = "\\";
 
@@ -79,9 +83,11 @@ var varDbg = false;
 var tplDir = 'App/TPL/';
 var tmpPath = "", tmpSplittedPath = "", fileCounter = 0, dirCounter = 0, featureCounter = 0, i = 0, featureNumber = 0;
 var VarSchema = 450;
-var VarProductCode = uuidV4();
-var VarUpgradeCode = uuidV4();
-var VarSoftwareVersion = '1.0.0.0';
+var VarProductCode = '';//uuidV4();
+var VarUpgradeCode = '';//uuidV4();
+var VarSoftwareVersion = '';
+var VarManufacturer = '';
+var VarSoftwareName = '';
 var VarCabinetID = "CabinetID"
 
 var VarUsedSysFolders = new Array();
@@ -115,7 +121,7 @@ var wxsDirectoryCloseTemplate = '</Directory>\r\n';
 
 var wxsHeaderTemplate = '<?xml version="1.0" encoding="UTF-8"?>\r\n' +
 tabString + '<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">\r\n' +
-tabString + '<Product Id="{' + VarProductCode + '}" Codepage="1252" Language="1033" Manufacturer="VarManufacturer" Name="VarSoftwareName" UpgradeCode="{' + VarUpgradeCode + '}" Version="' + VarSoftwareVersion + '">\r\n' +
+tabString + '<Product Id="VarProductCode" Codepage="1252" Language="1033" Manufacturer="VarManufacturer" Name="VarSoftwareName" UpgradeCode="VarUpgradeCode" Version="VarSoftwareVersion">\r\n' +
 tabString + '<Package Comments="Contact:  Your local administrator" Description="VarSoftwareDesc" InstallerVersion="' + VarSchema + '" Keywords="Installer,MSI,Database" Languages="1033" Manufacturer="VarMSIVendor" Platform="x86" />\r\n' + wxsMainDirectoryOpenTemplate;
 
 var wxsComponentTemplateOpen = '<Component Id="VarComponentName" Guid="{VarGUIDString}" KeyPath="yes">\r\n';
@@ -144,9 +150,11 @@ var wxsFeatureCloseTemplate = '</Feature>\r\n';
 
 var wxsFooterTemplate = tabString + '<Media Id="1" Cabinet="Data1.cab" DiskPrompt="1" EmbedCab="yes" VolumeLabel="DISK1" />\r\n' +
         '<Property Id="DiskPrompt" Value="[1]" />\r\n' +
-        '<Property Id="INSTALLDIR" Secure="yes" />\r\n' +
+        '<Property Id="INSTALLDIR" Secure="yes" />\r\n wxsProperties' +
 '</Product>\r\n' +
 '</Wix>';
+
+var wxsProperties = '';
 
 
 
@@ -211,14 +219,20 @@ function saveWSXFile (contentTxt, fileName, dataType){
             });
         } catch (e) {
             if (varDbg) {console.dir("creating file = " + fileName + " with data: " + WSXSection)};
-            fs.writeFile(fileName, WSXSection, (err) => {
+
+            try {
+              fs.writeFileSync(fileName, WSXSection);
+            } catch (er) {
+                console.error(er);
+            }
+            /*fs.writeFile(fileName, WSXSection, (err) => {
                 if(err){
                     alert("An error ocurred creating the file " + err.message);
                 }
-            });
+            });*/
         }
 
-    return 0;
+    return;
 }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -327,7 +341,7 @@ function generateWSXFileSection (contentTxt){
                         installdirUsed = true;
                       }
                     } else {
-                      console.dir("Skipping dir, used before " + VarSplittedString[x]);
+                      //console.dir("Skipping dir, used before " + VarSplittedString[x]);
                     }
                 }
 
@@ -444,9 +458,6 @@ function buildMSI (){
     wixToolsetParameters = [wsxFile];
 
     resolve = wixToolsetCandle + ' ' + '"' + wsxFile + '"';
-    /*var wixToolsetPath        = path.join(__dirname, 'App/Dependencies/wix311-binaries');
-    var wixToolsetCandle      = path.join(wixToolsetPath, 'candle.exe')
-    var wixToolsetLight       = path.join(wixToolsetPath, 'light.exe')*/
 
 
     const cmd = wixToolsetCandle;
@@ -545,17 +556,61 @@ runExec
 }
 //----------------------------------------------------------------------------------------------------------------------
 
-//----------------------------------------------------------------------------------------------------------------------
-function buildWSX (){
-    var RC;
 
-    RC = saveWSXFile (wxsHeaderTemplate, 'WORKING/' + 'wrapper' + '.wsx', 'wxsHeader');
-    RC = harwestDirsFiles('\IN', 'wrapper', 'files');
-    RC = saveWSXFile (wxsComponentTemplateClose, 'WORKING/' + 'wrapper' + '.wsx', 'closeTag');
-    RC = saveWSXFile ("", 'WORKING/' + 'wrapper' + '.wsx', 'features');
-    RC = saveWSXFile (wxsFooterTemplate, 'WORKING/' + 'wrapper' + '.wsx', 'wxsFooter');
+
+
+  var originalWixobj = path.join(__dirname, 'wrapper.wixobj');
+  var newWixobj = path.join(__dirname, 'WORKING/wrapper.wixobj');
+//----------------------------------------------------------------------------------------------------------------------
+function wixCandle() {
+  var resolve = '';
+    wixToolsetParameters = [wsxFile];
+
+    resolve = wixToolsetCandle + ' ' + '"' + wsxFile + '"';
+
+
+    const cmd = wixToolsetCandle;
+
+    var result = child.spawnSync(cmd,
+                       [path.join(wixToolsetPath, 'wrapper.wsx')]);
+
+    if (result.status !== 0) {
+      process.stderr.write(result.stderr);
+      process.exit(result.status);
+    } else {
+      process.stdout.write(result.stdout);
+      process.stderr.write(result.stderr);
+    }
 }
 //----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function wixMoveConf() {
+  fsExtra.move(originalWixobj, newWixobj, { overwrite: true }, err => {
+    if (err) {
+      console.error(err);
+    } else {
+      console.error('file moved');
+    }
+  });
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function wixLigh() {
+  var resultB = child.spawnSync(wixToolsetLight,
+                   [newWixobj]);
+                   if (result.status !== 0) {
+                     process.stderr.write(result.stderr);
+                     process.exit(result.status);
+                   } else {
+                     process.stdout.write(result.stdout);
+                     process.stderr.write(result.stderr);
+                   }
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+
 
 //----------------------------------------------------------------------------------------------------------------------
 function pause(milliseconds) {
@@ -585,10 +640,6 @@ function createWindow () {
           slashes: true
       }))
 
-        //removeFile (path.join(__dirname,  'WORKING/wrapper.wsx'));
-
-        //buildWSX ();
-
       mainWindow.on('closed', () => {
           mainWindow = null;
       })
@@ -603,7 +654,7 @@ const menu = Menu.buildFromTemplate(MenuTemplate);
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
-app.on('ready', createWindow)
+app.on('ready', createWindow);
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -611,7 +662,7 @@ app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') {
     app.quit();
   }
-})
+});
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -619,5 +670,94 @@ app.on('activate', function () {
   if (mainWindow === null) {
     createWindow();
   }
-})
+});
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+ipcMain.on('send-xml-properties', (event, arg) => {
+    wxsProperties = arg;
+
+    wxsFooterTemplate = wxsFooterTemplate.replace('wxsProperties', wxsProperties);
+
+          console.log(wxsFooterTemplate);
+
+    event.returnValue = true;
+});
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+ipcMain.on('send-msiConf', (event, arg) => {
+    VarManufacturer = arg[0];
+    VarSoftwareVersion = arg[1];
+    VarSoftwareName = arg[2];
+    VarProductCode = arg[3];
+    VarUpgradeCode = arg[4];
+
+    wxsHeaderTemplate = wxsHeaderTemplate.replace('VarProductCode', VarProductCode).replace('VarManufacturer', VarManufacturer).replace('VarSoftwareName', VarSoftwareName).replace('VarUpgradeCode', VarUpgradeCode).replace('VarSoftwareVersion', VarSoftwareVersion);
+    removeFile (path.join(__dirname,  'WORKING/wrapper.wsx'));
+
+      console.log(wxsHeaderTemplate);
+
+    event.returnValue = true;
+});
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+ipcMain.on('send-xml-generate', (event, arg) => {
+  var RC;
+
+    if (arg === 0) {
+      RC = saveWSXFile (wxsHeaderTemplate, 'WORKING/' + 'wrapper' + '.wsx', 'wxsHeader');
+          console.log('building xml ' + arg.toString());
+      event.returnValue = true;
+    }
+
+    if (arg === 1) {
+      RC = harwestDirsFiles('\IN', 'wrapper', 'files');
+          console.log('building xml ' + arg.toString());
+      event.returnValue = true;
+    }
+
+    if (arg === 2) {
+      RC = saveWSXFile (wxsComponentTemplateClose, 'WORKING/' + 'wrapper' + '.wsx', 'closeTag');
+          console.log('building xml ' + arg.toString());
+      event.returnValue = true;
+    }
+
+    if (arg === 3) {
+      RC = saveWSXFile ("", 'WORKING/' + 'wrapper' + '.wsx', 'features');
+          console.log('building xml ' + arg.toString());
+      event.returnValue = true;
+    }
+
+    if (arg === 4) {
+      RC = saveWSXFile (wxsFooterTemplate, 'WORKING/' + 'wrapper' + '.wsx', 'wxsFooter');
+          console.log('building xml ' + arg.toString());
+      event.returnValue = true;
+    }
+});
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+ipcMain.on('send-msi-generate', (event, arg) => {
+  var RC;
+
+    if (arg === 0) {
+      RC = wixCandle ();
+          console.log('wixCandle ' + arg.toString());
+      event.returnValue = true;
+    }
+
+    if (arg === 1) {
+      RC = wixMoveConf();
+          console.log('wixMoveConf ' + arg.toString());
+      event.returnValue = true;
+    }
+
+    if (arg === 2) {
+      RC = wixLight ();
+          console.log('wixCandle ' + arg.toString());
+      event.returnValue = true;
+    }
+});
 //----------------------------------------------------------------------------------------------------------------------
