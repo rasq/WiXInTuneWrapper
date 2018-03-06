@@ -22,9 +22,10 @@ To build project you must:
 	npm install --save mt-files-downloader
 	npm install bootstrap@4.0.0-alpha.6 -S
 	npm install jquery -S
-	npm install child_process -S
+	npm install --save child_process
 	npm install --save async-child-process
 	npm install --save random-int
 	npm install --save uuid-validate
+	npm install --save xml-parse
 	
 4. Run by: npm start electron

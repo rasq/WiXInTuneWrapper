@@ -425,14 +425,38 @@ function formConfigMSI(){
 
     if (isOK === true) {
             console.log('itsOK');
-      ipcRenderer.sendSync('send-msiConf', tmpMSIConf);
-      ipcRenderer.sendSync('send-xml-properties', xmlPropertyTpl);
-      ipcRenderer.sendSync('send-xml-generate', 0);
-      ipcRenderer.sendSync('send-xml-generate', 1);
-      ipcRenderer.sendSync('send-xml-generate', 2);
-      ipcRenderer.sendSync('send-xml-generate', 3);
-      ipcRenderer.sendSync('send-xml-generate', 4);
+      try {
+        ipcRenderer.sendSync('send-msiConf', tmpMSIConf);
+      } catch (er) {}
+
+      try {
+        ipcRenderer.sendSync('send-xml-properties', xmlPropertyTpl);
+      } catch (er) {}
+
+      try {
+        ipcRenderer.sendSync('send-xml-generate', 0);
+      } catch (er) {}
+
+      try {
+        ipcRenderer.sendSync('send-xml-generate', 1);
+      } catch (er) {}
+
+      try {
+        ipcRenderer.sendSync('send-xml-generate', 2);
+      } catch (er) {}
+
+      try {
+        ipcRenderer.sendSync('send-xml-generate', 3);
+      } catch (er) {}
+
+      try {
+        ipcRenderer.sendSync('send-xml-generate', 4);
+      } catch (er) {}
+
+      ipcRenderer.sendSync('send-xml-normalize');
             console.log('xml generated');
+
+      ipcRenderer.send('send-wxsPath', 'path');
     } else {
             console.log('itsNotOK');
     }
@@ -483,5 +507,18 @@ function generateMSI(arg) {
   if (arg === 2) {
     ipcRenderer.sendSync('send-msi-generate', 2);
   }
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+ipcRenderer.on('get-wxsPath', (event, arg) => {
+  wxsFilePathChange(arg);
+})
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function wxsFilePathChange(path) {
+  var pathDiv = document.getElementById("wxsFilePath");
+    pathDiv.innerHTML = path;
 }
 //----------------------------------------------------------------------------------------------------------------------
