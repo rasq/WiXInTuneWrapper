@@ -134,6 +134,8 @@ function startApp(initTab){
 
     HideAll(initTab, '.ui.Opcja01');
     HideAllCheckBoxMSI();
+
+    $('.ui.active.dimmer').fadeOut('fast');
 }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -182,7 +184,9 @@ function CheckBoxMSIActions(state, action){
 //----------------------------------------------------------------------------------------------------------------------
 function harvestDataFromForms(pageID){
   if (pageID == 1) {
-    formConfigMSI();
+    $('.ui.active.dimmer').fadeIn('fast',function(){
+      formConfigMSI();
+    });
   } else if (pageID == 2) {
 
   } else if (pageID == 3) {
@@ -425,41 +429,34 @@ function formConfigMSI(){
 
     if (isOK === true) {
             console.log('itsOK');
-      try {
-        ipcRenderer.sendSync('send-msiConf', tmpMSIConf);
-      } catch (er) {}
 
-      try {
-        ipcRenderer.sendSync('send-xml-properties', xmlPropertyTpl);
-      } catch (er) {}
+        try {
+          ipcRenderer.send('send-msiConf', tmpMSIConf); //sendSync
+        } catch (er) {}
 
-      try {
-        ipcRenderer.sendSync('send-xml-generate', 0);
-      } catch (er) {}
+        try {
+          ipcRenderer.send('send-xml-properties', xmlPropertyTpl);
+        } catch (er) {}
 
-      try {
-        ipcRenderer.sendSync('send-xml-generate', 1);
-      } catch (er) {}
+          ipcRenderer.send('send-xml-generate', '');
 
-      try {
-        ipcRenderer.sendSync('send-xml-generate', 2);
-      } catch (er) {}
+          ipcRenderer.send('send-xml-normalize');
+              console.log('xml generated');
 
-      try {
-        ipcRenderer.sendSync('send-xml-generate', 3);
-      } catch (er) {}
-
-      try {
-        ipcRenderer.sendSync('send-xml-generate', 4);
-      } catch (er) {}
-
-      ipcRenderer.sendSync('send-xml-normalize');
-            console.log('xml generated');
-
-      ipcRenderer.send('send-wxsPath', 'path');
+        ipcRenderer.send('send-wxsPath', 'path');
     } else {
             console.log('itsNotOK');
     }
+
+
+      $('.ui.active.dimmer').fadeOut('fast');
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function pause(milliseconds) {
+	var dt = new Date();
+	 while ((new Date()) - dt <= milliseconds) { /* Do nothing */ }
 }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -502,6 +499,7 @@ function generateMSI(arg) {
   if (arg === 0) {
     ipcRenderer.sendSync('send-msi-generate', 0);
     ipcRenderer.sendSync('send-msi-generate', 1);
+    ipcRenderer.send('send-wxsobjPath', 'path');
   }
 
   if (arg === 2) {
@@ -517,8 +515,21 @@ ipcRenderer.on('get-wxsPath', (event, arg) => {
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
+ipcRenderer.on('get-wxsobjPath', (event, arg) => {
+  wxsobjFilePathChange(arg);
+})
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
 function wxsFilePathChange(path) {
   var pathDiv = document.getElementById("wxsFilePath");
+    pathDiv.innerHTML = path;
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function wxsobjFilePathChange(path) {
+  var pathDiv = document.getElementById("wxsobjFilePath");
     pathDiv.innerHTML = path;
 }
 //----------------------------------------------------------------------------------------------------------------------

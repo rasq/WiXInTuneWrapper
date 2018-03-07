@@ -12,6 +12,8 @@ const runExec   = require('async-child-process');
 const randomInt = require('random-int');
 const url       = require('url')
 const xmlParse  = require("xml-parse");
+const DOMParser = require('xmldom').DOMParser;
+const XMLSerializer = require('xmldom').XMLSerializer
 
 const {ipcMain} = require('electron');
 
@@ -197,6 +199,8 @@ function harwestDirsFiles(varPathToScan, wxsName, dataType) {
 
 //----------------------------------------------------------------------------------------------------------------------
 function saveWSXFile (contentTxt, fileName, dataType){
+  var x = 0;
+
     if (wsxFile == '') {
       wsxFile = path.join(__dirname, fileName);
     }
@@ -204,7 +208,14 @@ function saveWSXFile (contentTxt, fileName, dataType){
     if (dataType == 'dirs') {
         WSXSection = generateWSXDirectorySection (contentTxt);
     } else if (dataType == 'files') {
-        WSXSection = generateWSXFileSection (contentTxt);
+        if (asarFiles.length > 0) {
+          for (x = 0; x < asarFiles.length; ++x){
+            if (contentTxt.includes(asarFiles[x])) {
+              return;
+            }
+          }
+        }
+          WSXSection = generateWSXFileSection (contentTxt);
     } else if (dataType == 'features') {
         WSXSection = generateWSXFeatureSection ();
     } else if (dataType == 'closeTag') {
@@ -251,7 +262,7 @@ function loadXMLTemplateFile (xmlFileToRead){
 function generateWSXDirectorySection (contentTxt){
    var VarSplittedString = contentTxt.split(splitChar);
 
-    var tmpString = wxsDirectoryOpenTemplate.replace("VarFilePathName", contentTxt).replace("VarGUIDString", uuidV4()).replace("VarFileID", VarSplittedString[VarSplittedString.length -1].replace(".","") + "_" + dirCounter);
+    var tmpString = wxsDirectoryOpenTemplate.replace("VarFilePathName", contentTxt).replace("VarGUIDString", uuidV4()).replace("VarFileID", VarSplittedString[VarSplittedString.length -1].replace(".","") + "_" + dirCounter + '_' + randomInt(999)); // + '_' + randomInt(999)
 
         tmpString = tmpString + wxsDirectoryCloseTemplate;
 
@@ -262,15 +273,28 @@ function generateWSXDirectorySection (contentTxt){
 //----------------------------------------------------------------------------------------------------------------------
 
 var tmpFileTab = "";
+var dirCount = 0;
+var asarFiles = new Array();
 //----------------------------------------------------------------------------------------------------------------------
 function generateWSXFileSection (contentTxt){
+    var strPos = 0, res = "";
+
+      if (contentTxt.includes(".asar")) { //temp fix for .asar files that are like directories for Klaw-sync
+        strPos = contentTxt.indexOf(".asar");
+        res = contentTxt.substring(0, strPos + 5);
+        contentTxt = res;
+        asarFiles.push(contentTxt);
+      }
+
     var VarSplittedString = contentTxt.split(splitChar);
     var tmpSplittedString = "", tmpCommponentName = "", tmpFnPath = "", tmpString = "", tmpTab = "";
     var x = 0, y = 0, z = 0;
     var isSysFolder = false;
     var skipDir = false;
 
-        for (x = 0; x < VarSplittedString.length -1; ++x) {
+        ++dirCount;
+
+        for (x = 0; x < VarSplittedString.length - 1; ++x) {
             tmpFnPath = tmpFnPath + VarSplittedString[x];
         }
 
@@ -301,8 +325,7 @@ function generateWSXFileSection (contentTxt){
                 }
 
                 if (isSysFolder == false) {
-                    tmpString = tmpString + tmpTab + wxsDirectoryOpenTemplate;
-                    tmpString = tmpString.replace('VarDirectoryName', VarSplittedString[x]).replace("TARGETDIR", normalizeStringName (VarSplittedString[x]) + '_' + randomInt(999));
+                    tmpString = tmpString + tmpTab + wxsDirectoryOpenTemplate.replace('VarDirectoryName', VarSplittedString[x]).replace("TARGETDIR", normalizeStringName (VarSplittedString[x]) + '_' + randomInt(999) + '_' + dirCount); //temp fix  + '_' + dirCount - remove after xml  ormalization
                 } else {
                     for (z = 0; z < VarUsedSysFolders.length - 1; ++z) {
                       if (VarUsedSysFolders[z] == VarSplittedString[x]) {
@@ -311,8 +334,7 @@ function generateWSXFileSection (contentTxt){
                     }
 
                     if (skipDir == false) {
-                      tmpString = tmpString + tmpTab + wxsSysDirectoryOpenTemplate;
-                      tmpString = tmpString.replace('VarSystemFolderName', VarSplittedString[x]);
+                      tmpString = tmpString + tmpTab + wxsSysDirectoryOpenTemplate.replace('VarSystemFolderName', VarSplittedString[x]);
                       if (installdirUsed == false){
                         tmpString = tmpString + wxsINSTALLDIR;
                         installdirUsed = true;
@@ -322,8 +344,7 @@ function generateWSXFileSection (contentTxt){
                 isSysFolder = false;
                 y = 0;
             }
-                tmpString = tmpString + tmpTab + tabString + wxsComponentTemplateOpen;
-                tmpString = tmpString.replace("VarGUIDString", uuidV4());
+                tmpString = tmpString + tmpTab + tabString + wxsComponentTemplateOpen.replace("VarGUIDString", uuidV4());
 
                 tmpCommponentName = normalizeStringName (VarSplittedString[VarSplittedString.length -1].replace(/-/g,"_"));
                 tmpCommponentName = tmpCommponentName + '_' + featureNumber + '_' + VarFilesCounter[featureNumber].length;
@@ -400,11 +421,15 @@ function normalizeStringName (varStringCName){
 
 //----------------------------------------------------------------------------------------------------------------------
 function normalizeXml (varXml){
-    var xmlDoc = new xmlParse.DOM(xmlParse.parse(varXml));
+    //var xmlDoc = new xmlParse.DOM(xmlParse.parse(varXml));
     //var root = xmlDoc.document.getElementsByTagName("Directory")[0];
 
       //  console.log(root.childNodes[0].parentNode);
-      console.log(xmlDoc);
+      //console.log(xmlDoc);
+    var content = fs.readFileSync(varXml, "utf8");
+    var doc = new DOMParser().parseFromString(content, 'text/xml');
+    var str = new XMLSerializer().serializeToString(doc);
+      //console.info(doc);
 }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -557,35 +582,16 @@ ipcMain.on('send-msiConf', (event, arg) => {
 ipcMain.on('send-xml-generate', (event, arg) => {
   var RC;
 
-    if (arg === 0) {
+          console.log('building xml 0');
       RC = saveWSXFile (wxsHeaderTemplate, 'WORKING/' + 'wrapper' + '.wsx', 'wxsHeader');
-          console.log('building xml ' + arg.toString());
-      event.returnValue = true;
-    }
-
-    if (arg === 1) {
+          console.log('building xml 1');
       RC = harwestDirsFiles('\IN', 'wrapper', 'files');
-          console.log('building xml ' + arg.toString());
-      event.returnValue = true;
-    }
-
-    if (arg === 2) {
+          console.log('building xml 2');
       RC = saveWSXFile (wxsComponentTemplateClose, 'WORKING/' + 'wrapper' + '.wsx', 'closeTag');
-          console.log('building xml ' + arg.toString());
-      event.returnValue = true;
-    }
-
-    if (arg === 3) {
+          console.log('building xml 3');
       RC = saveWSXFile ("", 'WORKING/' + 'wrapper' + '.wsx', 'features');
-          console.log('building xml ' + arg.toString());
-      event.returnValue = true;
-    }
-
-    if (arg === 4) {
+          console.log('building xml 4');
       RC = saveWSXFile (wxsFooterTemplate, 'WORKING/' + 'wrapper' + '.wsx', 'wxsFooter');
-          console.log('building xml ' + arg.toString());
-      event.returnValue = true;
-    }
 });
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -596,10 +602,16 @@ ipcMain.on('send-wxsPath', (event, arg) => {
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
+ipcMain.on('send-wxsobjPath', (event, arg) => {
+  event.sender.send('get-wxsobjPath', newWixobj);
+})
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
 ipcMain.on('send-xml-normalize', (event, arg) => {
   var RC;
 
-      RC = normalizeXml (path.join(__dirname,  'WORKING/wrapper.wsx'));
+      RC = normalizeXml (wsxFile);
           console.log('normalizing xml ');
       event.returnValue = true;
 });

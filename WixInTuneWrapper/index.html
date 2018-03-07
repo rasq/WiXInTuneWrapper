@@ -63,10 +63,6 @@
     var template = `
         <div class="starter">
             <div class="ui center aligned loading grid">
-                <div class="ui dimmer">
-                    <div class="ui big text loader">${translate("Loading application")}</div>
-                </div>
-
                 <div class="row">
                     </br>
                     </br>
@@ -99,8 +95,10 @@
         </div>
 
 
-
           <div class="ui dashboard">
+            <div class="ui active dimmer">
+              <div class="ui indeterminate text loader">Gathering Files</div>
+            </div>
             <div class="content">
                 <div class="ui left vertical inverted sidebar labeled icon menu visible">
                     <a class="Opcja01-sidebar item">
@@ -289,7 +287,7 @@
                                 </br>
                                 <div class="content">
                                   <div class="ui medium labels">
-                                    <div class="ui label">
+                                    <div id="wxsobjFilePath" class="ui label">
                                       WIXobj File Location.
                                     </div>
                                     <button class="ui labeled icon button">
