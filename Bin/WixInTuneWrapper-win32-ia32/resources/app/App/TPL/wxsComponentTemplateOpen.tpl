@@ -1,1 +1,0 @@
-<Component Id="VarComponentName" Guid="{VarGUIDString}" KeyPath="yes">

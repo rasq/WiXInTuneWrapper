@@ -1,1 +1,0 @@
-<Directory Id="TARGETDIR" Name="VarDirectoryName">

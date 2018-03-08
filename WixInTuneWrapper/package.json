@@ -1,7 +1,7 @@
-{
+{ "productName": "WiX Tools MSI wrapper",
   "name": "WiX-Tools-MSI-wrapper",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "description": "A minimal Electron based MSI builder application",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -20,11 +20,11 @@
       "category": "Utility"
     }
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/rasq/WiXInTuneWrapper",
   "keywords": [
-    "Electron"
+    "Electron, wixtools, msi, intune"
   ],
-  "author": "GitHub",
+  "author": "Rasq",
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^1.7.12",
@@ -46,7 +46,6 @@
     "klaw": "^2.1.1",
     "klaw-sync": "^3.0.2",
     "mkdirp": "^0.5.1",
-    "mt-files-downloader": "git+https://github.com/zeltice/node-mt-files-downloader.git",
     "needle": "^2.2.0",
     "os": "^0.1.1",
     "path": "^0.12.7",
