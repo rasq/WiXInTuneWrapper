@@ -1,4 +1,5 @@
-{ "productName": "WiX Tools MSI wrapper",
+{
+  "productName": "WiX Tools MSI wrapper",
   "name": "WiX-Tools-MSI-wrapper",
   "version": "1.0.0",
   "description": "A minimal Electron based MSI builder application",
@@ -27,7 +28,7 @@
   "author": "Rasq",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^1.7.12",
+    "electron": "^1.8.3",
     "electron-packager": "^11.0.1"
   },
   "dependencies": {

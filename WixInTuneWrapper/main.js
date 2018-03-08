@@ -77,12 +77,16 @@ let paths, item, mainWindow, stats, filterFn;
 var pathVar, WSXSection;
 
 
+var projDirectory = 'C:\\projekty';
 var wixToolsetPath        = path.join(__dirname, 'App/Dependencies/wix311-binaries');
 var wixToolsetCandle      = path.join(wixToolsetPath, 'candle.exe')
 var wixToolsetLight       = path.join(wixToolsetPath, 'light.exe')
 var originalWixobj        = path.join(__dirname, 'wrapper.wixobj');
 var newWixobj             = path.join(__dirname, 'WORKING/wrapper.wixobj');
 var wsxFilePath           = path.join(__dirname, 'WORKING/wrapper.wsx');
+/*var originalWixobj        = path.join(projDirectory, 'wrapper.wixobj');
+var newWixobj             = path.join(projDirectory, 'WORKING/wrapper.wixobj');
+var wsxFilePath           = path.join(projDirectory, 'WORKING/wrapper.wsx');*/
 
 var wsxFile               = '';
 
@@ -180,18 +184,19 @@ function harwestDirsFiles(varPathToScan, wxsName, dataType) {
           } else {
                 filterFn = item => item.path.indexOf('.DS_Store') < 0
               paths = klawSync(varPathToScan, {nodir: true, filter: filterFn});
+              //paths = klawSync(path.join(projDirectory, varPathToScan), {nodir: true, filter: filterFn});
           }
         } catch (er) {
           console.error(er);
         }
 
-        for (i = 0; i < paths.length; ++i) {
-          try {
-            saveWSXFile (paths[i].path, 'WORKING/' + wxsName + '.wsx', dataType);
-          } catch (er) {
-            console.error(er);
+          for (i = 0; i < paths.length; ++i) {
+            try {
+              saveWSXFile (paths[i].path, 'WORKING/' + wxsName + '.wsx', dataType);
+            } catch (er) {
+              console.error(er);
+            }
           }
-        }
 
     return;
 }
@@ -203,7 +208,9 @@ function saveWSXFile (contentTxt, fileName, dataType){
 
     if (wsxFile == '') {
       wsxFile = path.join(__dirname, fileName);
+      //wsxFile = path.join(projDirectory, fileName);
     }
+
 
     if (dataType == 'dirs') {
         WSXSection = generateWSXDirectorySection (contentTxt);
@@ -573,6 +580,7 @@ ipcMain.on('send-msiConf', (event, arg) => {
 
     wxsHeaderTemplate = wxsHeaderTemplate.replace('VarProductCode', VarProductCode).replace('VarManufacturer', VarManufacturer).replace('VarSoftwareName', VarSoftwareName).replace('VarUpgradeCode', VarUpgradeCode).replace('VarSoftwareVersion', VarSoftwareVersion);
     removeFile (path.join(__dirname,  'WORKING/wrapper.wsx'));
+    //removeFile (path.join(projDirectory, 'WORKING/wrapper.wsx'));
 
     event.returnValue = true;
 });
@@ -604,6 +612,13 @@ ipcMain.on('send-wxsPath', (event, arg) => {
 //----------------------------------------------------------------------------------------------------------------------
 ipcMain.on('send-wxsobjPath', (event, arg) => {
   event.sender.send('get-wxsobjPath', newWixobj);
+})
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+ipcMain.on('send-projectFolderPath', (event, arg) => {
+  event.sender.send('get-projectFolderPath', path.join(__dirname,  'IN'));
+  //event.sender.send('get-projectFolderPath', path.join(projDirectory,  'IN'));
 })
 //----------------------------------------------------------------------------------------------------------------------
 
