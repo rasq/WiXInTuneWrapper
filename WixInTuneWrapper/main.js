@@ -77,7 +77,7 @@ let paths, item, mainWindow, stats, filterFn;
 var pathVar, WSXSection;
 
 
-var projDirectory = 'C:\\projekty';
+var projDirectory = __dirname;
 var wixToolsetPath        = path.join(__dirname, 'App/Dependencies/wix311-binaries');
 var wixToolsetCandle      = path.join(wixToolsetPath, 'candle.exe')
 var wixToolsetLight       = path.join(wixToolsetPath, 'light.exe')
@@ -180,10 +180,10 @@ function harwestDirsFiles(varPathToScan, wxsName, dataType) {
 
         try {
           if (dataType == 'dirs') {
-              paths = klawSync(varPathToScan, {nofile: true});
+              paths = klawSync(path.join(projDirectory, varPathToScan), {nofile: true});
           } else {
                 filterFn = item => item.path.indexOf('.DS_Store') < 0
-              paths = klawSync(varPathToScan, {nodir: true, filter: filterFn});
+              paths = klawSync(path.join(projDirectory, varPathToScan), {nodir: true, filter: filterFn});
               //paths = klawSync(path.join(projDirectory, varPathToScan), {nodir: true, filter: filterFn});
           }
         } catch (er) {
@@ -192,7 +192,7 @@ function harwestDirsFiles(varPathToScan, wxsName, dataType) {
 
           for (i = 0; i < paths.length; ++i) {
             try {
-              saveWSXFile (paths[i].path, 'WORKING/' + wxsName + '.wsx', dataType);
+              saveWSXFile (paths[i].path, 'WORKING\\' + wxsName + '.wsx', dataType);
             } catch (er) {
               console.error(er);
             }
@@ -207,7 +207,7 @@ function saveWSXFile (contentTxt, fileName, dataType){
   var x = 0;
 
     if (wsxFile == '') {
-      wsxFile = path.join(__dirname, fileName);
+      wsxFile = path.join(projDirectory, fileName);
       //wsxFile = path.join(projDirectory, fileName);
     }
 
@@ -232,15 +232,15 @@ function saveWSXFile (contentTxt, fileName, dataType){
     }
 
         try {
-            stats = fs.statSync(fileName);
+            stats = fs.statSync(path.join(projDirectory, fileName));
               try {
-                fs.appendFileSync(fileName, WSXSection);
+                fs.appendFileSync(path.join(projDirectory, fileName), WSXSection);
               } catch (er) {
                   console.error(er);
               }
         } catch (e) {
             try {
-              fs.writeFileSync(fileName, WSXSection);
+              fs.writeFileSync(path.join(projDirectory, fileName), WSXSection);
             } catch (er) {
                 console.error(er);
             }
