@@ -1,21 +1,23 @@
 //const klaw      = require('klaw')
 //const through2  = require('through2')
 
-const electron  = require('electron')
-const fsExtra   = require('fs-extra')
-const klawSync  = require('klaw-sync')
-const fs        = require('fs');
-const path      = require('path')
-const uuidV4    = require('uuid/v4');
-const child     = require('child_process');
-const runExec   = require('async-child-process');
-const randomInt = require('random-int');
-const url       = require('url')
-const xmlParse  = require("xml-parse");
-const DOMParser = require('xmldom').DOMParser;
+const electron      = require('electron')
+const fsExtra       = require('fs-extra')
+const klawSync      = require('klaw-sync')
+const fs            = require('fs');
+const path          = require('path')
+const uuidV4        = require('uuid/v4');
+const child         = require('child_process');
+const runExec       = require('async-child-process');
+const randomInt     = require('random-int');
+const url           = require('url')
+const xmlParse      = require("xml-parse");
+const XMLWriter     = require('xml-writer');
+const AdmZip        = require('adm-zip');
+const DOMParser     = require('xmldom').DOMParser;
 const XMLSerializer = require('xmldom').XMLSerializer
 
-const {ipcMain} = require('electron');
+const {ipcMain}     = require('electron');
 
 const app           = electron.app
 const Menu          = electron.Menu
@@ -33,10 +35,14 @@ const MenuTemplate = [
     submenu: [
       {
         label: 'Load conf file',
-        click() {}
+        click() {
+          loadConfig();
+        }
       }, {
         label: 'Save conf file',
-        click() {}
+        click() {
+          saveConfig();
+        }
       }, {
         label: 'Quit',
         accelerator: process.platform == 'darwin' ? 'Command+Q' : 'Ctrl+Q',
@@ -77,7 +83,7 @@ let paths, item, mainWindow, stats, filterFn;
 var pathVar, WSXSection;
 
 
-var projDirectory = __dirname;
+var projDirectory         = __dirname;
 var wixToolsetPath        = path.join(__dirname, 'App/Dependencies/wix311-binaries');
 var wixToolsetCandle      = path.join(wixToolsetPath, 'candle.exe')
 var wixToolsetLight       = path.join(wixToolsetPath, 'light.exe')
@@ -164,6 +170,26 @@ var wxsFooterTemplate = tabString + '<Media Id="1" Cabinet="Data1.cab" DiskPromp
         '<Property Id="INSTALLDIR" Secure="yes" />\r\n wxsProperties' +
 '</Product>\r\n' +
 '</Wix>';
+
+var wxsLaunchConditionTemplate = '<Condition Message="VarComment">\r\n' +
+    '<![CDATA[VarCondition]]>\r\n' +
+'</Condition>';
+
+var wxsShortcutTemplate = '<DirectoryRef Id="ApplicationProgramsFolder">\r\n' +
+    '<Component Id="ApplicationShortcut" Guid="PUT-GUID-HERE">\r\n' +
+        '<Shortcut Id="ApplicationStartMenuShortcut"\r\n' +
+                  'Name="My Application Name"\r\n' +
+                  'Description="My Application Description"\r\n' +
+                  'Target="[#myapplication.exe]"\r\n' +
+                  'WorkingDirectory="APPLICATIONROOTDIRECTORY"/>\r\n' +
+        '<RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall"/>\r\n' +
+        '<RegistryValue Root="HKCU" Key="Software\Microsoft\MyApplicationName" Name="installed" Type="integer" Value="1" KeyPath="yes"/>\r\n' +
+    '</Component>\r\n' +
+'</DirectoryRef>';
+
+var wxsShortcutFolderTemplate = '<Directory Id="ProgramMenuFolder">\r\n' +
+    '<Directory Id="ApplicationProgramsFolder" Name="My Application Name"/>\r\n' +
+'</Directory>';
 
 var wxsProperties = '';
 
@@ -497,8 +523,6 @@ function wixLight() {
 }
 //----------------------------------------------------------------------------------------------------------------------
 
-
-
 //----------------------------------------------------------------------------------------------------------------------
 function pause(milliseconds) {
 	var dt = new Date();
@@ -506,6 +530,66 @@ function pause(milliseconds) {
 }
 //----------------------------------------------------------------------------------------------------------------------
 
+//----------------------------------------------------------------------------------------------------------------------
+function createDirectory(directory) {
+  if(!fs.existsSync(directory)){
+      fs.mkdirSync(directory, 0766, function(err){
+          if(err){
+              console.log(err);
+          }
+      });
+  }
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function archiveProject(zipName) {
+  var zip = new AdmZip();
+  var inD = path.join(projDirectory, 'IN');
+  var wD = path.join(projDirectory, 'WORKING');
+
+      zip.addLocalFolder(inD);
+      zip.addLocalFolder(wD);
+      zip.writeZip(path.join(outDirectory, zipName + ".zip"));
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function saveConfig() {
+  var xmlConfig = new XMLWriter;
+
+
+  /*  xmlConfig.startDocument().startElement('root').writeAttribute('PKGName', data[0]);
+    xmlConfig.writeElement('Manufacturer', data[1]);
+    xmlConfig.writeElement('AppName', data[2]);
+    xmlConfig.writeElement('AppVersion', data[3]);
+    xmlConfig.writeElement('PCode', data[4]);
+    xmlConfig.writeElement('UCode', data[5]);
+    xmlConfig.writeElement('ARPNOMODIFY', data[6]);
+    xmlConfig.writeElement('ARPNOREMOVE', data[7]);
+    xmlConfig.writeElement('ARPNOREPAIR', data[8]);
+    xmlConfig.writeElement('INPath', data[9]);
+    xmlConfig.writeElement('ICO', data[10]);
+    xmlConfig.endDocument();
+
+
+    console.log(xmlConfig.toString());*/
+
+
+  /*  w = new XMLWriter;
+    xw.startDocument();
+    xw.startElement('root');
+    xw.writeAttribute('foo', 'value');
+    xw.text('Some content');
+    xw.endDocument();*/
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function loadConfig() {
+
+}
+//----------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -527,9 +611,37 @@ function createWindow () {
           slashes: true
       }))
 
+        createDirectory(path.join(__dirname, 'IN'));
+        createDirectory(path.join(__dirname, 'WORKING'));
+        createDirectory(path.join(__dirname, 'OUT'));
+
+
+        var xmlData = new Array();
+        var c = 0;
+
+        for (c = 0; c < 11; c++) {
+          xmlData[c] = c.toString();
+        }
+
+        saveConfig(xmlData);
+
       mainWindow.on('closed', () => {
           mainWindow = null;
       })
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+/*function selectDirectory() {
+  return dialog.showOpenDialog(mainWindow, {
+    properties: ['openDirectory']
+  });
+}*/
+
+exports.selectDirectory = function () {
+  return dialog.showOpenDialog(mainWindow, {
+    properties: ['openDirectory']
+  });
 }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -604,6 +716,12 @@ ipcMain.on('send-xml-generate', (event, arg) => {
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
+ipcMain.on('archiwizeFiles', (event, arg) => {
+  archiveProject(arg);
+});
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
 ipcMain.on('send-wxsPath', (event, arg) => {
   event.sender.send('get-wxsPath', wsxFile);
 })
@@ -654,4 +772,14 @@ ipcMain.on('send-msi-generate', (event, arg) => {
       event.returnValue = true;
     }
 });
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+/*ipcMain.on('selectFolder', (event, arg) => {
+  var RC;
+
+      RC = selectDirectory ();
+          console.log(RC);
+      event.sender.send('getDirectory', RC);
+});*/
 //----------------------------------------------------------------------------------------------------------------------

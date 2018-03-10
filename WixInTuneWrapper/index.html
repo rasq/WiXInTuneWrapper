@@ -186,7 +186,7 @@
                                   </div>
                                   </br></br>
                                   <a class="getFolder-button item">
-                                    <i id="selectFolder" class="ui button">Select project folder</i>
+                                    <i id="selectFolder" class="ui button">Select input folder</i>
                                     <input id="selectFolderA" type="file" style="display: none" />
                                   </a>
                                   <div id="projectFolderPath" class="ui label">
@@ -236,11 +236,20 @@
                                       <div id="customActionDiv">
 
                                       </div>
+                                    </br></br>
                                 </div>
                                 <div class="CB_LC">
                                   <p></p>
                                   <h3>Launch Conditions - config</h3>
                                   <p>This section is still under development.</p>
+                                  <p></p>
+                                  <a class="addLC-button item">
+                                    <i id="addLC" class="ui medium green button LC" onclick="addLaunchCondition()">${translate("Add launch codition")}</i>
+                                  </a>
+                                    <div id="launchCondition">
+
+                                    </div>
+                                  </br></br>
                                 </div>
                                 <div class="CB_Shortcuts">
                                   <p></p>
@@ -311,7 +320,7 @@
                                     </button>
                                   </div>
                                   <p></p>
-                                    <i class="ui fluid green button">${translate("Generate/archive project directory")}</i>
+                                    <i class="ui fluid green button" onclick="archivizeFiles()">${translate("Generate/archive project directory")}</i>
                                   </br>
                                 </div>
                                 </br>

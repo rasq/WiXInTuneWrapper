@@ -8,6 +8,7 @@
 const remote        = require('electron').remote;
 const dialog        = remote.dialog;
 const session       = remote.session;
+const mainProcess   = remote.require('./main')
 
 const uuidV4        = require('uuid/v4');
 const uuidValidate  = require('uuid-validate');
@@ -17,6 +18,11 @@ const {ipcRenderer} = require('electron');
 
 
 
+
+
+var icoPath = '';
+var inPath =  '';
+var appCfg                = new Array();
 
 var installExecuteSeqTPLH = "<InstallExecuteSequence>" +
          "<Custom Action='actionName' After='InstallFiles'/>" +
@@ -29,10 +35,10 @@ var installExecuteSeqTPLH = "<InstallExecuteSequence>" +
 
 
 
-$('.getFolder-button').click(function(){
+/*$('.getFolder-button').click(function(){
   selectDirectory();
   //document.getElementById('selectFolderA').click();
-});
+});*/
 
 $('.getIco-button').click(function(){
   var dataIco = document.getElementById("selectIcoA");
@@ -51,6 +57,7 @@ function updateIcoVar(fileInput) {
             }
             var img = document.getElementById("thumbnil");
             img.file = file;
+            icoPath = file.path;
             //console.log('value ' + file.path);
             var reader = new FileReader();
             reader.onload = (function(aImg) {
@@ -65,6 +72,12 @@ function updateIcoVar(fileInput) {
 //----------------------------------------------------------------------------------------------------------------------
 $('.start-button').click(function(){
   startApp('.Opcja01-sidebar');
+});
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+document.getElementById('selectFolder').addEventListener('click', _ => {
+    projectFolderPathChange(mainProcess.selectDirectory());
 });
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -248,8 +261,33 @@ function addCustomProp() {
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
+function addLaunchCondition() {
+    var div = document.createElement('div');
+
+      div.className = 'row';
+
+      div.innerHTML = '<p></p>' +
+        '<div class="ui floated input" style="width: 45%;">' +
+          '<input type="text" id="ConditionVal" name="ConditionVal" placeholder="Condition">' +
+        '</div>' +
+        '<div class="ui right floated action input" style="margin-left: 10px; width: 45%;">' +
+          '<input type="text" id="DescriptionVal" name="DescriptionVal" placeholder="Description">' +
+          '<i class="ui green button PC" onclick="removeLaunchCondition(this)">-</i>' +
+        '</div>';
+
+      document.getElementById('launchCondition').appendChild(div);
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
 function removeCustomProp(input) {
     document.getElementById('customProperties').removeChild(input.parentNode.parentNode);
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function removeLaunchCondition(input) {
+    document.getElementById('launchCondition').removeChild(input.parentNode.parentNode);
 }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -261,17 +299,9 @@ function addCA() {
 
       div.innerHTML = '<p></p>' +
         '<div class="ui input" style="width: 25%;">' +
-          '<input type="text" id="PropName" name="PropName" placeholder="Name">' +
+          '<input type="text" id="CAName" name="CAName" placeholder="Name">' +
         '</div>' +
-        '<a class="addBF-button item" style="margin-left: 5px;">' +
-          '<i id="addBF" class="ui medium green button CA" onclick="addBF()">Add File</i>' +
-        '</a>' +
-        '<div class="ui action input" style="margin-left: 5px; width: 25%;">' +
-          '<input type="text" id="PropValue" name="PropValue" placeholder="Call function">' +
-          '<i class="ui green button PC" onclick="removeCA(this)">-</i>' +
-        '</div>'+
-        '<div class="ui" style="display: table-cell; width: 50%;">' +
-          '<select class="ui dropdown" style="width: 20%; display: table-cell;">' +
+          '<select id="CAType" name="CAType" class="ui dropdown" style="width: 20%; display: table-cell;">' +
             '<option value="">Execute</option>' +
             '<option value="6">commit</option>' +
             '<option value="5">deferred</option>' +
@@ -281,15 +311,13 @@ function addCA() {
             '<option value="1">rollback</option>' +
             '<option value="0">secondSequence</option>' +
           '</select>' +
-            '<select class="ui dropdown" style="width: 20%; margin-left: 5px; display: table-cell;">' +
-              '<option value="">Impersonate</option>' +
-              '<option value="1">Yes</option>' +
-              '<option value="0">No</option>' +
-            '</select>' +
+        '<a class="addBF-button item" style="margin-left: 5px;">' +
+          '<i id="addBF" class="ui medium green button CA" onclick="addBFCA()">Add File</i>' +
+        '</a>' +
+        '<div class="ui action input" style="margin-left: 5px; width: 25%;">' +
+          '<input type="text" id="CAFName" name="CAFName" placeholder="Call function">' +
+          '<i class="ui green button PC" onclick="removeCA(this)">-</i>' +
         '</div>';
-
-
-
 
       document.getElementById('customActionDiv').appendChild(div);
 }
@@ -300,8 +328,6 @@ function removeCA(input) {
     document.getElementById('customActionDiv').removeChild(input.parentNode.parentNode);
 }
 //----------------------------------------------------------------------------------------------------------------------
-
-
 
 //----------------------------------------------------------------------------------------------------------------------
 function formConfigMSI(){
@@ -428,30 +454,120 @@ function formConfigMSI(){
 
 
 
+      if (isOK === true) {
+              console.log('itsOK');
 
-    if (isOK === true) {
-            console.log('itsOK');
+          try {
+            ipcRenderer.send('send-msiConf', tmpMSIConf); //sendSync
+          } catch (er) {}
 
-        try {
-          ipcRenderer.send('send-msiConf', tmpMSIConf); //sendSync
-        } catch (er) {}
+          try {
+            ipcRenderer.send('send-xml-properties', xmlPropertyTpl);
+          } catch (er) {}
 
-        try {
-          ipcRenderer.send('send-xml-properties', xmlPropertyTpl);
-        } catch (er) {}
+            ipcRenderer.send('send-xml-generate', '');
 
-          ipcRenderer.send('send-xml-generate', '');
+            ipcRenderer.send('send-xml-normalize');
+                console.log('xml generated');
 
-          ipcRenderer.send('send-xml-normalize');
-              console.log('xml generated');
-
-        ipcRenderer.send('send-wxsPath', 'path');
-    } else {
-            console.log('itsNotOK');
-    }
+          ipcRenderer.send('send-wxsPath', 'path');
+      } else {
+              console.log('itsNotOK');
+      }
 
 
       $('.ui.active.dimmer').fadeOut('fast');
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function saveConfigApp(){
+  var x                   = 0;
+  var tmpAppConf          = new Array();
+      tmpAppConf[x]       = new Array();
+  var tmpAppVersion       = document.getElementsByName("AppVersion")[0].value;
+  var tmpManufacturer     = document.getElementsByName("Manufacturer")[0].value;
+  var tmpAppName          = document.getElementsByName("AppName")[0].value;
+  var tmpPKGName          = document.getElementsByName("PKGName")[0].value;
+  var tmpProductCode      = document.getElementsByName("ProductCode")[0].value;
+  var tmpUpgradeCode      = document.getElementsByName("UpgradeCode")[0].value;
+  var tmpPropName         = document.getElementsByName("PropName");
+  var tmpPropValue        = document.getElementsByName("PropValue");
+  var tmpARPNOMODIFY      = 0;
+  var tmpARPNOREMOVE      = 0;
+  var tmpARPNOREPAIR      = 0;
+  var tmpConditionVal     = document.getElementsByName("ConditionVal");
+  var tmpDescriptionVal   = document.getElementsByName("DescriptionVal");
+  var tmpCANameVal        = document.getElementsByName("CAName");
+  var tmpCATypeVal        = document.getElementsByName("CAType");
+  var tmpCAFilePVal       = document.getElementsByName("addBF");
+  var tmpCAFNameVal       = document.getElementsByName("CAFName");
+
+    if ($('.ui.checkbox.left.P').checkbox('is checked')) {
+      tmpARPNOMODIFY = 1;
+    }
+
+    if ($('.ui.checkbox.left.L').checkbox('is checked')) {
+      tmpARPNOREMOVE = 1;
+    }
+
+    if ($('.ui.checkbox.left.M').checkbox('is checked')) {
+      tmpARPNOREPAIR = 1;
+    }
+
+
+        tmpAppConf[0][0]  = tmpPKGName;
+        tmpAppConf[1][0]  = tmpManufacturer;
+        tmpAppConf[2][0]  = tmpAppName;
+        tmpAppConf[3][0]  = tmpAppVersion;
+        tmpAppConf[4][0]  = tmpProductCode;
+        tmpAppConf[5][0]  = tmpUpgradeCode;
+        tmpAppConf[6][0]  = tmpARPNOMODIFY;
+        tmpAppConf[7][0]  = tmpARPNOREMOVE;
+        tmpAppConf[8][0]  = tmpARPNOREPAIR;
+        tmpAppConf[9][0]  = inPath;
+        tmpAppConf[10][0] = icoPath;
+
+
+    for (x = 0; x < tmpPropName.length; x++) {
+      if (tmpPropName[x].value != '' && tmpPropValue[x].value != '') {
+        tmpAppConf[11][x]  = tmpPropName[x].value;
+        tmpAppConf[12][x]  = tmpPropValue[x].value;
+      }
+    }
+
+
+    if ($('.ui.checkbox.left.A').checkbox('is checked')) {
+      for (x = 0; x < tmpCANameVal.length; x++) {
+        if (tmpCANameVal[x].value != '' && tmpCATypeVal[x].value != '' && tmpCAFilePVal[x].value != '' && tmpCAFNameVal[x].value != '') {
+          tmpAppConf[13][x]  = tmpCANameVal[x].value;
+          tmpAppConf[14][x]  = tmpCATypeVal[x].value;
+          tmpAppConf[15][x]  = tmpCAFilePVal[x].value;
+          tmpAppConf[16][x]  = tmpCAFNameVal[x].value;
+        }
+      }
+    }
+
+    if ($('.ui.checkbox.left.B').checkbox('is checked')) {
+      for (x = 0; x < tmpConditionVal.length; x++) {
+        if (tmpConditionVal[x].value != '' && tmpDescriptionVal[x].value != '') {
+          tmpAppConf[17][x]  = tmpConditionVal[x].value;
+          tmpAppConf[18][x]  = tmpDescriptionVal[x].value;
+        }
+      }
+    }
+
+    if ($('.ui.checkbox.left.C').checkbox('is checked')) {
+
+    }
+
+    if ($('.ui.checkbox.left.D').checkbox('is checked')) {
+
+    }
+
+
+
+    return tmpAppConf;
 }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -497,6 +613,12 @@ function registry() {
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
+function archivizeFiles() {
+  ipcRenderer.send('archiwizeFiles', document.getElementsByName("PKGName")[0].value);
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
 function generateMSI(arg) {
   if (arg === 0) {
     ipcRenderer.sendSync('send-msi-generate', 0);
@@ -508,6 +630,12 @@ function generateMSI(arg) {
     ipcRenderer.sendSync('send-msi-generate', 2);
   }
 }
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+ipcRenderer.on('getDirectory', (event, arg) => {
+
+})
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -545,6 +673,7 @@ function wxsobjFilePathChange(path) {
 //----------------------------------------------------------------------------------------------------------------------
 function projectFolderPathChange(path) {
   var pathDiv = document.getElementById("projectFolderPath");
+    inPath = path;
     pathDiv.innerHTML = path;
 }
 //----------------------------------------------------------------------------------------------------------------------

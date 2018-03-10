@@ -12,7 +12,7 @@
     "build-mac": "electron-builder -m",
     "build-linux": "electron-builder -l",
     "dist": "build",
-	"asar": "false"
+    "asar": "false"
   },
   "build": {
     "directories": {
@@ -33,6 +33,7 @@
     "electron-packager": "^11.0.1"
   },
   "dependencies": {
+    "adm-zip": "^0.4.7",
     "async-child-process": "^1.1.1",
     "bootstrap": "^4.0.0-alpha.6",
     "child_process": "^1.0.2",
@@ -49,6 +50,7 @@
     "klaw-sync": "^3.0.2",
     "mkdirp": "^0.5.1",
     "needle": "^2.2.0",
+    "npm": "^5.7.1",
     "os": "^0.1.1",
     "path": "^0.12.7",
     "popper": "^1.0.1",
@@ -60,6 +62,7 @@
     "uuid": "^3.2.1",
     "uuid-validate": "0.0.2",
     "xml-parse": "^0.3.1",
+    "xml-writer": "^1.7.0",
     "xmldom": "^0.1.27"
   }
 }
