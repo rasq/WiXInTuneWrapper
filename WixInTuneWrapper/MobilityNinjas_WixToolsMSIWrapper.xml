@@ -10,4 +10,5 @@
 		<ARPNOREPAIR>1</ARPNOREPAIR>
 		<INPath>D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN</INPath>
 		<ICO>empty</ICO>
-	</root>
+	</root><?xml version="1.0"?>
+<root PKGName="MobilityNinjas_WixToolsMSIWrapper"><Manufacturer>MobilityNinjas</Manufacturer><AppName>Wix Tools MSI Wrapper</AppName><AppVersion>1.0.0</AppVersion><PCode>empty</PCode><UCode>empty</UCode><ARPNOMODIFY>1</ARPNOMODIFY><ARPNOREMOVE>0</ARPNOREMOVE><ARPNOREPAIR>1</ARPNOREPAIR><INPath>D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN</INPath><ICO>empty</ICO><CustomPropName>1</CustomPropName><CustomPropValue>1</CustomPropValue><CustomPropName>2</CustomPropName><CustomPropValue>2</CustomPropValue></root>

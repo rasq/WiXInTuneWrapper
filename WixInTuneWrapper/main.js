@@ -577,6 +577,7 @@ function archiveProject(zipName) {
 //----------------------------------------------------------------------------------------------------------------------
 function saveConfig(arg) {
   var xmlConfig = new XMLWriter;
+  var x         = 0;
   var fileName = '';
   var xmlContent = '';
 
@@ -591,6 +592,15 @@ function saveConfig(arg) {
     xmlConfig.writeElement('ARPNOREPAIR', arg[8]);
     xmlConfig.writeElement('INPath', arg[9]);
     xmlConfig.writeElement('ICO', arg[10]);
+
+      if (arg[11].length > 0 && arg[12].length > 0 ) {
+          for (x = 0; x < arg[11].length; x ++) {
+            xmlConfig.writeElement('CustomPropName', arg[11][x]);
+            xmlConfig.writeElement('CustomPropValue', arg[12][x]);
+          }
+      }
+
+
     xmlConfig.endDocument();
 
     if (arg[0] == 'empty') {

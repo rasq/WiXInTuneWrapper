@@ -509,7 +509,7 @@ function formConfigMSI(){
 //----------------------------------------------------------------------------------------------------------------------
 function saveConfigApp(){
   var x                   = 0;
-  var tmpAppConf          = new Array();
+  var tmpAppConf          = new Array(20);
       //tmpAppConf[x]       = new Array();
   var tmpAppVersion       = varCheck("AppVersion", 0);
   var tmpManufacturer     = varCheck("Manufacturer", 0);
@@ -548,18 +548,21 @@ function saveConfigApp(){
     }
 
 
-        tmpAppConf.push(tmpPKGName);
-        tmpAppConf.push(tmpManufacturer);
-        tmpAppConf.push(tmpAppName);
-        tmpAppConf.push(tmpAppVersion);
-        tmpAppConf.push(tmpProductCode);
-        tmpAppConf.push(tmpUpgradeCode);
-        tmpAppConf.push(tmpARPNOMODIFY);
-        tmpAppConf.push(tmpARPNOREMOVE);
-        tmpAppConf.push(tmpARPNOREPAIR);
-        tmpAppConf.push(varCheck(tmpInPath, 1).trim());
-        tmpAppConf.push(varCheck(tmpIcoPath, 1).trim());
+        tmpAppConf[0]   = tmpPKGName;
+        tmpAppConf[1]   = tmpManufacturer;
+        tmpAppConf[2]   = tmpAppName;
+        tmpAppConf[3]   = tmpAppVersion;
+        tmpAppConf[4]   = tmpProductCode;
+        tmpAppConf[5]   = tmpUpgradeCode;
+        tmpAppConf[6]   = tmpARPNOMODIFY;
+        tmpAppConf[7]   = tmpARPNOREMOVE;
+        tmpAppConf[8]   = tmpARPNOREPAIR;
+        tmpAppConf[9]   = varCheck(tmpInPath, 1).trim();
+        tmpAppConf[10]  = varCheck(tmpIcoPath, 1).trim();
 
+
+        tmpAppConf[11]  = new Array();
+        tmpAppConf[12]  = new Array();
 
     for (x = 0; x < tmpPropName.length; x++) {
       if (tmpPropName[x].value != '' && tmpPropValue[x].value != '') {
@@ -609,21 +612,42 @@ function saveConfigApp(){
 //----------------------------------------------------------------------------------------------------------------------
 function loadConfigApp(xml){
   var parsedXML = new xmlParse.DOM(xmlParse.parse(xml.toString()));
+  var x = 0;
 
     console.log(parsedXML.document.getElementsByTagName('AppName')[0].innerXML);
 
     var tmpAppVersion       = parsedXML.document.getElementsByTagName('AppVersion')[0].innerXML;
     var tmpManufacturer     = parsedXML.document.getElementsByTagName("Manufacturer")[0].innerXML;
     var tmpAppName          = parsedXML.document.getElementsByTagName("AppName")[0].innerXML;
-    //var tmpPKGName          = varCheck("PKGName", 0);
+    var tmpPKGName          = parsedXML.document.getElementsByTagName("root")[0].attributes.PKGName;
     var tmpProductCode      = parsedXML.document.getElementsByTagName("PCode")[0].innerXML;
     var tmpUpgradeCode      = parsedXML.document.getElementsByTagName("UCode")[0].innerXML;
+    var tmpInPath           = parsedXML.document.getElementsByTagName("INPath")[0].innerXML;
+    var tmpIcoPath          = parsedXML.document.getElementsByTagName("ICO")[0].innerXML;
+    var tmpPropName         = parsedXML.document.getElementsByTagName("CustomPropName");
+    var tmpPropValue        = parsedXML.document.getElementsByTagName("CustomPropValue");
     /*var tmpPropName         = document.getElementsByName("PropName");
-    var tmpPropValue        = document.getElementsByName("PropValue");
-    var tmpARPNOMODIFY      = 0;
-    var tmpARPNOREMOVE      = 0;
-    var tmpARPNOREPAIR      = 0;
-    var tmpConditionVal     = document.getElementsByName("ConditionVal");
+    var tmpPropValue        = document.getElementsByName("PropValue");*/
+
+      if (parsedXML.document.getElementsByTagName("ARPNOMODIFY")[0].innerXML == '1') {
+        $('.ui.checkbox.left.P').checkbox('set checked');
+      } else {
+        $('.ui.checkbox.left.P').checkbox('set unchecked');
+      }
+
+      if (parsedXML.document.getElementsByTagName("ARPNOREMOVE")[0].innerXML == '1') {
+        $('.ui.checkbox.left.L').checkbox('set checked');
+      } else {
+        $('.ui.checkbox.left.L').checkbox('set unchecked');
+      }
+
+      if (parsedXML.document.getElementsByTagName("ARPNOREPAIR")[0].innerXML == '1') {
+        $('.ui.checkbox.left.M').checkbox('set checked');
+      } else {
+        $('.ui.checkbox.left.M').checkbox('set unchecked');
+      }
+
+    /*var tmpConditionVal     = document.getElementsByName("ConditionVal");
     var tmpDescriptionVal   = document.getElementsByName("DescriptionVal");
     var tmpCANameVal        = document.getElementsByName("CAName");
     var tmpCATypeVal        = document.getElementsByName("CAType");
@@ -631,23 +655,31 @@ function loadConfigApp(xml){
     var tmpCAFNameVal       = document.getElementsByName("CAFName");
     var tmpTargetFileVal    = document.getElementsByName("TargetFile");
     var tmpTargetDirVal     = document.getElementsByName("TargetDir");
-    var tmpInPath           = document.getElementById("projectFolderPath");
-    var tmpIcoPath          = document.getElementById("thumbnil");*/
+    */
 
 
-    document.getElementsByName("AppVersion")[0].value = varCheck(tmpAppVersion, 2);
-    document.getElementsByName("Manufacturer")[0].value  = varCheck(tmpManufacturer, 2);
-    document.getElementsByName("AppName")[0].value       = varCheck(tmpAppName, 2);
-  //  document.getElementsByName("PKGName").value =
-    document.getElementsByName("ProductCode")[0].value   = varCheck(tmpProductCode, 2);
-    document.getElementsByName("UpgradeCode")[0].value   = varCheck(tmpUpgradeCode, 2);
+    document.getElementsByName("AppVersion")[0].value     = varCheck(tmpAppVersion, 2);
+    document.getElementsByName("Manufacturer")[0].value   = varCheck(tmpManufacturer, 2);
+    document.getElementsByName("AppName")[0].value        = varCheck(tmpAppName, 2);
+    document.getElementsByName("PKGName")[0].value        = varCheck(tmpPKGName, 2);
+    document.getElementsByName("ProductCode")[0].value    = varCheck(tmpProductCode, 2);
+    document.getElementsByName("UpgradeCode")[0].value    = varCheck(tmpUpgradeCode, 2);
+    document.getElementById("projectFolderPath").innerHTML= varCheck(tmpInPath, 2);
+    document.getElementById("thumbnil").innerHTML         = varCheck(tmpIcoPath, 2);
+
+      if (tmpPropName.length > 0 && tmpPropValue.length > 0 ) {
+          for (x = 0; x < tmpPropValue.length; x ++) {
+            addCustomProp();
+            document.getElementsByName("PropName")[x].value = tmpPropName[x].innerXML;
+            document.getElementsByName("PropValue")[x].value = tmpPropValue[x].innerXML;
+            //xmlConfig.writeElement('CustomPropName', arg[11][x]);
+            //xmlConfig.writeElement('CustomPropValue', arg[12][x]);
+          }
+      }
 
 
     /*document.getElementsByName("PropName");
     document.getElementsByName("PropValue");
-var tmpARPNOMODIFY      = 0;
-var tmpARPNOREMOVE      = 0;
-var tmpARPNOREPAIR      = 0;
   document.getElementsByName("ConditionVal");
   document.getElementsByName("DescriptionVal");
   document.getElementsByName("CAName");
