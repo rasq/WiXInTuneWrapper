@@ -255,6 +255,14 @@
                                   <p></p>
                                   <h3>Shortcuts - config</h3>
                                   <p>This section is still under development.</p>
+                                  <p></p>
+                                  <a class="addSC-button item">
+                                    <i id="addSC" class="ui medium green button SC" onclick="addShortcut()">${translate("Add shortcut")}</i>
+                                  </a>
+                                    <div id="shortcut">
+
+                                    </div>
+                                  </br></br>
                                 </div>
                                 <div class="CB_Reg">
                                   <p></p>
@@ -343,7 +351,38 @@
 
 
                     <div class="ui Opcja03">
-                      <p></p>
+                      <div class="ui segment">
+                        <div  style="left: 880px;" class="ui vertical divider">
+                          Conf
+                        </div>
+                          <div class="ui left aligned grid">
+                              <div class="ten wide column">
+                                </br>
+                                </br>
+                                <form class="ui form">
+                                    <a class="getFolder-button item">
+                                      <i id="selectWorkdir" class="ui button">Select workdir folder</i>
+                                      <input id="selectWorkdirA" type="file" style="display: none" />
+                                    </a>
+                                    <div id="projectsWorkdir" class="ui label">
+                                      Selected folder.
+                                    </div>
+                                    <p></p>
+
+                                    <select id="SetLang" name="SetLang" class="ui dropdown" style="width: 20%; display: table-cell;">' +
+                                      <option value="">Language</option>
+                                      <option value="1">English</option>
+                                      <option value="0">Polish</option>
+                                    </select>
+
+                                    </br></br>
+                                    <a class="generateWXS-button item">
+                                      <i class="ui fluid green button WXSG" onclick="harvestDataFromForms(1)">Set configuration</i>
+                                    </a>
+                                </form>
+                              </div>
+                          </div>
+                        </div>
                     </div>
 
 

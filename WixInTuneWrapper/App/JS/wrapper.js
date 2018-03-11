@@ -12,6 +12,7 @@ const mainProcess   = remote.require('./main')
 
 const uuidV4        = require('uuid/v4');
 const uuidValidate  = require('uuid-validate');
+const xmlParse      = require("xml-parse");
 
 const {ipcRenderer} = require('electron');
 
@@ -242,6 +243,25 @@ function validateAppVersion(number){
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
+function addShortcut() {
+    var div = document.createElement('div');
+
+      div.className = 'row';
+
+      div.innerHTML = '<p></p>' +
+        '<div class="ui floated input" style="width: 45%;">' +
+          '<input type="text" id="TargetFile" name="TargetFile" placeholder="Target File Name">' +
+        '</div>' +
+        '<div class="ui right floated action input" style="margin-left: 10px; width: 45%;">' +
+          '<input type="text" id="TargetDir" name="TargetDir" placeholder="Target Directory">' +
+          '<i class="ui green button PC" onclick="removeShortcut(this)">-</i>' +
+        '</div>';
+
+      document.getElementById('shortcut').appendChild(div);
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
 function addCustomProp() {
     var div = document.createElement('div');
 
@@ -276,6 +296,12 @@ function addLaunchCondition() {
         '</div>';
 
       document.getElementById('launchCondition').appendChild(div);
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function removeShortcut(input) {
+    document.getElementById('shortcut').removeChild(input.parentNode.parentNode);
 }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -484,13 +510,13 @@ function formConfigMSI(){
 function saveConfigApp(){
   var x                   = 0;
   var tmpAppConf          = new Array();
-      tmpAppConf[x]       = new Array();
-  var tmpAppVersion       = document.getElementsByName("AppVersion")[0].value;
-  var tmpManufacturer     = document.getElementsByName("Manufacturer")[0].value;
-  var tmpAppName          = document.getElementsByName("AppName")[0].value;
-  var tmpPKGName          = document.getElementsByName("PKGName")[0].value;
-  var tmpProductCode      = document.getElementsByName("ProductCode")[0].value;
-  var tmpUpgradeCode      = document.getElementsByName("UpgradeCode")[0].value;
+      //tmpAppConf[x]       = new Array();
+  var tmpAppVersion       = varCheck("AppVersion", 0);
+  var tmpManufacturer     = varCheck("Manufacturer", 0);
+  var tmpAppName          = varCheck("AppName", 0);
+  var tmpPKGName          = varCheck("PKGName", 0);
+  var tmpProductCode      = varCheck("ProductCode", 0);
+  var tmpUpgradeCode      = varCheck("UpgradeCode", 0);
   var tmpPropName         = document.getElementsByName("PropName");
   var tmpPropValue        = document.getElementsByName("PropValue");
   var tmpARPNOMODIFY      = 0;
@@ -502,6 +528,12 @@ function saveConfigApp(){
   var tmpCATypeVal        = document.getElementsByName("CAType");
   var tmpCAFilePVal       = document.getElementsByName("addBF");
   var tmpCAFNameVal       = document.getElementsByName("CAFName");
+  var tmpTargetFileVal    = document.getElementsByName("TargetFile");
+  var tmpTargetDirVal     = document.getElementsByName("TargetDir");
+  var tmpInPath           = document.getElementById("projectFolderPath");
+  var tmpIcoPath          = document.getElementById("thumbnil");
+
+
 
     if ($('.ui.checkbox.left.P').checkbox('is checked')) {
       tmpARPNOMODIFY = 1;
@@ -516,23 +548,23 @@ function saveConfigApp(){
     }
 
 
-        tmpAppConf[0][0]  = tmpPKGName;
-        tmpAppConf[1][0]  = tmpManufacturer;
-        tmpAppConf[2][0]  = tmpAppName;
-        tmpAppConf[3][0]  = tmpAppVersion;
-        tmpAppConf[4][0]  = tmpProductCode;
-        tmpAppConf[5][0]  = tmpUpgradeCode;
-        tmpAppConf[6][0]  = tmpARPNOMODIFY;
-        tmpAppConf[7][0]  = tmpARPNOREMOVE;
-        tmpAppConf[8][0]  = tmpARPNOREPAIR;
-        tmpAppConf[9][0]  = inPath;
-        tmpAppConf[10][0] = icoPath;
+        tmpAppConf.push(tmpPKGName);
+        tmpAppConf.push(tmpManufacturer);
+        tmpAppConf.push(tmpAppName);
+        tmpAppConf.push(tmpAppVersion);
+        tmpAppConf.push(tmpProductCode);
+        tmpAppConf.push(tmpUpgradeCode);
+        tmpAppConf.push(tmpARPNOMODIFY);
+        tmpAppConf.push(tmpARPNOREMOVE);
+        tmpAppConf.push(tmpARPNOREPAIR);
+        tmpAppConf.push(varCheck(tmpInPath, 1).trim());
+        tmpAppConf.push(varCheck(tmpIcoPath, 1).trim());
 
 
     for (x = 0; x < tmpPropName.length; x++) {
       if (tmpPropName[x].value != '' && tmpPropValue[x].value != '') {
-        tmpAppConf[11][x]  = tmpPropName[x].value;
-        tmpAppConf[12][x]  = tmpPropValue[x].value;
+        tmpAppConf[11].push(tmpPropName[x].value);
+        tmpAppConf[12].push(tmpPropValue[x].value);
       }
     }
 
@@ -540,10 +572,10 @@ function saveConfigApp(){
     if ($('.ui.checkbox.left.A').checkbox('is checked')) {
       for (x = 0; x < tmpCANameVal.length; x++) {
         if (tmpCANameVal[x].value != '' && tmpCATypeVal[x].value != '' && tmpCAFilePVal[x].value != '' && tmpCAFNameVal[x].value != '') {
-          tmpAppConf[13][x]  = tmpCANameVal[x].value;
-          tmpAppConf[14][x]  = tmpCATypeVal[x].value;
-          tmpAppConf[15][x]  = tmpCAFilePVal[x].value;
-          tmpAppConf[16][x]  = tmpCAFNameVal[x].value;
+          tmpAppConf[13].push(tmpCANameVal[x].value);
+          tmpAppConf[14].push(tmpCATypeVal[x].value);
+          tmpAppConf[15].push(tmpCAFilePVal[x].value);
+          tmpAppConf[16].push(tmpCAFNameVal[x].value);
         }
       }
     }
@@ -551,23 +583,108 @@ function saveConfigApp(){
     if ($('.ui.checkbox.left.B').checkbox('is checked')) {
       for (x = 0; x < tmpConditionVal.length; x++) {
         if (tmpConditionVal[x].value != '' && tmpDescriptionVal[x].value != '') {
-          tmpAppConf[17][x]  = tmpConditionVal[x].value;
-          tmpAppConf[18][x]  = tmpDescriptionVal[x].value;
+          tmpAppConf[17].push(tmpConditionVal[x].value);
+          tmpAppConf[18].push(tmpDescriptionVal[x].value);
         }
       }
     }
 
     if ($('.ui.checkbox.left.C').checkbox('is checked')) {
-
+      for (x = 0; x < tmpTargetFileVal.length; x++) {
+        if (tmpTargetFileVal[x].value != '' && tmpTargetDirVal[x].value != '') {
+          tmpAppConf[19].push(tmpTargetFileVal[x].value);
+          tmpAppConf[20].push(tmpTargetDirVal[x].value);
+        }
+      }
     }
 
     if ($('.ui.checkbox.left.D').checkbox('is checked')) {
 
     }
 
-
-
     return tmpAppConf;
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function loadConfigApp(xml){
+  var parsedXML = new xmlParse.DOM(xmlParse.parse(xml.toString()));
+
+    console.log(parsedXML.document.getElementsByTagName('AppName')[0].innerXML);
+
+    var tmpAppVersion       = parsedXML.document.getElementsByTagName('AppVersion')[0].innerXML;
+    var tmpManufacturer     = parsedXML.document.getElementsByTagName("Manufacturer")[0].innerXML;
+    var tmpAppName          = parsedXML.document.getElementsByTagName("AppName")[0].innerXML;
+    //var tmpPKGName          = varCheck("PKGName", 0);
+    var tmpProductCode      = parsedXML.document.getElementsByTagName("PCode")[0].innerXML;
+    var tmpUpgradeCode      = parsedXML.document.getElementsByTagName("UCode")[0].innerXML;
+    /*var tmpPropName         = document.getElementsByName("PropName");
+    var tmpPropValue        = document.getElementsByName("PropValue");
+    var tmpARPNOMODIFY      = 0;
+    var tmpARPNOREMOVE      = 0;
+    var tmpARPNOREPAIR      = 0;
+    var tmpConditionVal     = document.getElementsByName("ConditionVal");
+    var tmpDescriptionVal   = document.getElementsByName("DescriptionVal");
+    var tmpCANameVal        = document.getElementsByName("CAName");
+    var tmpCATypeVal        = document.getElementsByName("CAType");
+    var tmpCAFilePVal       = document.getElementsByName("addBF");
+    var tmpCAFNameVal       = document.getElementsByName("CAFName");
+    var tmpTargetFileVal    = document.getElementsByName("TargetFile");
+    var tmpTargetDirVal     = document.getElementsByName("TargetDir");
+    var tmpInPath           = document.getElementById("projectFolderPath");
+    var tmpIcoPath          = document.getElementById("thumbnil");*/
+
+
+    document.getElementsByName("AppVersion")[0].value = varCheck(tmpAppVersion, 2);
+    document.getElementsByName("Manufacturer")[0].value  = varCheck(tmpManufacturer, 2);
+    document.getElementsByName("AppName")[0].value       = varCheck(tmpAppName, 2);
+  //  document.getElementsByName("PKGName").value =
+    document.getElementsByName("ProductCode")[0].value   = varCheck(tmpProductCode, 2);
+    document.getElementsByName("UpgradeCode")[0].value   = varCheck(tmpUpgradeCode, 2);
+
+
+    /*document.getElementsByName("PropName");
+    document.getElementsByName("PropValue");
+var tmpARPNOMODIFY      = 0;
+var tmpARPNOREMOVE      = 0;
+var tmpARPNOREPAIR      = 0;
+  document.getElementsByName("ConditionVal");
+  document.getElementsByName("DescriptionVal");
+  document.getElementsByName("CAName");
+  document.getElementsByName("CAType");
+  document.getElementsByName("addBF");
+  document.getElementsByName("CAFName");
+  document.getElementsByName("TargetFile");
+  document.getElementsByName("TargetDir");
+  document.getElementById("projectFolderPath");
+  document.getElementById("thumbnil");*/
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function varCheck(arg1, arg2) {
+  var RC = '';
+    if (arg2 == 0) {
+      if (document.getElementsByName(arg1)[0].value == '') {
+        RC = 'empty';
+      } else {
+        RC = document.getElementsByName(arg1)[0].value;
+      }
+    } else if (arg2 == 1) {
+      if (arg1.innerHTML == '') {
+        RC = 'empty';
+      } else {
+        RC = arg1.innerHTML;
+      }
+    } else if (arg2 == 2) {
+      if (arg1 == 'empty') {
+        RC = '';
+      } else {
+        RC = arg1;
+      }
+    }
+
+  return RC;
 }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -633,6 +750,35 @@ function generateMSI(arg) {
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
+function wxsFilePathChange(path) {
+  var pathDiv = document.getElementById("wxsFilePath");
+    pathDiv.innerHTML = path;
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function wxsobjFilePathChange(path) {
+  var pathDiv = document.getElementById("wxsobjFilePath");
+    pathDiv.innerHTML = path;
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function projectFolderPathChange(path) {
+  var pathDiv = document.getElementById("projectFolderPath");
+    inPath = path;
+    pathDiv.innerHTML = path;
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------------------------
 ipcRenderer.on('getDirectory', (event, arg) => {
 
 })
@@ -657,23 +803,15 @@ ipcRenderer.on('get-projectFolderPath', (event, arg) => {
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
-function wxsFilePathChange(path) {
-  var pathDiv = document.getElementById("wxsFilePath");
-    pathDiv.innerHTML = path;
-}
+ipcRenderer.on('get-saveConfigApp', (event, arg) => {
+  var RC = saveConfigApp();
+    ipcRenderer.send('send-saveConfigApp', RC);
+    //mainProcess.saveConfigXML(RC);
+})
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
-function wxsobjFilePathChange(path) {
-  var pathDiv = document.getElementById("wxsobjFilePath");
-    pathDiv.innerHTML = path;
-}
-//----------------------------------------------------------------------------------------------------------------------
-
-//----------------------------------------------------------------------------------------------------------------------
-function projectFolderPathChange(path) {
-  var pathDiv = document.getElementById("projectFolderPath");
-    inPath = path;
-    pathDiv.innerHTML = path;
-}
+ipcRenderer.on('get-loadConfigApp', (event, arg) => {
+  loadConfigApp(arg);
+})
 //----------------------------------------------------------------------------------------------------------------------

@@ -41,7 +41,7 @@ const MenuTemplate = [
       }, {
         label: 'Save conf file',
         click() {
-          saveConfig();
+          mainWindow.webContents.send('get-saveConfigApp', '');
         }
       }, {
         label: 'Quit',
@@ -257,7 +257,9 @@ function saveWSXFile (contentTxt, fileName, dataType){
         WSXSection = contentTxt;
     }
 
-        try {
+        saveTextFile(projDirectory, fileName, WSXSection);
+
+      /*  try {
             stats = fs.statSync(path.join(projDirectory, fileName));
               try {
                 fs.appendFileSync(path.join(projDirectory, fileName), WSXSection);
@@ -270,22 +272,21 @@ function saveWSXFile (contentTxt, fileName, dataType){
             } catch (er) {
                 console.error(er);
             }
-        }
+        }*/
 
     return;
 }
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
-function loadXMLTemplateFile (xmlFileToRead){
-    var dataToPass = "";
+function loadTextFile (fileToRead){
+  var dataToPass = "";
 
-        fs.readFile(xmlFileToRead, 'utf8', (err, data) => {
-            if (err) {
-                alert("An error ocurred reading the file " + err.message);
-            }
-            dataToPass = data;
-        });
+    try {
+      dataToPass = fs.readFileSync(fileToRead, 'utf8');
+    } catch (er) {
+      console.error("An error ocurred reading the file " + err);
+    }
 
     return dataToPass;
 }
@@ -467,6 +468,25 @@ function normalizeXml (varXml){
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
+function saveTextFile(dir, file, content) {
+  try {
+      stats = fs.statSync(path.join(dir, file));
+        try {
+          fs.appendFileSync(path.join(dir, file), content);
+        } catch (er) {
+            console.error(er);
+        }
+  } catch (e) {
+      try {
+        fs.writeFileSync(path.join(dir, file), content);
+      } catch (er) {
+          console.error(er);
+      }
+  }
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
 function removeFile (filePath){
     if (fs.existsSync(filePath)) {
         try {
@@ -555,39 +575,43 @@ function archiveProject(zipName) {
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
-function saveConfig() {
+function saveConfig(arg) {
   var xmlConfig = new XMLWriter;
+  var fileName = '';
+  var xmlContent = '';
 
-
-  /*  xmlConfig.startDocument().startElement('root').writeAttribute('PKGName', data[0]);
-    xmlConfig.writeElement('Manufacturer', data[1]);
-    xmlConfig.writeElement('AppName', data[2]);
-    xmlConfig.writeElement('AppVersion', data[3]);
-    xmlConfig.writeElement('PCode', data[4]);
-    xmlConfig.writeElement('UCode', data[5]);
-    xmlConfig.writeElement('ARPNOMODIFY', data[6]);
-    xmlConfig.writeElement('ARPNOREMOVE', data[7]);
-    xmlConfig.writeElement('ARPNOREPAIR', data[8]);
-    xmlConfig.writeElement('INPath', data[9]);
-    xmlConfig.writeElement('ICO', data[10]);
+    xmlConfig.startDocument().startElement('root').writeAttribute('PKGName', arg[0]);
+    xmlConfig.writeElement('Manufacturer', arg[1]);
+    xmlConfig.writeElement('AppName', arg[2]);
+    xmlConfig.writeElement('AppVersion', arg[3]);
+    xmlConfig.writeElement('PCode', arg[4]);
+    xmlConfig.writeElement('UCode', arg[5]);
+    xmlConfig.writeElement('ARPNOMODIFY', arg[6]);
+    xmlConfig.writeElement('ARPNOREMOVE', arg[7]);
+    xmlConfig.writeElement('ARPNOREPAIR', arg[8]);
+    xmlConfig.writeElement('INPath', arg[9]);
+    xmlConfig.writeElement('ICO', arg[10]);
     xmlConfig.endDocument();
 
+    if (arg[0] == 'empty') {
+      fileName = 'wixToolsWrapperConf.xml';
+    } else {
+      fileName = arg[0] + '.xml';
+    }
 
-    console.log(xmlConfig.toString());*/
+    xmlContent = xmlConfig.toString();
 
+    console.log(xmlContent);
 
-  /*  w = new XMLWriter;
-    xw.startDocument();
-    xw.startElement('root');
-    xw.writeAttribute('foo', 'value');
-    xw.text('Some content');
-    xw.endDocument();*/
+      saveTextFile(projDirectory, fileName, xmlContent);
 }
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
 function loadConfig() {
+  var configFile = loadTextFile (path.join(projDirectory, 'MobilityNinjas_WixToolsMSIWrapper.xml'));
 
+    mainWindow.webContents.send('get-loadConfigApp', configFile);
 }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -623,8 +647,6 @@ function createWindow () {
           xmlData[c] = c.toString();
         }
 
-        saveConfig(xmlData);
-
       mainWindow.on('closed', () => {
           mainWindow = null;
       })
@@ -632,13 +654,12 @@ function createWindow () {
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
-/*function selectDirectory() {
-  return dialog.showOpenDialog(mainWindow, {
-    properties: ['openDirectory']
-  });
+/*exports.saveConfigXML = (arg) => {
+  console.log('saveConfigXML');
+  saveConfig(arg);
 }*/
 
-exports.selectDirectory = function () {
+exports.selectDirectory = () => {
   return dialog.showOpenDialog(mainWindow, {
     properties: ['openDirectory']
   });
@@ -669,6 +690,12 @@ app.on('activate', function () {
   if (mainWindow === null) {
     createWindow();
   }
+});
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+ipcMain.on('send-saveConfigApp', (event, arg) => {
+  saveConfig(arg);
 });
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -724,20 +751,20 @@ ipcMain.on('archiwizeFiles', (event, arg) => {
 //----------------------------------------------------------------------------------------------------------------------
 ipcMain.on('send-wxsPath', (event, arg) => {
   event.sender.send('get-wxsPath', wsxFile);
-})
+});
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
 ipcMain.on('send-wxsobjPath', (event, arg) => {
   event.sender.send('get-wxsobjPath', newWixobj);
-})
+});
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
 ipcMain.on('send-projectFolderPath', (event, arg) => {
   event.sender.send('get-projectFolderPath', path.join(__dirname,  'IN'));
   //event.sender.send('get-projectFolderPath', path.join(projDirectory,  'IN'));
-})
+});
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
