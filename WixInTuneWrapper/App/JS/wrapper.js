@@ -36,39 +36,14 @@ var installExecuteSeqTPLH = "<InstallExecuteSequence>" +
 
 
 
-/*$('.getFolder-button').click(function(){
-  selectDirectory();
-  //document.getElementById('selectFolderA').click();
-});*/
 
+//----------------------------------------------------------------------------------------------------------------------
 $('.getIco-button').click(function(){
   var dataIco = document.getElementById("selectIcoA");
     dataIco.click(function(){
     });
 });
-
-
-function updateIcoVar(fileInput) {
-        var files = fileInput.files;
-        for (var i = 0; i < files.length; i++) {
-            var file = files[i];
-            var imageType = /image.*/;
-            if (!file.type.match(imageType)) {
-                continue;
-            }
-            var img = document.getElementById("thumbnil");
-            img.file = file;
-            icoPath = file.path;
-            //console.log('value ' + file.path);
-            var reader = new FileReader();
-            reader.onload = (function(aImg) {
-                return function(e) {
-                    aImg.src = e.target.result;
-                };
-            })(img);
-            reader.readAsDataURL(file);
-        }
-}
+//----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
 $('.start-button').click(function(){
@@ -318,34 +293,90 @@ function removeLaunchCondition(input) {
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
+function gatherCA() {
+  var tmpCAName           = document.getElementsByName("CAName")[0].value;
+  var tmpCAType           = document.getElementsByName("CAType")[0].value;
+  var tmpCAFName          = document.getElementsByName("CAFName")[0].value;
+  var tmpCAPathCont       = document.getElementsByName("CAPathCont")[0].value;
+  var data                = '';
+
+    if (tmpCAPathCont == '' || tmpCAName == '' || tmpCAType == '' || tmpCAFName == '' || tmpCAType == 'Execute') {
+      return 1;
+    } else {
+      data = tmpCAName + '|' + tmpCAType + '|' + tmpCAPathCont + '|' + tmpCAFName;
+        tmpCAName = '';
+        tmpCAType = '';
+        tmpCAPathCont = '';
+        tmpCAFName = '';
+      return data;
+    }
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
 function addCA() {
-    var div = document.createElement('div');
+    var div         = document.createElement('div');
+    var dataToPush  = '';
 
       div.className = 'row';
+      dataToPush = gatherCA();
 
-      div.innerHTML = '<p></p>' +
-        '<div class="ui input" style="width: 25%;">' +
-          '<input type="text" id="CAName" name="CAName" placeholder="Name">' +
-        '</div>' +
-          '<select id="CAType" name="CAType" class="ui dropdown" style="width: 20%; display: table-cell;">' +
-            '<option value="">Execute</option>' +
-            '<option value="6">commit</option>' +
-            '<option value="5">deferred</option>' +
-            '<option value="4">firstSequence</option>' +
-            '<option value="3">immediate</option>' +
-            '<option value="2">oncePerProcess</option>' +
-            '<option value="1">rollback</option>' +
-            '<option value="0">secondSequence</option>' +
-          '</select>' +
-        '<a class="addBF-button item" style="margin-left: 5px;">' +
-          '<i id="addBF" class="ui medium green button CA" onclick="addBFCA()">Add File</i>' +
-        '</a>' +
-        '<div class="ui action input" style="margin-left: 5px; width: 25%;">' +
-          '<input type="text" id="CAFName" name="CAFName" placeholder="Call function">' +
-          '<i class="ui green button PC" onclick="removeCA(this)">-</i>' +
-        '</div>';
+        if (dataToPush != 1) {
+          div.innerHTML = '<p></p>' +
+            '<div class="ui fluid icon input">' +
+              '<input type="text" id="CAfield" name="CAfield" value="' + dataToPush + '">' +
+              '<i class="ui green button CA" onclick="removeCA(this)">-</i>' +
+            '</div>';
 
-      document.getElementById('customActionDiv').appendChild(div);
+          document.getElementById('customActionDiv').appendChild(div);
+        }
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function addCAFile() {
+  var dataFile = document.getElementById("selectFileA");
+    dataFile.click(function(){
+    });
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function filePathCA(fileInput) {
+  var files = fileInput.files;
+
+        for (var i = 0; i < files.length; i++) {
+          var file = files[i];
+          var path = document.getElementById("CAPathCont");
+
+            path.file = file;
+            filePath = file.path;
+            document.getElementsByName("CAPathCont")[0].value = file.path;
+        }
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function updateIcoVar(fileInput) {
+        var files = fileInput.files;
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            var imageType = /image.*/;
+            if (!file.type.match(imageType)) {
+                continue;
+            }
+            var img = document.getElementById("thumbnil");
+            img.file = file;
+            icoPath = file.path;
+            //console.log('value ' + file.path);
+            var reader = new FileReader();
+            reader.onload = (function(aImg) {
+                return function(e) {
+                    aImg.src = e.target.result;
+                };
+            })(img);
+            reader.readAsDataURL(file);
+        }
 }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -509,8 +540,9 @@ function formConfigMSI(){
 //----------------------------------------------------------------------------------------------------------------------
 function saveConfigApp(){
   var x                   = 0;
+  var varTmp              = '';
+  var VarU                = '';
   var tmpAppConf          = new Array(20);
-      //tmpAppConf[x]       = new Array();
   var tmpAppVersion       = varCheck("AppVersion", 0);
   var tmpManufacturer     = varCheck("Manufacturer", 0);
   var tmpAppName          = varCheck("AppName", 0);
@@ -524,10 +556,13 @@ function saveConfigApp(){
   var tmpARPNOREPAIR      = 0;
   var tmpConditionVal     = document.getElementsByName("ConditionVal");
   var tmpDescriptionVal   = document.getElementsByName("DescriptionVal");
-  var tmpCANameVal        = document.getElementsByName("CAName");
-  var tmpCATypeVal        = document.getElementsByName("CAType");
-  var tmpCAFilePVal       = document.getElementsByName("addBF");
-  var tmpCAFNameVal       = document.getElementsByName("CAFName");
+
+  var tmpCAVal            = document.getElementsByName("CAfield");
+  var tmpCANameVal        = '';
+  var tmpCATypeVal        = '';
+  var tmpCAFilePVal       = '';
+  var tmpCAFNameVal       = '';
+
   var tmpTargetFileVal    = document.getElementsByName("TargetFile");
   var tmpTargetDirVal     = document.getElementsByName("TargetDir");
   var tmpInPath           = document.getElementById("projectFolderPath");
@@ -554,15 +589,23 @@ function saveConfigApp(){
         tmpAppConf[3]   = tmpAppVersion;
         tmpAppConf[4]   = tmpProductCode;
         tmpAppConf[5]   = tmpUpgradeCode;
-        tmpAppConf[6]   = tmpARPNOMODIFY;
-        tmpAppConf[7]   = tmpARPNOREMOVE;
-        tmpAppConf[8]   = tmpARPNOREPAIR;
+        tmpAppConf[6]   = tmpARPNOMODIFY.toString();
+        tmpAppConf[7]   = tmpARPNOREMOVE.toString();
+        tmpAppConf[8]   = tmpARPNOREPAIR.toString();
         tmpAppConf[9]   = varCheck(tmpInPath, 1).trim();
         tmpAppConf[10]  = varCheck(tmpIcoPath, 1).trim();
 
 
         tmpAppConf[11]  = new Array();
         tmpAppConf[12]  = new Array();
+        tmpAppConf[13]  = new Array();
+        tmpAppConf[14]  = new Array();
+        tmpAppConf[15]  = new Array();
+        tmpAppConf[16]  = new Array();
+        tmpAppConf[17]  = new Array();
+        tmpAppConf[18]  = new Array();
+        tmpAppConf[19]  = new Array();
+        tmpAppConf[20]  = new Array();
 
     for (x = 0; x < tmpPropName.length; x++) {
       if (tmpPropName[x].value != '' && tmpPropValue[x].value != '') {
@@ -571,18 +614,22 @@ function saveConfigApp(){
       }
     }
 
-
+    x = 0;
     if ($('.ui.checkbox.left.A').checkbox('is checked')) {
-      for (x = 0; x < tmpCANameVal.length; x++) {
-        if (tmpCANameVal[x].value != '' && tmpCATypeVal[x].value != '' && tmpCAFilePVal[x].value != '' && tmpCAFNameVal[x].value != '') {
-          tmpAppConf[13].push(tmpCANameVal[x].value);
-          tmpAppConf[14].push(tmpCATypeVal[x].value);
-          tmpAppConf[15].push(tmpCAFilePVal[x].value);
-          tmpAppConf[16].push(tmpCAFNameVal[x].value);
+      for (x = 0; x < tmpCAVal.length; x++) {
+        if (tmpCAVal[x].value != '') {
+          VarU = tmpCAVal[x].toString();
+          varTmp = VarU.split("|");
+
+          tmpAppConf[13].push(varTmp[0]);
+          tmpAppConf[14].push(varTmp[1]);
+          tmpAppConf[15].push(varTmp[2]);
+          tmpAppConf[16].push(varTmp[3]);
         }
       }
     }
 
+    x = 0;
     if ($('.ui.checkbox.left.B').checkbox('is checked')) {
       for (x = 0; x < tmpConditionVal.length; x++) {
         if (tmpConditionVal[x].value != '' && tmpDescriptionVal[x].value != '') {
@@ -592,6 +639,7 @@ function saveConfigApp(){
       }
     }
 
+    x = 0;
     if ($('.ui.checkbox.left.C').checkbox('is checked')) {
       for (x = 0; x < tmpTargetFileVal.length; x++) {
         if (tmpTargetFileVal[x].value != '' && tmpTargetDirVal[x].value != '') {
@@ -614,7 +662,7 @@ function loadConfigApp(xml){
   var parsedXML = new xmlParse.DOM(xmlParse.parse(xml.toString()));
   var x = 0;
 
-    console.log(parsedXML.document.getElementsByTagName('AppName')[0].innerXML);
+    //console.log(parsedXML.document.getElementsByTagName('AppName')[0].innerXML);
 
     var tmpAppVersion       = parsedXML.document.getElementsByTagName('AppVersion')[0].innerXML;
     var tmpManufacturer     = parsedXML.document.getElementsByTagName("Manufacturer")[0].innerXML;
@@ -626,8 +674,18 @@ function loadConfigApp(xml){
     var tmpIcoPath          = parsedXML.document.getElementsByTagName("ICO")[0].innerXML;
     var tmpPropName         = parsedXML.document.getElementsByTagName("CustomPropName");
     var tmpPropValue        = parsedXML.document.getElementsByTagName("CustomPropValue");
-    /*var tmpPropName         = document.getElementsByName("PropName");
-    var tmpPropValue        = document.getElementsByName("PropValue");*/
+    var tmpCAName           = parsedXML.document.getElementsByTagName("CAName");
+    var tmpCAType           = parsedXML.document.getElementsByTagName("CAType");
+    var tmpCAFile           = parsedXML.document.getElementsByTagName("CAFile");
+    var tmpCAFunction       = parsedXML.document.getElementsByTagName("CAFunction");
+    var tmpLCCond           = parsedXML.document.getElementsByTagName("LCCond");
+    var tmpLCDesc           = parsedXML.document.getElementsByTagName("LCDesc");
+    var tmpShortcutFile     = parsedXML.document.getElementsByTagName("ShortcutFile");
+    var tmpShortcutDirectory= parsedXML.document.getElementsByTagName("ShortcutDirectory");
+
+
+
+
 
       if (parsedXML.document.getElementsByTagName("ARPNOMODIFY")[0].innerXML == '1') {
         $('.ui.checkbox.left.P').checkbox('set checked');
@@ -647,16 +705,6 @@ function loadConfigApp(xml){
         $('.ui.checkbox.left.M').checkbox('set unchecked');
       }
 
-    /*var tmpConditionVal     = document.getElementsByName("ConditionVal");
-    var tmpDescriptionVal   = document.getElementsByName("DescriptionVal");
-    var tmpCANameVal        = document.getElementsByName("CAName");
-    var tmpCATypeVal        = document.getElementsByName("CAType");
-    var tmpCAFilePVal       = document.getElementsByName("addBF");
-    var tmpCAFNameVal       = document.getElementsByName("CAFName");
-    var tmpTargetFileVal    = document.getElementsByName("TargetFile");
-    var tmpTargetDirVal     = document.getElementsByName("TargetDir");
-    */
-
 
     document.getElementsByName("AppVersion")[0].value     = varCheck(tmpAppVersion, 2);
     document.getElementsByName("Manufacturer")[0].value   = varCheck(tmpManufacturer, 2);
@@ -672,24 +720,47 @@ function loadConfigApp(xml){
             addCustomProp();
             document.getElementsByName("PropName")[x].value = tmpPropName[x].innerXML;
             document.getElementsByName("PropValue")[x].value = tmpPropValue[x].innerXML;
-            //xmlConfig.writeElement('CustomPropName', arg[11][x]);
-            //xmlConfig.writeElement('CustomPropValue', arg[12][x]);
+          }
+      }
+
+      var customAction = '';
+      if (tmpCAName.length > 0 && tmpCAType.length > 0 && tmpCAFile.length > 0 && tmpCAFunction.length > 0) {
+          $('.ui.checkbox.left.A').checkbox('set checked');
+          $('.CB_CA').fadeIn('fast');
+          for (x = 0; x < tmpCAName.length; x ++) {
+            addCA();
+            customAction = tmpCAName[x].innerXML + '|' + tmpCAType[x].innerXML + '|' + tmpCAFile[x].innerXML + '|' + tmpCAFunction[x].innerXML;
+            document.getElementsByName("CAfield")[x].value = customAction;
+          }
+      }
+
+      if (tmpLCCond.length > 0 && tmpLCDesc.length > 0) {
+          $('.ui.checkbox.left.B').checkbox('set checked');
+          $('.CB_LC').fadeIn('fast');
+          for (x = 0; x < tmpLCCond.length; x ++) {
+            addLaunchCondition();
+            document.getElementsByName("ConditionVal")[x].value = tmpLCCond[x].innerXML;
+            document.getElementsByName("DescriptionVal")[x].value = tmpLCDesc[x].innerXML;
+          }
+      }
+
+      if (tmpShortcutFile.length > 0 && tmpShortcutDirectory.length > 0) {
+          $('.ui.checkbox.left.C').checkbox('set checked');
+          $('.CB_Shortcuts').fadeIn('fast');
+          for (x = 0; x < tmpShortcutFile.length; x ++) {
+            addShortcut();
+            document.getElementsByName("TargetFile")[x].value = tmpShortcutFile[x].innerXML;
+            document.getElementsByName("TargetDir")[x].value = tmpShortcutDirectory[x].innerXML;
           }
       }
 
 
-    /*document.getElementsByName("PropName");
-    document.getElementsByName("PropValue");
-  document.getElementsByName("ConditionVal");
-  document.getElementsByName("DescriptionVal");
-  document.getElementsByName("CAName");
-  document.getElementsByName("CAType");
-  document.getElementsByName("addBF");
-  document.getElementsByName("CAFName");
-  document.getElementsByName("TargetFile");
-  document.getElementsByName("TargetDir");
-  document.getElementById("projectFolderPath");
-  document.getElementById("thumbnil");*/
+
+
+
+    //  $('.ui.checkbox.left.D').checkbox('set checked');
+      //$('.CB_Reg').fadeIn('fast');
+
 }
 //----------------------------------------------------------------------------------------------------------------------
 

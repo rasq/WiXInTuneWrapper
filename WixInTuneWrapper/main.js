@@ -581,6 +581,10 @@ function saveConfig(arg) {
   var fileName = '';
   var xmlContent = '';
 
+    /*for (x = 0; x < arg.length; x++) {
+      console.log("arg[" + x + "].length = " + arg[x].length);
+    }*/
+
     xmlConfig.startDocument().startElement('root').writeAttribute('PKGName', arg[0]);
     xmlConfig.writeElement('Manufacturer', arg[1]);
     xmlConfig.writeElement('AppName', arg[2]);
@@ -593,11 +597,38 @@ function saveConfig(arg) {
     xmlConfig.writeElement('INPath', arg[9]);
     xmlConfig.writeElement('ICO', arg[10]);
 
-      if (arg[11].length > 0 && arg[12].length > 0 ) {
+      x = 0;
+      if (arg[11].length > 0 && arg[12].length > 0) {
           for (x = 0; x < arg[11].length; x ++) {
             xmlConfig.writeElement('CustomPropName', arg[11][x]);
             xmlConfig.writeElement('CustomPropValue', arg[12][x]);
           }
+      }
+
+      x = 0;
+      if (arg[13].length > 0 && arg[14].length > 0 && arg[15].length > 0  && arg[16].length > 0) {
+        for (x = 0; x < arg[11].length; x ++) {
+          xmlConfig.writeElement('CAName', arg[13][x]);
+          xmlConfig.writeElement('CAType', arg[14][x]);
+          xmlConfig.writeElement('CAFile', arg[15][x]);
+          xmlConfig.writeElement('CAFunction', arg[16][x]);
+        }
+      }
+
+      x = 0;
+      if (arg[17].length > 0 && arg[18].length > 0) {
+        for (x = 0; x < arg[17].length; x ++) {
+          xmlConfig.writeElement('LCCond', arg[17][x]);
+          xmlConfig.writeElement('LCDesc', arg[18][x]);
+        }
+      }
+
+      x = 0;
+      if (arg[19].length > 0 && arg[20].length > 0) {
+        for (x = 0; x < arg[19].length; x ++) {
+          xmlConfig.writeElement('ShortcutFile', arg[19][x]);
+          xmlConfig.writeElement('ShortcutDirectory', arg[20][x]);
+        }
       }
 
 
@@ -611,7 +642,7 @@ function saveConfig(arg) {
 
     xmlContent = xmlConfig.toString();
 
-    console.log(xmlContent);
+  //console.log(xmlContent);
 
       saveTextFile(projDirectory, fileName, xmlContent);
 }
@@ -619,7 +650,7 @@ function saveConfig(arg) {
 
 //----------------------------------------------------------------------------------------------------------------------
 function loadConfig() {
-  var configFile = loadTextFile (path.join(projDirectory, 'MobilityNinjas_WixToolsMSIWrapper.xml'));
+  var configFile = loadTextFile (path.join(projDirectory, 'pkgName.xml'));
 
     mainWindow.webContents.send('get-loadConfigApp', configFile);
 }

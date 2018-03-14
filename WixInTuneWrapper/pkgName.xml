@@ -1,0 +1,2 @@
+<?xml version="1.0"?>
+<root PKGName="pkgName"><Manufacturer>man</Manufacturer><AppName>app</AppName><AppVersion>1.0.0</AppVersion><PCode>empty</PCode><UCode>empty</UCode><ARPNOMODIFY>1</ARPNOMODIFY><ARPNOREMOVE>0</ARPNOREMOVE><ARPNOREPAIR>1</ARPNOREPAIR><INPath>D:\GitHub\WiXInTuneWrapper\WixInTuneWrapper\IN</INPath><ICO>empty</ICO><CustomPropName>nam</CustomPropName><CustomPropValue>val</CustomPropValue><LCCond>con</LCCond><LCDesc>desc</LCDesc><ShortcutFile>file</ShortcutFile><ShortcutDirectory>dir</ShortcutDirectory></root>

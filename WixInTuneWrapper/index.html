@@ -229,12 +229,30 @@
                                   <p></p>
                                   <h3>Custom Actions - config</h3>
                                   <p>This section is still under development. Only BinaryKey related custom actions will be allowed.</p>
-                                    <p></p>
-                                    <a class="addCA-button item">
-                                      <i id="addProp" class="ui medium green button CA" onclick="addCA()">${translate("Add custom action")}</i>
-                                    </a>
                                       <div id="customActionDiv">
-
+                                          <p></p>
+                                          <div class="ui input" style="width: 25%;">
+                                            <input type="text" id="CAName" name="CAName" placeholder="Name">
+                                          </div>
+                                            <select id="CAType" name="CAType" class="ui dropdown" style="width: 20%; display: table-cell;">
+                                              <option value="">Execute</option>
+                                              <option value="6">commit</option>
+                                              <option value="5">deferred</option>
+                                              <option value="4">firstSequence</option>
+                                              <option value="3">immediate</option>
+                                              <option value="2">oncePerProcess</option>
+                                              <option value="1">rollback</option>
+                                              <option value="0">secondSequence</option>
+                                            </select>
+                                          <a class="addBF-button item" style="margin-left: 5px;">
+                                            <i id="addBF" class="ui medium green button" onclick="addCAFile()">Add File</i>
+                                            <input type="file" accept=".vb, .vbs, .ps1, .exe, .dll" id="selectFileA" class="getFile-buttonA item" style="display: none" onchange="filePathCA(this)" />
+                                            <input type="text" id="CAPathCont" name="CAPathCont" placeholder="path" style="display: none">
+                                          </a>
+                                          <div class="ui action input" style="margin-left: 5px; width: 25%;">
+                                            <input type="text" id="CAFName" name="CAFName" placeholder="Call function">
+                                            <i class="ui green button CA" onclick="addCA(this)">+</i>
+                                          </div>
                                       </div>
                                     </br></br>
                                 </div>
