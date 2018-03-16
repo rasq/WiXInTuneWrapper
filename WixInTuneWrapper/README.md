@@ -28,6 +28,7 @@ To build project you must:
 	npm install --save uuid-validate
 	npm install --save xml-parse
 	npm install --save adm-zip
+	npm install --save winreg
 	
 4. Run by: npm start electron
 5. Build running: buil.cmd

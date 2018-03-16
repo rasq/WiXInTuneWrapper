@@ -16,6 +16,7 @@ const XMLWriter     = require('xml-writer');
 const AdmZip        = require('adm-zip');
 const DOMParser     = require('xmldom').DOMParser;
 const XMLSerializer = require('xmldom').XMLSerializer
+const Registry      = require('winreg');
 
 const {ipcMain}     = require('electron');
 
@@ -112,7 +113,7 @@ var VarFilesCounter = new Array();
     VarFilesCounter[featureNumber] = new Array();
 
 var VarScriptDir = process.cwd();
-console.dir(VarScriptDir);
+//console.dir(VarScriptDir);
 var VarSplittedScriptDir = VarScriptDir.split(splitChar);
 
 var tabString = '\t';
@@ -213,14 +214,14 @@ function harwestDirsFiles(varPathToScan, wxsName, dataType) {
               //paths = klawSync(path.join(projDirectory, varPathToScan), {nodir: true, filter: filterFn});
           }
         } catch (er) {
-          console.error(er);
+          //console.error(er);
         }
 
           for (i = 0; i < paths.length; ++i) {
             try {
               saveWSXFile (paths[i].path, 'WORKING\\' + wxsName + '.wsx', dataType);
             } catch (er) {
-              console.error(er);
+              //console.error(er);
             }
           }
 
@@ -264,13 +265,13 @@ function saveWSXFile (contentTxt, fileName, dataType){
               try {
                 fs.appendFileSync(path.join(projDirectory, fileName), WSXSection);
               } catch (er) {
-                  console.error(er);
+                  //console.error(er);
               }
         } catch (e) {
             try {
               fs.writeFileSync(path.join(projDirectory, fileName), WSXSection);
             } catch (er) {
-                console.error(er);
+                //console.error(er);
             }
         }*/
 
@@ -285,7 +286,7 @@ function loadTextFile (fileToRead){
     try {
       dataToPass = fs.readFileSync(fileToRead, 'utf8');
     } catch (er) {
-      console.error("An error ocurred reading the file " + err);
+      //console.error("An error ocurred reading the file " + err);
     }
 
     return dataToPass;
@@ -458,12 +459,12 @@ function normalizeXml (varXml){
     //var xmlDoc = new xmlParse.DOM(xmlParse.parse(varXml));
     //var root = xmlDoc.document.getElementsByTagName("Directory")[0];
 
-      //  console.log(root.childNodes[0].parentNode);
-      //console.log(xmlDoc);
+      //  //console.log(root.childNodes[0].parentNode);
+      ////console.log(xmlDoc);
     var content = fs.readFileSync(varXml, "utf8");
     var doc = new DOMParser().parseFromString(content, 'text/xml');
     var str = new XMLSerializer().serializeToString(doc);
-      //console.info(doc);
+      ////console.info(doc);
 }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -474,13 +475,13 @@ function saveTextFile(dir, file, content) {
         try {
           fs.appendFileSync(path.join(dir, file), content);
         } catch (er) {
-            console.error(er);
+            //console.error(er);
         }
   } catch (e) {
       try {
         fs.writeFileSync(path.join(dir, file), content);
       } catch (er) {
-          console.error(er);
+          //console.error(er);
       }
   }
 }
@@ -492,12 +493,12 @@ function removeFile (filePath){
         try {
           fs.unlinkSync(filePath);
         } catch (er) {
-            console.log("An error ocurred updating the file");
-            console.error(er);
+            //console.log("An error ocurred updating the file");
+            //console.error(er);
         }
-        console.log("File succesfully deleted");
+        //console.log("File succesfully deleted");
     } else {
-        console.log("This file doesn't exist, cannot delete");
+        //console.log("This file doesn't exist, cannot delete");
     }
 }
 //----------------------------------------------------------------------------------------------------------------------
@@ -521,9 +522,9 @@ function wixCandle() {
 function wixMoveConf() {
   fsExtra.move(originalWixobj, newWixobj, { overwrite: true }, err => {
     if (err) {
-      console.error(err);
+      //console.error(err);
     } else {
-      console.error('file moved');
+      //console.error('file moved');
     }
   });
 }
@@ -555,7 +556,7 @@ function createDirectory(directory) {
   if(!fs.existsSync(directory)){
       fs.mkdirSync(directory, 0766, function(err){
           if(err){
-              console.log(err);
+              //console.log(err);
           }
       });
   }
@@ -582,7 +583,7 @@ function saveConfig(arg) {
   var xmlContent = '';
 
     /*for (x = 0; x < arg.length; x++) {
-      console.log("arg[" + x + "].length = " + arg[x].length);
+      //console.log("arg[" + x + "].length = " + arg[x].length);
     }*/
 
     xmlConfig.startDocument().startElement('root').writeAttribute('PKGName', arg[0]);
@@ -642,7 +643,7 @@ function saveConfig(arg) {
 
     xmlContent = xmlConfig.toString();
 
-  //console.log(xmlContent);
+  ////console.log(xmlContent);
 
       saveTextFile(projDirectory, fileName, xmlContent);
 }
@@ -656,6 +657,60 @@ function loadConfig() {
 }
 //----------------------------------------------------------------------------------------------------------------------
 
+//----------------------------------------------------------------------------------------------------------------------
+function enviroConfig() {
+  var RC = '';
+    createDirectory(path.join(projDirectory, 'Source'));
+    createDirectory(path.join(projDirectory, 'Project'));
+    createDirectory(path.join(projDirectory, 'Complete'));
+    createDirectory(path.join(projDirectory, 'Dokumentation'));
+
+
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function setRegPath(arg, arg1) {
+  regKey = new Registry({
+    hive: Registry.HKCU,
+    key: '\\Software\\MobilityNinjas\\WixToolsWrapper\\'
+  });
+
+  regKey.set(arg1, Registry.REG_SZ, arg1, function (err) {
+    if (err) {
+      console.log(err);
+    }
+  });
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function getRegPath(arg) {
+  regKey = new Registry({
+    hive: Registry.HKCU,
+    key:  '\\Software\\MobilityNinjas\\WixToolsWrapper\\'
+  });
+
+  try {
+    regKey.values(function (err, items) {
+      if (err) {
+
+      } else {
+        for (var i=0; i < items.length; ++i) {
+          if (items[i].name === arg) {
+            projDirectory = items[i].value;
+          }
+        }
+      }
+    });
+  } catch (err) {
+
+  }
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+
+
 
 
 
@@ -668,6 +723,8 @@ function loadConfig() {
 
 //----------------------------------------------------------------------------------------------------------------------
 function createWindow () {
+      getRegPath('WorkSpace');
+
       mainWindow = new BrowserWindow({width: 1024, height: 680, icon: __dirname+'/App/images/build/icon.png', 'node-integration':true, resizable: false});
 
       mainWindow.loadURL(url.format({
@@ -676,17 +733,9 @@ function createWindow () {
           slashes: true
       }))
 
-        createDirectory(path.join(__dirname, 'IN'));
-        createDirectory(path.join(__dirname, 'WORKING'));
-        createDirectory(path.join(__dirname, 'OUT'));
 
+      enviroConfig();
 
-        var xmlData = new Array();
-        var c = 0;
-
-        for (c = 0; c < 11; c++) {
-          xmlData[c] = c.toString();
-        }
 
       mainWindow.on('closed', () => {
           mainWindow = null;
@@ -694,9 +743,9 @@ function createWindow () {
 }
 //----------------------------------------------------------------------------------------------------------------------
 
-//----------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------/]*------------------------------------------------------------
 /*exports.saveConfigXML = (arg) => {
-  console.log('saveConfigXML');
+  //console.log('saveConfigXML');
   saveConfig(arg);
 }*/
 
@@ -731,6 +780,13 @@ app.on('activate', function () {
   if (mainWindow === null) {
     createWindow();
   }
+});
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+ipcMain.on('send-saveConf', (event, arg) => {
+  setRegPath('WorkSpace', arg);
+  projDirectory = arg;
 });
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -770,15 +826,15 @@ ipcMain.on('send-msiConf', (event, arg) => {
 ipcMain.on('send-xml-generate', (event, arg) => {
   var RC;
 
-          console.log('building xml 0');
+          //console.log('building xml 0');
       RC = saveWSXFile (wxsHeaderTemplate, 'WORKING/' + 'wrapper' + '.wsx', 'wxsHeader');
-          console.log('building xml 1');
+          //console.log('building xml 1');
       RC = harwestDirsFiles('\IN', 'wrapper', 'files');
-          console.log('building xml 2');
+          //console.log('building xml 2');
       RC = saveWSXFile (wxsComponentTemplateClose, 'WORKING/' + 'wrapper' + '.wsx', 'closeTag');
-          console.log('building xml 3');
+          //console.log('building xml 3');
       RC = saveWSXFile ("", 'WORKING/' + 'wrapper' + '.wsx', 'features');
-          console.log('building xml 4');
+          //console.log('building xml 4');
       RC = saveWSXFile (wxsFooterTemplate, 'WORKING/' + 'wrapper' + '.wsx', 'wxsFooter');
 });
 //----------------------------------------------------------------------------------------------------------------------
@@ -802,6 +858,12 @@ ipcMain.on('send-wxsobjPath', (event, arg) => {
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
+ipcMain.on('send-selectWorkdir', (event, arg) => {
+  event.sender.send('get-selectWorkdir', projDirectory);
+});
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
 ipcMain.on('send-projectFolderPath', (event, arg) => {
   event.sender.send('get-projectFolderPath', path.join(__dirname,  'IN'));
   //event.sender.send('get-projectFolderPath', path.join(projDirectory,  'IN'));
@@ -813,7 +875,7 @@ ipcMain.on('send-xml-normalize', (event, arg) => {
   var RC;
 
       RC = normalizeXml (wsxFile);
-          console.log('normalizing xml ');
+          //console.log('normalizing xml ');
       event.returnValue = true;
 });
 //----------------------------------------------------------------------------------------------------------------------
@@ -824,19 +886,19 @@ ipcMain.on('send-msi-generate', (event, arg) => {
 
     if (arg === 0) {
       RC = wixCandle ();
-          console.log('wixCandle ' + arg.toString());
+          //console.log('wixCandle ' + arg.toString());
       event.returnValue = true;
     }
 
     if (arg === 1) {
       RC = wixMoveConf();
-          console.log('wixMoveConf ' + arg.toString());
+          //console.log('wixMoveConf ' + arg.toString());
       event.returnValue = true;
     }
 
     if (arg === 2) {
       RC = wixLight ();
-          console.log('wixLight ' + arg.toString());
+          //console.log('wixLight ' + arg.toString());
       event.returnValue = true;
     }
 });
@@ -847,7 +909,7 @@ ipcMain.on('send-msi-generate', (event, arg) => {
   var RC;
 
       RC = selectDirectory ();
-          console.log(RC);
+          //console.log(RC);
       event.sender.send('getDirectory', RC);
 });*/
 //----------------------------------------------------------------------------------------------------------------------
