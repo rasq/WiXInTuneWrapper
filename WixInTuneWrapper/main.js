@@ -660,12 +660,12 @@ function loadConfig() {
 //----------------------------------------------------------------------------------------------------------------------
 function enviroConfig() {
   var RC = '';
+    getRegPath('WorkSpace');
+
     createDirectory(path.join(projDirectory, 'Source'));
     createDirectory(path.join(projDirectory, 'Project'));
     createDirectory(path.join(projDirectory, 'Complete'));
     createDirectory(path.join(projDirectory, 'Dokumentation'));
-
-
 }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -676,7 +676,7 @@ function setRegPath(arg, arg1) {
     key: '\\Software\\MobilityNinjas\\WixToolsWrapper\\'
   });
 
-  regKey.set(arg1, Registry.REG_SZ, arg1, function (err) {
+  regKey.set(arg, Registry.REG_SZ, arg1, function (err) {
     if (err) {
       console.log(err);
     }
@@ -691,21 +691,19 @@ function getRegPath(arg) {
     key:  '\\Software\\MobilityNinjas\\WixToolsWrapper\\'
   });
 
-  try {
     regKey.values(function (err, items) {
       if (err) {
-
+        console.log(err);
       } else {
-        for (var i=0; i < items.length; ++i) {
-          if (items[i].name === arg) {
+        for (var i = 0; i < items.length; ++i) {
+          console.log(items[i].name);
+          if (items[i].name == arg) {
             projDirectory = items[i].value;
+            //console.log(i + ". " + items[i].value + " = " + items[i].name);
           }
         }
       }
     });
-  } catch (err) {
-
-  }
 }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -723,8 +721,6 @@ function getRegPath(arg) {
 
 //----------------------------------------------------------------------------------------------------------------------
 function createWindow () {
-      getRegPath('WorkSpace');
-
       mainWindow = new BrowserWindow({width: 1024, height: 680, icon: __dirname+'/App/images/build/icon.png', 'node-integration':true, resizable: false});
 
       mainWindow.loadURL(url.format({
@@ -859,6 +855,7 @@ ipcMain.on('send-wxsobjPath', (event, arg) => {
 
 //----------------------------------------------------------------------------------------------------------------------
 ipcMain.on('send-selectWorkdir', (event, arg) => {
+  console.log(projDirectory);
   event.sender.send('get-selectWorkdir', projDirectory);
 });
 //----------------------------------------------------------------------------------------------------------------------
