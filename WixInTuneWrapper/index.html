@@ -307,13 +307,13 @@
                                 </br>
                                 <div class="content">
                                   <div class="ui medium labels">
-                                    <div id="wxsFilePath" class="ui label">
+                                    <div id="wxsFilePath" name="wxsFilePath" class="ui label">
                                       WXS File Location.
                                     </div>
-                                    <button class="ui labeled icon button">
-                                      <i class="edit outline icon"></i>
-                                      Open/Edit
-                                    </button>
+                                      <a class="wsx-button item">
+                                        <i id="selectwsx" class="ui button">Open/Edit</i>
+                                        <input type="file" accept=".wsx" id="selectwsxA" class="wsx-buttonA item" style="display: none" onchange="openWsxFile(this)" />
+                                      </a>
                                   </div>
                                   <p></p>
                                     <i class="ui fluid green button" onclick="generateMSI(0)">${translate("Generate wixobj file")}</i>
@@ -322,13 +322,13 @@
                                 </br>
                                 <div class="content">
                                   <div class="ui medium labels">
-                                    <div id="wxsobjFilePath" class="ui label">
+                                    <div id="wxsobjFilePath" name="wxsobjFilePath" class="ui label">
                                       WIXobj File Location.
                                     </div>
-                                    <button class="ui labeled icon button">
-                                      <i class="edit outline icon"></i>
-                                      Open/Edit
-                                    </button>
+                                      <a class="wixobj-button item">
+                                        <i id="selectwixobj" class="ui button">Open/Edit</i>
+                                        <input type="file" accept=".wixobj" id="selectwixobjA" class="wixobj-buttonA item" style="display: none" onchange="openWixobjFile(this)" />
+                                      </a>
                                   </div>
                                   <p></p>
                                     <i class="ui fluid green button" onclick="generateMSI(2)">${translate("Generate MSI file")}</i>

@@ -88,12 +88,12 @@ var projDirectory         = __dirname;
 var wixToolsetPath        = path.join(__dirname, 'App/Dependencies/wix311-binaries');
 var wixToolsetCandle      = path.join(wixToolsetPath, 'candle.exe')
 var wixToolsetLight       = path.join(wixToolsetPath, 'light.exe')
-var originalWixobj        = path.join(__dirname, 'wrapper.wixobj');
-var newWixobj             = path.join(__dirname, 'WORKING/wrapper.wixobj');
-var wsxFilePath           = path.join(__dirname, 'WORKING/wrapper.wsx');
-/*var originalWixobj        = path.join(projDirectory, 'wrapper.wixobj');
+/*var originalWixobj        = path.join(__dirname, 'wrapper.wixobj');
+var newWixobj             = path.join(__dirname, 'Project/wrapper.wixobj');
+var wsxFilePath           = path.join(__dirname, 'Project/wrapper.wsx');*/
+var originalWixobj        = path.join(projDirectory, 'wrapper.wixobj');
 var newWixobj             = path.join(projDirectory, 'WORKING/wrapper.wixobj');
-var wsxFilePath           = path.join(projDirectory, 'WORKING/wrapper.wsx');*/
+var wsxFilePath           = path.join(projDirectory, 'WORKING/wrapper.wsx');
 
 var wsxFile               = '';
 
@@ -129,7 +129,7 @@ var VarSystemFolderNameArr = new Array ('AdminToolsFolder', 'AppDataFolder', 'Co
 
 var wxsINSTALLDIR = '<Directory Id="INSTALLDIR">\r\n';
 
-var wxsMainDirectoryOpenTemplate = '<Directory Id="TARGETDIR" Name="SourceDir">\r\n';
+var wxsMainDirectoryOpenTemplate = '<Directory Id="TARGETDIR" Name="SourceDir">\r\n' + wxsINSTALLDIR;
 
 var wxsSysDirectoryOpenTemplate = '<Directory Id="VarSystemFolderName">\r\n';
 
@@ -160,7 +160,7 @@ var wxsMediaTemplate = '<Media Id="' + VarCabinetID + '" Cabinet="CABName.cab" E
 
 var wxsIonTemplate = '<Icon Id="VarIcoID" SourceFile="VarIcoPath" />\r\n';
 
-var wxsFeatureOpenTemplate = wxsDirectoryCloseTemplate + '<Feature Id="VarFeatureID" ConfigurableDirectory="INSTALLDIR" Level="1" Title="VarFeatureTitle">\r\n';
+var wxsFeatureOpenTemplate = wxsDirectoryCloseTemplate + wxsDirectoryCloseTemplate + '<Feature Id="VarFeatureID" ConfigurableDirectory="INSTALLDIR" Level="1" Title="VarFeatureTitle">\r\n';
 
 var wxsComponentFeatureTemplate = '<ComponentRef Id="VarComponentRefID" />\r\n';
 
@@ -168,6 +168,7 @@ var wxsFeatureCloseTemplate = '</Feature>\r\n';
 
 var wxsFooterTemplate = tabString + '<Media Id="1" Cabinet="Data1.cab" DiskPrompt="1" EmbedCab="yes" VolumeLabel="DISK1" />\r\n' +
         '<Property Id="DiskPrompt" Value="[1]" />\r\n' +
+        '<Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR"/>\r\n' +
         '<Property Id="INSTALLDIR" Secure="yes" />\r\n wxsProperties' +
 '</Product>\r\n' +
 '</Wix>';
@@ -207,10 +208,11 @@ function harwestDirsFiles(varPathToScan, wxsName, dataType) {
 
         try {
           if (dataType == 'dirs') {
-              paths = klawSync(path.join(projDirectory, varPathToScan), {nofile: true});
+              paths = klawSync(varPathToScan, {nofile: true});
+              //paths = klawSync(path.join(projDirectory, varPathToScan), {nofile: true});
           } else {
                 filterFn = item => item.path.indexOf('.DS_Store') < 0
-              paths = klawSync(path.join(projDirectory, varPathToScan), {nodir: true, filter: filterFn});
+                paths = klawSync(varPathToScan, {nodir: true, filter: filterFn});
               //paths = klawSync(path.join(projDirectory, varPathToScan), {nodir: true, filter: filterFn});
           }
         } catch (er) {
@@ -219,7 +221,7 @@ function harwestDirsFiles(varPathToScan, wxsName, dataType) {
 
           for (i = 0; i < paths.length; ++i) {
             try {
-              saveWSXFile (paths[i].path, 'WORKING\\' + wxsName + '.wsx', dataType);
+              saveWSXFile (paths[i].path, 'Project\\' + wxsName + '.wsx', dataType);
             } catch (er) {
               //console.error(er);
             }
@@ -239,9 +241,9 @@ function saveWSXFile (contentTxt, fileName, dataType){
     }
 
 
-    if (dataType == 'dirs') {
+    /*if (dataType == 'dirs') {
         WSXSection = generateWSXDirectorySection (contentTxt);
-    } else if (dataType == 'files') {
+    } else */if (dataType == 'files') {
         if (asarFiles.length > 0) {
           for (x = 0; x < asarFiles.length; ++x){
             if (contentTxt.includes(asarFiles[x])) {
@@ -294,7 +296,7 @@ function loadTextFile (fileToRead){
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
-function generateWSXDirectorySection (contentTxt){
+/*function generateWSXDirectorySection (contentTxt){
    var VarSplittedString = contentTxt.split(splitChar);
 
     var tmpString = wxsDirectoryOpenTemplate.replace("VarFilePathName", contentTxt).replace("VarGUIDString", uuidV4()).replace("VarFileID", VarSplittedString[VarSplittedString.length -1].replace(".","") + "_" + dirCounter + '_' + randomInt(999)); // + '_' + randomInt(999)
@@ -304,7 +306,7 @@ function generateWSXDirectorySection (contentTxt){
         dirCounter++;
 
     return tmpString;
-}
+}*/
 //----------------------------------------------------------------------------------------------------------------------
 
 var tmpFileTab = "";
@@ -342,7 +344,7 @@ function generateWSXFileSection (contentTxt){
 
                   tmpFileTab = tmpTab;
 
-                  for (x = VarSplittedScriptDir.length + 2; x < tmpSplittedPath.length - 1; ++x) {
+                  for (x = VarSplittedScriptDir.length + 2; x < tmpSplittedPath.length/* - 1*/; ++x) {
                       tmpString = tmpString + tmpTab + wxsDirectoryCloseTemplate;
                       tmpTab = tmpTab.replace(tabString, '');
                   }
@@ -371,7 +373,7 @@ function generateWSXFileSection (contentTxt){
                     if (skipDir == false) {
                       tmpString = tmpString + tmpTab + wxsSysDirectoryOpenTemplate.replace('VarSystemFolderName', VarSplittedString[x]);
                       if (installdirUsed == false){
-                        tmpString = tmpString + wxsINSTALLDIR;
+                        tmpString = tmpString /*+ wxsINSTALLDIR*/;
                         installdirUsed = true;
                       }
                     }
@@ -413,7 +415,7 @@ function generateWSXFeatureSection (){
     var tmpFeatureSection = "", x = 0, y = 0;
 
             if (tmpPath != "") {
-                tmpFeatureSection = wxsDirectoryCloseTemplate;
+                //tmpFeatureSection = wxsDirectoryCloseTemplate;
                   for (x = VarSplittedScriptDir.length + 1; x < tmpSplittedPath.length - 1; ++x) {
                       tmpFeatureSection = tmpFeatureSection + wxsDirectoryCloseTemplate;
                   }
@@ -505,6 +507,7 @@ function removeFile (filePath){
 
 //----------------------------------------------------------------------------------------------------------------------
 function wixCandle() {
+    console.log(wixToolsetCandle + ' , ' + wsxFile);
     var result = child.spawnSync(wixToolsetCandle,
                        [wsxFile]);
 
@@ -566,8 +569,8 @@ function createDirectory(directory) {
 //----------------------------------------------------------------------------------------------------------------------
 function archiveProject(zipName) {
   var zip = new AdmZip();
-  var inD = path.join(projDirectory, 'IN');
-  var wD = path.join(projDirectory, 'WORKING');
+  var inD = path.join(projDirectory, 'Source');
+  var wD = path.join(projDirectory, 'Project');
 
       zip.addLocalFolder(inD);
       zip.addLocalFolder(wD);
@@ -651,21 +654,33 @@ function saveConfig(arg) {
 
 //----------------------------------------------------------------------------------------------------------------------
 function loadConfig() {
-  var configFile = loadTextFile (path.join(projDirectory, 'pkgName.xml'));
+  var configFile = '';
+  dialog.showOpenDialog({filters: [{name: 'xml', extensions: ['xml']}]}, function (fileNames) {
+    try {
+      configFile = loadTextFile (fileNames[0]);
+    } catch (err) {
 
+    }
+    //
     mainWindow.webContents.send('get-loadConfigApp', configFile);
+  });
 }
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
-function enviroConfig() {
+function enviroConfig(arg) {
   var RC = '';
-    getRegPath('WorkSpace');
 
-    createDirectory(path.join(projDirectory, 'Source'));
-    createDirectory(path.join(projDirectory, 'Project'));
-    createDirectory(path.join(projDirectory, 'Complete'));
-    createDirectory(path.join(projDirectory, 'Dokumentation'));
+    if (arg == 0) {
+      createDirectory(path.join(projDirectory, 'Source'));
+      createDirectory(path.join(projDirectory, 'Project'));
+      createDirectory(path.join(projDirectory, 'Complete'));
+      createDirectory(path.join(projDirectory, 'Dokumentation'));
+    }
+
+    originalWixobj        = path.join(__dirname, 'wrapper.wixobj');
+    newWixobj             = path.join(projDirectory, 'Project/wrapper.wixobj');
+    wsxFilePath           = path.join(projDirectory, 'Project/wrapper.wsx');
 }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -699,7 +714,7 @@ function getRegPath(arg) {
           console.log(items[i].name);
           if (items[i].name == arg) {
             projDirectory = items[i].value;
-            //console.log(i + ". " + items[i].value + " = " + items[i].name);
+            enviroConfig(0);
           }
         }
       }
@@ -730,7 +745,9 @@ function createWindow () {
       }))
 
 
-      enviroConfig();
+
+      getRegPath('WorkSpace');
+      //enviroConfig();
 
 
       mainWindow.on('closed', () => {
@@ -787,6 +804,15 @@ ipcMain.on('send-saveConf', (event, arg) => {
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
+ipcMain.on('send-setTempProjDir', (event, arg) => {
+  projDirectory = arg[0];
+  enviroConfig(1);
+  wsxFile = arg[1]
+  event.returnValue = true;
+});
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
 ipcMain.on('send-saveConfigApp', (event, arg) => {
   saveConfig(arg);
 });
@@ -821,17 +847,22 @@ ipcMain.on('send-msiConf', (event, arg) => {
 //----------------------------------------------------------------------------------------------------------------------
 ipcMain.on('send-xml-generate', (event, arg) => {
   var RC;
+      console.log(arg);
+      if (arg == 'empty' || arg) {
 
+      } else {
+//arg
+      }
           //console.log('building xml 0');
-      RC = saveWSXFile (wxsHeaderTemplate, 'WORKING/' + 'wrapper' + '.wsx', 'wxsHeader');
+      RC = saveWSXFile (wxsHeaderTemplate, 'Project/' + 'wrapper' + '.wsx', 'wxsHeader');
           //console.log('building xml 1');
-      RC = harwestDirsFiles('\IN', 'wrapper', 'files');
+      RC = harwestDirsFiles(arg, 'wrapper', 'files');
           //console.log('building xml 2');
-      RC = saveWSXFile (wxsComponentTemplateClose, 'WORKING/' + 'wrapper' + '.wsx', 'closeTag');
+      RC = saveWSXFile (wxsComponentTemplateClose, 'Project/' + 'wrapper' + '.wsx', 'closeTag');
           //console.log('building xml 3');
-      RC = saveWSXFile ("", 'WORKING/' + 'wrapper' + '.wsx', 'features');
+      RC = saveWSXFile ("", 'Project/' + 'wrapper' + '.wsx', 'features');
           //console.log('building xml 4');
-      RC = saveWSXFile (wxsFooterTemplate, 'WORKING/' + 'wrapper' + '.wsx', 'wxsFooter');
+      RC = saveWSXFile (wxsFooterTemplate, 'Project/' + 'wrapper' + '.wsx', 'wxsFooter');
 });
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -861,6 +892,12 @@ ipcMain.on('send-selectWorkdir', (event, arg) => {
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
+ipcMain.on('get-projectFolderPathIN', (event, arg) => {
+
+});
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
 ipcMain.on('send-projectFolderPath', (event, arg) => {
   event.sender.send('get-projectFolderPath', path.join(__dirname,  'IN'));
   //event.sender.send('get-projectFolderPath', path.join(projDirectory,  'IN'));
@@ -871,7 +908,7 @@ ipcMain.on('send-projectFolderPath', (event, arg) => {
 ipcMain.on('send-xml-normalize', (event, arg) => {
   var RC;
 
-      RC = normalizeXml (wsxFile);
+      //RC = normalizeXml (wsxFile);
           //console.log('normalizing xml ');
       event.returnValue = true;
 });

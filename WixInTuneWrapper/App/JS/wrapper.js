@@ -38,6 +38,22 @@ var installExecuteSeqTPLH = "<InstallExecuteSequence>" +
 
 
 //----------------------------------------------------------------------------------------------------------------------
+$('.wsx-button').click(function(){
+  var wsxData = document.getElementById("selectwsxA");
+    wsxData.click(function(){
+  });
+});
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+$('.wixobj-button').click(function(){
+  var wixobjData = document.getElementById("selectwixobjA");
+    wixobjData.click(function(){
+  });
+});
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
 $('.getIco-button').click(function(){
   var dataIco = document.getElementById("selectIcoA");
     dataIco.click(function(){
@@ -352,6 +368,36 @@ function addCAFile() {
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
+function openWsxFile(fileInput) {
+  var files = fileInput.files;
+
+        for (var i = 0; i < files.length; i++) {
+          var file = files[i];
+          var path = document.getElementById("wxsFilePath");
+
+            path.file = file;
+            filePath = file.path;
+            document.getElementsByName("wxsFilePath")[0].innerHTML = file.path;
+        }
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+function openWixobjFile(fileInput) {
+  var files = fileInput.files;
+
+        for (var i = 0; i < files.length; i++) {
+          var file = files[i];
+          var path = document.getElementById("wxsobjFilePath");
+
+            path.file = file;
+            filePath = file.path;
+            document.getElementsByName("wxsobjFilePath")[0].innerHTML = file.path;
+        }
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
 function filePathCA(fileInput) {
   var files = fileInput.files;
 
@@ -532,7 +578,7 @@ function formConfigMSI(){
             ipcRenderer.send('send-xml-properties', xmlPropertyTpl);
           } catch (er) {}
 
-            ipcRenderer.send('send-xml-generate', '');
+            ipcRenderer.send('send-xml-generate', varCheck(document.getElementById("projectFolderPath"), 1).trim());
 
             ipcRenderer.send('send-xml-normalize');
                 console.log('xml generated');
@@ -683,8 +729,6 @@ function saveConfigApp(){
 function loadConfigApp(xml){
   var parsedXML = new xmlParse.DOM(xmlParse.parse(xml.toString()));
   var x = 0;
-
-    //console.log(parsedXML.document.getElementsByTagName('AppName')[0].innerXML);
 
     var tmpAppVersion       = parsedXML.document.getElementsByTagName('AppVersion')[0].innerXML;
     var tmpManufacturer     = parsedXML.document.getElementsByTagName("Manufacturer")[0].innerXML;
@@ -863,6 +907,28 @@ function archivizeFiles() {
 //----------------------------------------------------------------------------------------------------------------------
 function generateMSI(arg) {
   if (arg === 0) {
+    var tmpProjDir = document.getElementsByName('wxsFilePath')[0].innerHTML.trim().split('\\');
+    var wsxFile = document.getElementsByName('wxsFilePath')[0].innerHTML.trim();
+    var tmpProjDirPath = '', x = 0;
+
+    for (x = 0; x < tmpProjDir.length - 1; ++x) {
+      if (x == 0) {
+        tmpProjDirPath = tmpProjDir[x];
+      } else {
+        if (tmpProjDir[x] == 'Project') {
+
+        } else {
+          tmpProjDirPath = tmpProjDirPath + '\\' + tmpProjDir[x];
+        }
+      }
+    }
+
+    var sendArg = new Array();
+      sendArg.push(tmpProjDirPath);
+      sendArg.push(wsxFile);
+
+    ipcRenderer.sendSync('send-setTempProjDir', sendArg);
+
     ipcRenderer.sendSync('send-msi-generate', 0);
     ipcRenderer.sendSync('send-msi-generate', 1);
     ipcRenderer.send('send-wxsobjPath', 'path');
@@ -951,7 +1017,6 @@ ipcRenderer.on('get-loadConfigApp', (event, arg) => {
 
 //----------------------------------------------------------------------------------------------------------------------
 ipcRenderer.on('get-selectWorkdir', (event, arg) => {
-  console.log(arg);
   workdirFolderPathChange(arg);
 });
 //----------------------------------------------------------------------------------------------------------------------
