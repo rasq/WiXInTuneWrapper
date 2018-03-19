@@ -3,7 +3,7 @@
 //const homedir     = require('os').homedir();
 //const mkdirp      = require('mkdirp');
 //const sanitize    = require("sanitize-filename");
-//const shell           = require('electron').shell;
+//const shell       = require('electron').shell;
 
 const remote        = require('electron').remote;
 const dialog        = remote.dialog;
@@ -610,7 +610,7 @@ function saveConfigApp(){
   var x                   = 0;
   var varTmp              = '';
   var VarU                = '';
-  var tmpAppConf          = new Array(20);
+  var tmpAppConf          = new Array(23);
   var tmpAppVersion       = varCheck("AppVersion", 0);
   var tmpManufacturer     = varCheck("Manufacturer", 0);
   var tmpAppName          = varCheck("AppName", 0);
@@ -636,6 +636,8 @@ function saveConfigApp(){
   var tmpInPath           = document.getElementById("projectFolderPath");
   var tmpIcoPath          = document.getElementById("thumbnil");
 
+  var tmpWSXPath          = document.getElementsByName("wxsFilePath")[0];
+  var tmpWIXObjPath       = document.getElementsByName("wxsobjFilePath")[0];
 
 
     if ($('.ui.checkbox.left.P').checkbox('is checked')) {
@@ -674,6 +676,7 @@ function saveConfigApp(){
         tmpAppConf[18]  = new Array();
         tmpAppConf[19]  = new Array();
         tmpAppConf[20]  = new Array();
+        tmpAppConf[21]  = new Array();
 
     for (x = 0; x < tmpPropName.length; x++) {
       if (tmpPropName[x].value != '' && tmpPropValue[x].value != '') {
@@ -718,8 +721,14 @@ function saveConfigApp(){
     }
 
     if ($('.ui.checkbox.left.D').checkbox('is checked')) {
-
+        tmpAppConf[21].push('empty');
     }
+
+    tmpAppConf[22] = varCheck(tmpWSXPath, 1);
+    tmpAppConf[23] = varCheck(tmpWIXObjPath, 1);
+
+    console.log(tmpAppConf[22] + ' = ' + tmpWSXPath);
+    console.log(tmpAppConf[23] + ' = ' + tmpWIXObjPath);
 
     return tmpAppConf;
 }
@@ -749,6 +758,9 @@ function loadConfigApp(xml){
     var tmpShortcutFile     = parsedXML.document.getElementsByTagName("ShortcutFile");
     var tmpShortcutDirectory= parsedXML.document.getElementsByTagName("ShortcutDirectory");
 
+    var tmpRegFilePath      = parsedXML.document.getElementsByTagName("RegFilePath");
+    var tmpWSXPath          = parsedXML.document.getElementsByTagName("WSXPath");
+    var tmpWIXObjPath       = parsedXML.document.getElementsByTagName("WIXObjPath");
 
 
 
@@ -823,6 +835,13 @@ function loadConfigApp(xml){
 
 
 
+      //var tmpRegFilePath     = parsedXML.document.getElementsByTagName("RegFilePath");
+
+
+      document.getElementsByName("wxsFilePath").innerHTML   = varCheck(tmpWSXPath, 2);
+      document.getElementsByName("wxsobjFilePath").innerHTML= varCheck(tmpWIXObjPath, 2);
+
+
 
     //  $('.ui.checkbox.left.D').checkbox('set checked');
       //$('.CB_Reg').fadeIn('fast');
@@ -844,6 +863,8 @@ function varCheck(arg1, arg2) {
         RC = 'empty';
       } else {
         RC = arg1.innerHTML;
+        RC = RC.toString();
+        RC = RC.trim();
       }
     } else if (arg2 == 2) {
       if (arg1 == 'empty') {

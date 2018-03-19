@@ -237,13 +237,10 @@ function saveWSXFile (contentTxt, fileName, dataType){
 
     if (wsxFile == '') {
       wsxFile = path.join(projDirectory, fileName);
-      //wsxFile = path.join(projDirectory, fileName);
     }
 
 
-    /*if (dataType == 'dirs') {
-        WSXSection = generateWSXDirectorySection (contentTxt);
-    } else */if (dataType == 'files') {
+    if (dataType == 'files') {
         if (asarFiles.length > 0) {
           for (x = 0; x < asarFiles.length; ++x){
             if (contentTxt.includes(asarFiles[x])) {
@@ -261,21 +258,6 @@ function saveWSXFile (contentTxt, fileName, dataType){
     }
 
         saveTextFile(projDirectory, fileName, WSXSection);
-
-      /*  try {
-            stats = fs.statSync(path.join(projDirectory, fileName));
-              try {
-                fs.appendFileSync(path.join(projDirectory, fileName), WSXSection);
-              } catch (er) {
-                  //console.error(er);
-              }
-        } catch (e) {
-            try {
-              fs.writeFileSync(path.join(projDirectory, fileName), WSXSection);
-            } catch (er) {
-                //console.error(er);
-            }
-        }*/
 
     return;
 }
@@ -296,19 +278,6 @@ function loadTextFile (fileToRead){
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
-/*function generateWSXDirectorySection (contentTxt){
-   var VarSplittedString = contentTxt.split(splitChar);
-
-    var tmpString = wxsDirectoryOpenTemplate.replace("VarFilePathName", contentTxt).replace("VarGUIDString", uuidV4()).replace("VarFileID", VarSplittedString[VarSplittedString.length -1].replace(".","") + "_" + dirCounter + '_' + randomInt(999)); // + '_' + randomInt(999)
-
-        tmpString = tmpString + wxsDirectoryCloseTemplate;
-
-        dirCounter++;
-
-    return tmpString;
-}*/
-//----------------------------------------------------------------------------------------------------------------------
-
 var tmpFileTab = "";
 var dirCount = 0;
 var asarFiles = new Array();
@@ -634,6 +603,16 @@ function saveConfig(arg) {
           xmlConfig.writeElement('ShortcutDirectory', arg[20][x]);
         }
       }
+
+      x = 0;
+      if (arg[20].length > 0) {
+        for (x = 0; x < arg[20].length; x ++) {
+          xmlConfig.writeElement('RegFilePath', arg[21][x]);
+        }
+      }
+
+      xmlConfig.writeElement('WSXPath', arg[22]);
+      xmlConfig.writeElement('WIXObjPath', arg[23]);
 
 
     xmlConfig.endDocument();

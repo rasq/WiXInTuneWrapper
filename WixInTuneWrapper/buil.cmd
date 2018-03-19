@@ -1,1 +1,1 @@
-electron-packager . WiXToolsMSIWrapper --overwrite --asar=false --platform=win32 --arch=x64 --icon=App/images/build/icon.ico --prune=false --out=../Bin/ProgramFilesFolder/MobilityNinjas --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName="WiX Tools MSI wrapper"
+electron-packager . WiXToolsMSIWrapper --overwrite --asar=false --platform=win32 --arch=x64 --icon=App/images/build/icon.ico --prune=false --out=../Bin --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName="WiX Tools MSI wrapper"
